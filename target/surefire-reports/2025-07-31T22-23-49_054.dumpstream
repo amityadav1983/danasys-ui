@@ -1,0 +1,5 @@
+# Created at 2025-07-31T22:23:49.203
+Boot Manifest-JAR contains absolute paths in classpath 'D:\AMIT\Release\3.0\danasys-ui\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+
