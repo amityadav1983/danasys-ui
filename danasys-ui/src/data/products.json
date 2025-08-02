@@ -1,0 +1,410 @@
+[
+    {
+        "id": 1,
+        "name": "Fresh Apples",
+        "price": 120,
+        "category": "Vegetables",
+        "image": "/images/apples.jpg",
+        "description": "Fresh and juicy apples directly from the farm."
+    },
+    {
+        "id": 2,
+        "name": "Amul Milk 1L",
+        "price": 65,
+        "category": "Dairy",
+        "image": "/images/milk.jpg",
+        "description": "Amul toned milk, rich in calcium and vitamins."
+    },
+    {
+        "id": 3,
+        "name": "Parle-G Biscuits",
+        "price": 10,
+        "category": "Grocery",
+        "image": "/images/biscuits.jpg",
+        "description": "India's favorite biscuits for all age groups."
+    },
+    {
+        "id": 4,
+        "name": "Surf Excel Detergent 1kg",
+        "price": 210,
+        "category": "Grocery",
+        "image": "/images/detergent.jpg",
+        "description": "Powerful detergent for superior cleaning."
+    },
+    {
+        "id": 5,
+        "name": "Bananas (1 dozen)",
+        "price": 55,
+        "category": "Vegetables",
+        "image": "/images/bananas.jpg",
+        "description": "Fresh bananas full of energy and potassium."
+    },
+    {
+        "id": 6,
+        "name": "Britannia Bread",
+        "price": 40,
+        "category": "Grocery",
+        "image": "/images/bread.jpg",
+        "description": "Soft and fresh bread for your daily breakfast."
+    },
+    {
+        "id": 7,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 8,
+        "name": "Potatoes 1kg",
+        "price": 30,
+        "category": "Vegetables",
+        "image": "/images/potatoes.jpg",
+        "description": "Farm-fresh potatoes, perfect for all recipes."
+    },
+    {
+        "id": 9,
+        "name": "Fresh Apples",
+        "price": 120,
+        "category": "Vegetables",
+        "image": "/images/apples.jpg",
+        "description": "Fresh and juicy apples directly from the farm."
+    },
+    {
+        "id": 10,
+        "name": "Amul Milk 1L",
+        "price": 65,
+        "category": "Dairy",
+        "image": "/images/milk.jpg",
+        "description": "Amul toned milk, rich in calcium and vitamins."
+    },
+    {
+        "id": 11,
+        "name": "Parle-G Biscuits",
+        "price": 10,
+        "category": "Grocery",
+        "image": "/images/biscuits.jpg",
+        "description": "India's favorite biscuits for all age groups."
+    },
+    {
+        "id": 12,
+        "name": "Surf Excel Detergent 1kg",
+        "price": 210,
+        "category": "Grocery",
+        "image": "/images/detergent.jpg",
+        "description": "Powerful detergent for superior cleaning."
+    },
+    {
+        "id": 13,
+        "name": "Bananas (1 dozen)",
+        "price": 55,
+        "category": "Vegetables",
+        "image": "/images/bananas.jpg",
+        "description": "Fresh bananas full of energy and potassium."
+    },
+    {
+        "id": 14,
+        "name": "Britannia Bread",
+        "price": 40,
+        "category": "Dairy",
+        "image": "/images/bread.jpg",
+        "description": "Soft and fresh bread for your daily breakfast."
+    },
+    {
+        "id": 15,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 16,
+        "name": "Potatoes 1kg",
+        "price": 30,
+        "category": "Vegetables",
+        "image": "/images/potatoes.jpg",
+        "description": "Farm-fresh potatoes, perfect for all recipes."
+    },
+    {
+        "id": 17,
+        "name": "Fresh Apples",
+        "price": 120,
+        "category": "Vegetables",
+        "image": "/images/apples.jpg",
+        "description": "Fresh and juicy apples directly from the farm."
+    },
+    {
+        "id": 18,
+        "name": "Amul Milk 1L",
+        "price": 65,
+        "category": "Dairy",
+        "image": "/images/milk.jpg",
+        "description": "Amul toned milk, rich in calcium and vitamins."
+    },
+    {
+        "id": 19,
+        "name": "Parle-G Biscuits",
+        "price": 10,
+        "category": "Grocery",
+        "image": "/images/biscuits.jpg",
+        "description": "India's favorite biscuits for all age groups."
+    },
+    {
+        "id": 20,
+        "name": "Surf Excel Detergent 1kg",
+        "price": 210,
+        "category": "Grocery",
+        "image": "/images/detergent.jpg",
+        "description": "Powerful detergent for superior cleaning."
+    },
+    {
+        "id": 21,
+        "name": "Bananas (1 dozen)",
+        "price": 55,
+        "category": "Vegetables",
+        "image": "/images/bananas.jpg",
+        "description": "Fresh bananas full of energy and potassium."
+    },
+    {
+        "id": 22,
+        "name": "Britannia Bread",
+        "price": 40,
+        "category": "Dairy",
+        "image": "/images/bread.jpg",
+        "description": "Soft and fresh bread for your daily breakfast."
+    },
+    {
+        "id": 23,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 24,
+        "name": "Potatoes 1kg",
+        "price": 30,
+        "category": "Vegetables",
+        "image": "/images/potatoes.jpg",
+        "description": "Farm-fresh potatoes, perfect for all recipes."
+    },
+    {
+        "id": 25,
+        "name": "Fresh Apples",
+        "price": 120,
+        "category": "Vegetables",
+        "image": "/images/apples.jpg",
+        "description": "Fresh and juicy apples directly from the farm."
+    },
+    {
+        "id": 26,
+        "name": "Amul Milk 1L",
+        "price": 65,
+        "category": "Dairy",
+        "image": "/images/milk.jpg",
+        "description": "Amul toned milk, rich in calcium and vitamins."
+    },
+    {
+        "id": 27,
+        "name": "Parle-G Biscuits",
+        "price": 10,
+        "category": "Grocery",
+        "image": "/images/biscuits.jpg",
+        "description": "India's favorite biscuits for all age groups."
+    },
+    {
+        "id": 28,
+        "name": "Surf Excel Detergent 1kg",
+        "price": 210,
+        "category": "Grocery",
+        "image": "/images/detergent.jpg",
+        "description": "Powerful detergent for superior cleaning."
+    },
+    {
+        "id": 29,
+        "name": "Bananas (1 dozen)",
+        "price": 55,
+        "category": "Vegetables",
+        "image": "/images/bananas.jpg",
+        "description": "Fresh bananas full of energy and potassium."
+    },
+    {
+        "id": 30,
+        "name": "Britannia Bread",
+        "price": 40,
+        "category": "Dairy",
+        "image": "/images/bread.jpg",
+        "description": "Soft and fresh bread for your daily breakfast."
+    },
+    {
+        "id": 31,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 32,
+        "name": "Potatoes 1kg",
+        "price": 30,
+        "category": "Vegetables",
+        "image": "/images/potatoes.jpg",
+        "description": "Farm-fresh potatoes, perfect for all recipes."
+    },
+    {
+        "id": 33,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 34,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 35,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 36,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 37,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 38,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 39,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 40,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 41,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 42,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 43,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 44,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 45,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 46,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 47,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 48,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 49,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 50,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    },
+    {
+        "id": 51,
+        "name": "Tata Salt 1kg",
+        "price": 25,
+        "category": "Grocery",
+        "image": "/images/salt.jpg",
+        "description": "Iodized salt for a healthy lifestyle."
+    }
+]

@@ -1,0 +1,40 @@
+.more-options-page {
+    padding: 20px;
+    background: #fff;
+    min-height: 100vh;
+    animation: slideIn 0.3s ease-in-out;
+}
+
+.options-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.options-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+}
+
+.close-button {
+    margin-top: 20px;
+    padding: 10px 16px;
+    background-color: #ff3c3c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
