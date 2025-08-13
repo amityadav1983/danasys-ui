@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.danasys.dto.ProductCategoryDTO;
+import com.danasys.dto.ProductCategoryEnum;
 import com.danasys.dto.ProductDTO;
+import com.danasys.dto.StatusEnum;
+import com.danasys.dto.UserDetailsDTO;
 import com.danasys.dto.UserProfileDTO;
+
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,17 +30,37 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Danasys API's", description = "APIs for danasys e-commerce functionality")
 public class MyController {
 
-	@GetMapping("/getUser")
+	
+	@GetMapping("/getUserDetails")
 	@Operation(summary = "Get user details", description = "API for get user details")
-	public UserProfileDTO getUser(@RequestParam(value = "userProfileId", required = true) Long userProfileId) {
-		UserProfileDTO profile = new UserProfileDTO();
-		profile.setEmail("dana@dana.com");
-		profile.setFullname("John");
-		profile.setUserProfilePicture("/user.jpg");
-		profile.setContactInfo("91111111111");
-		profile.setFullAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
-		return profile;
+	public UserDetailsDTO getUserDetails() {
+		UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
+		
+		userDetailsDTO.setContactInfo("+91-91111111111");
+		userDetailsDTO.setEmail("dana@dana.com");
+		userDetailsDTO.setFullname("Sri Ram");
+		userDetailsDTO.setStatus(StatusEnum.ACTIVE);
+		userDetailsDTO.setAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
+		
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/user/").path("user.jpg").toUriString();
+		
+		userDetailsDTO.setUserProfilePicture(imageUrl);
+		List<String> dealOfTheDayImages=new ArrayList<>();
+		
+		String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/user/").path("deal.jpg").toUriString();
+		
+		String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/user/").path("deal2.png").toUriString();
+		
+		dealOfTheDayImages.add(imageUrl2);
+		dealOfTheDayImages.add(imageUrl3);
+		userDetailsDTO.setDealOfTheDayImages(dealOfTheDayImages);
+		
+		return userDetailsDTO;
 	}
+	
 	
 	@GetMapping("/productList")
 	@Operation(summary = "Product list", description = "Provide list of product for registered user")
@@ -51,28 +75,57 @@ public class MyController {
 	@GetMapping("/productCategoryList")
 	@Operation(summary = "Product category list", description = "All listed product category")
 	public List<ProductCategoryDTO> productCategoryList() throws IOException {
+		
 		List<ProductCategoryDTO> list = new ArrayList<>();
 		ProductCategoryDTO dto1 = new ProductCategoryDTO();
 		dto1.setId(1l);
-		dto1.setCategoryName("Grocery");
-		dto1.setDescription("Grocerys");
-		dto1.setStatus("ACTIVE");
+		dto1.setCategoryName(ProductCategoryEnum.Grocery);
+		dto1.setDescription("Grocery products");
+		dto1.setStatus(StatusEnum.ACTIVE);
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/category/").path("grocery.jpg").toUriString();
+		
+		dto1.setImage(imageUrl);
+		dto1.setTheemColorCode("#228B22");
 		
 		ProductCategoryDTO dto2 = new ProductCategoryDTO();
-		dto2.setId(1l);
-		dto2.setCategoryName("Vegitabled");
-		dto2.setDescription("Grocerys");
-		dto2.setStatus("ACTIVE");
+		dto2.setId(2l);
+		dto2.setCategoryName(ProductCategoryEnum.Vegetables);
+		dto2.setDescription("Vegitables items including fruits");
+		dto2.setStatus(StatusEnum.ACTIVE);
+		String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/category/").path("vegitables.png").toUriString();
+		
+		dto2.setImage(imageUrl2);
+		dto2.setTheemColorCode("#228B22");
 		
 		ProductCategoryDTO dto3 = new ProductCategoryDTO();
-		dto3.setId(1l);
-		dto3.setCategoryName("Faishon");
-		dto3.setDescription("Grocerys");
-		dto3.setStatus("ACTIVE");
+		dto3.setId(3l);
+		dto3.setCategoryName(ProductCategoryEnum.Fashion);
+		dto3.setDescription("Fashon");
+		dto3.setStatus(StatusEnum.ACTIVE);
+		String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/category/").path("fashon.png").toUriString();
+		
+		dto3.setImage(imageUrl3);
+		dto3.setTheemColorCode("#228B22");
+		
+		ProductCategoryDTO dto4 = new ProductCategoryDTO();
+		dto4.setId(4l);
+		dto4.setCategoryName(ProductCategoryEnum.RonyRocket);
+		dto4.setDescription("Delivery partner");
+		dto4.setStatus(StatusEnum.ACTIVE);
+		String imageUrl4 = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/category/").path("chotu.png").toUriString();
+		
+		dto4.setImage(imageUrl4);
+		dto4.setTheemColorCode("#228B22");
+		
 		
 		list.add(dto1);
 		list.add(dto2);
 		list.add(dto3);
+		list.add(dto4);
 		
 		return list;
 	}
