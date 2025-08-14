@@ -27,7 +27,7 @@ import com.danasys.dto.UserProfileDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
+
 
 @RestController
 @RequestMapping
@@ -36,14 +36,13 @@ public class MyController {
 
 	@PostMapping("/public/login")
 	@Operation(summary = "Authenticate user", description = "Using user credential authenticate user")
-	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 		return ResponseEntity.ok().body("Login successful");
 	}
 
 	@PostMapping("/public/loginM")
 	@Operation(summary = "Authenticate user", description = "Using user credential authenticate user")
-	public ResponseEntity<?> loginUsingMobile(@RequestBody LoginMobileRequest loginRequest,
-			HttpServletRequest request) {
+	public ResponseEntity<?> loginUsingMobile(@RequestBody LoginMobileRequest loginRequest) {
 		return ResponseEntity.ok().body("Login successful");
 
 	}
