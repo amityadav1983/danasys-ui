@@ -21,6 +21,8 @@ public class UserDetailsDTO {
 	
 	private String address;
 	
+	private String greetingOfTheDay;
+	
 	private List<String> dealOfTheDayImages;
 
 

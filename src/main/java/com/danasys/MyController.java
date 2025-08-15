@@ -86,6 +86,7 @@ public class MyController {
 		dealOfTheDayImages.add(imageUrl3);
 		userDetailsDTO.setDealOfTheDayImages(dealOfTheDayImages);
 
+		userDetailsDTO.setGreetingOfTheDay(imageUrl2);
 		return userDetailsDTO;
 	}
 
