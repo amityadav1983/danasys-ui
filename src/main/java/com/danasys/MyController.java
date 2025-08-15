@@ -1,9 +1,9 @@
 package com.danasys;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.danasys.dto.LoginMobileRequest;
 import com.danasys.dto.LoginRequest;
 import com.danasys.dto.ProductCategoryDTO;
@@ -23,7 +21,6 @@ import com.danasys.dto.ProductDTO;
 import com.danasys.dto.StatusEnum;
 import com.danasys.dto.UserDTO;
 import com.danasys.dto.UserDetailsDTO;
-import com.danasys.dto.UserProfileDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
