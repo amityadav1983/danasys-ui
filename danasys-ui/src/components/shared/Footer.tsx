@@ -17,26 +17,26 @@ type BrandLink = {
   link: string;
 };
 
-const UsefulLinks: string[] = [
-  'About',
-  'Careers',
-  'Blog',
-  'Press',
-  'Lead',
-  'Value',
-  'Privacy',
-  'Terms',
-  'FAQs',
-  'Security',
-  'Mobile',
-  'Contact',
-  'Partner',
-  'Express',
-  'Local',
-  'Spotlight',
-  'Warehouse',
-  'Deliver',
-];
+// const UsefulLinks: string[] = [
+//   'About',
+//   'Careers',
+//   'Blog',
+//   'Press',
+//   'Lead',
+//   'Value',
+//   'Privacy',
+//   'Terms',
+//   'FAQs',
+//   'Security',
+//   'Mobile',
+//   'Contact',
+//   'Partner',
+//   'Express',
+//   'Local',
+//   'Spotlight',
+//   'Warehouse',
+//   'Deliver',
+// ];
 
 const PaymentPartners = [
   {
