@@ -1,5 +1,6 @@
 package com.danasys;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -215,21 +216,28 @@ public class MyController {
 	}
 
 	private void populateDefaultProduct(Long userProfileId, Resource[] resources, List<ProductDTO> products, Long id, String category) {
-		for (Resource resource : resources) {
-			id = id + 1;
-			String fileName = resource.getFilename();
-			fileName=fileName.replace("-", " ");
 		
+		File folder = new File(uploadDir + category.toLowerCase() + "/");
+		
+		
+		
+		//for (Resource resource : resources) {
+		for (File file : folder.listFiles()) {
+			
+			id = id + 1;
+			String fileName = file.getName();
+			
 
 			if (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg")) {
 				ProductDTO product = new ProductDTO();
-				fileName=fileName.replace(".jpg", " ");
+				//fileName=fileName.replace("-", " ");
+				//fileName=fileName.replace(".jpg", " ");
 				product.setName(fileName);
 
 				//String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/"+category+"/")
 				//		.path(resource.getFilename()).toUriString();
 				
-				String imageUrl = accessUrl+category.toLowerCase()+"/"+resource.getFilename();
+				String imageUrl = accessUrl+category.toLowerCase()+"/"+fileName;
 
 				product.setImage(imageUrl);
 				product.setCategory(category);
