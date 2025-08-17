@@ -100,6 +100,10 @@ public class MyController {
 
 		dealOfTheDayImages.add(imageUrl2);
 		dealOfTheDayImages.add(imageUrl3);
+		dealOfTheDayImages.add(imageUrl2);
+		dealOfTheDayImages.add(imageUrl3);
+		dealOfTheDayImages.add(imageUrl2);
+		dealOfTheDayImages.add(imageUrl3);
 		userDetailsDTO.setDealOfTheDayImages(dealOfTheDayImages);
 
 		String greeting = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("greeting.png")
