@@ -217,10 +217,13 @@ public class MyController {
 	private void populateDefaultProduct(Long userProfileId, Resource[] resources, List<ProductDTO> products, Long id, String category) {
 		for (Resource resource : resources) {
 			id = id + 1;
-			String fileName = resource.getFilename().toLowerCase();
+			String fileName = resource.getFilename();
+			fileName=fileName.replace("-", " ");
+		
 
 			if (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg")) {
 				ProductDTO product = new ProductDTO();
+				fileName=fileName.replace(".jpg", " ");
 				product.setName(fileName);
 
 				//String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/"+category+"/")
