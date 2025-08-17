@@ -1,2 +1,32 @@
-/.metadata/
-/target/
+# Workspace metadata
+.metadata/
+
+# macOS system files
+.DS_Store
+
+# Java / Maven build outputs
+target/
+*.class
+log/
+*.log
+*.tmp
+
+# Eclipse
+.settings/
+.project
+.classpath
+.prefs
+
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# Node
+node_modules/
+
+# VS Code
+.vscode/
+
+# Ignore static resources in all modules
+**/src/main/resources/static/

@@ -17,26 +17,26 @@ type BrandLink = {
   link: string;
 };
 
-// const UsefulLinks: string[] = [
-//   'About',
-//   'Careers',
-//   'Blog',
-//   'Press',
-//   'Lead',
-//   'Value',
-//   'Privacy',
-//   'Terms',
-//   'FAQs',
-//   'Security',
-//   'Mobile',
-//   'Contact',
-//   'Partner',
-//   'Express',
-//   'Local',
-//   'Spotlight',
-//   'Warehouse',
-//   'Deliver',
-// ];
+const UsefulLinks: string[] = [
+  'About',
+  'Careers',
+  'Blog',
+  'Press',
+  'Lead',
+  'Value',
+  'Privacy',
+  'Terms',
+  'FAQs',
+  'Security',
+  'Mobile',
+  'Contact',
+  'Partner',
+  'Express',
+  'Local',
+  'Spotlight',
+  'Warehouse',
+  'Deliver',
+];
 
 const PaymentPartners = [
   {
@@ -146,9 +146,9 @@ const Footer = () => {
             {PaymentPartners.map((partner, i) => (
               <div key={i}>
                 <div className="w-[90px] h-[70px] border-2 border-blue-700 rounded-md flex items-center justify-center p-4 bg-white mx-2 text-lg font-semibold"
-                style={{
-    boxShadow: '0 15px 30px rgba(0, 0, 0, 0.5)',
-  }}>
+                  style={{
+                    boxShadow: '0 15px 30px rgba(0, 0, 0, 0.5)',
+                  }}>
                   {partner.logoName ? (
                     <img
                       src={`/${partner.logoName}.webp`}

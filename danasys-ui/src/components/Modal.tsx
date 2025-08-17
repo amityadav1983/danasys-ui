@@ -19,7 +19,13 @@ const Modal = () => {
     ) : type === 'orderSuccess' && data ? (
       <OrderSuccessModal data={data} />
     ) : type === 'login' ? (
-      <LoginModal isOpen={true} onClose={handleClose} />
+      <LoginModal
+        isOpen={true}
+        onClose={handleClose}
+        onLogin={async (credentials) => {
+          console.log("User attempted login", credentials);
+        }}
+      />
     ) : null;
 
   return (
