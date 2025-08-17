@@ -86,23 +86,23 @@ public class MyController {
 		userDetailsDTO.setStatus(StatusEnum.ACTIVE);
 		userDetailsDTO.setAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
 
-		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/userdata/").path("user.jpg")
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.jpg")
 				.toUriString();
 
 		userDetailsDTO.setUserProfilePicture(imageUrl);
 		List<String> dealOfTheDayImages = new ArrayList<>();
 
-		String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/userdata/").path("add1.png")
+		String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("add1.png")
 				.toUriString();
 
-		String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/userdata/").path("add2.png")
+		String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("add2.png")
 				.toUriString();
 
 		dealOfTheDayImages.add(imageUrl2);
 		dealOfTheDayImages.add(imageUrl3);
 		userDetailsDTO.setDealOfTheDayImages(dealOfTheDayImages);
 
-		String greeting = ServletUriComponentsBuilder.fromCurrentContextPath().path("/userdata/").path("greeting.png")
+		String greeting = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("greeting.png")
 				.toUriString();
 		
 		userDetailsDTO.setGreetingOfTheDay(greeting);
@@ -261,7 +261,8 @@ public class MyController {
 	    "/api/product/images/fashion/{filename:.+}",
 	    "/api/product/images/electronics/{filename:.+}",
 	    "/api/product/images/ronyrocket/{filename:.+}",
-	    "/api/product/images/category/{filename:.+}"
+	    "/api/product/images/category/{filename:.+}",
+	    "/api/product/images/userdata/{filename:.+}"
 	})
 	public ResponseEntity<Resource> getImage(HttpServletRequest request, @PathVariable String filename)
 			throws MalformedURLException {
@@ -285,6 +286,8 @@ public class MyController {
 			newUploadDir = uploadDir + "ronyrocket/";
 		}else if (requestURI.contains("images/category")) {
 			newUploadDir = uploadDir + "category/";
+		}else if (requestURI.contains("images/userdata")) {
+			newUploadDir = uploadDir + "userdata/";
 		}
 
 		Path imagePath = Paths.get(newUploadDir).resolve(filename);
