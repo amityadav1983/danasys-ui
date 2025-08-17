@@ -129,7 +129,7 @@ public class MyController {
 		dto1.setCategoryName(ProductCategoryEnum.Grocery);
 		dto1.setDescription("Grocery products");
 		dto1.setStatus(StatusEnum.ACTIVE);
-		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/category/").path("grocery.png")
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("grocery.png")
 				.toUriString();
 
 		dto1.setImage(imageUrl);
@@ -140,7 +140,7 @@ public class MyController {
 		dto2.setCategoryName(ProductCategoryEnum.Vegetables);
 		dto2.setDescription("Vegitables items including fruits");
 		dto2.setStatus(StatusEnum.ACTIVE);
-		String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/category/")
+		String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/")
 				.path("vegetable.png").toUriString();
 
 		dto2.setImage(imageUrl2);
@@ -151,7 +151,7 @@ public class MyController {
 		dto3.setCategoryName(ProductCategoryEnum.Fashion);
 		dto3.setDescription("Fashon");
 		dto3.setStatus(StatusEnum.ACTIVE);
-		String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/category/").path("fashion.png")
+		String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("fashion.png")
 				.toUriString();
 
 		dto3.setImage(imageUrl3);
@@ -162,7 +162,7 @@ public class MyController {
 		dto4.setCategoryName(ProductCategoryEnum.RonyRocket);
 		dto4.setDescription("Delivery partner");
 		dto4.setStatus(StatusEnum.ACTIVE);
-		String imageUrl4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/category/").path("rr.png")
+		String imageUrl4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("ronyrocket.png")
 				.toUriString();
 
 		dto4.setImage(imageUrl4);
@@ -170,10 +170,10 @@ public class MyController {
 		
 		ProductCategoryDTO dto5 = new ProductCategoryDTO();
 		dto5.setId(5l);
-		dto5.setCategoryName(ProductCategoryEnum.RonyRocket);
+		dto5.setCategoryName(ProductCategoryEnum.Electronics);
 		dto5.setDescription("Delivery partner");
 		dto5.setStatus(StatusEnum.ACTIVE);
-		String imageUrl5 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/category/").path("electronics.png")
+		String imageUrl5 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("electronics.png")
 				.toUriString();
 
 		dto5.setImage(imageUrl5);
@@ -226,7 +226,7 @@ public class MyController {
 				//String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/"+category+"/")
 				//		.path(resource.getFilename()).toUriString();
 				
-				String imageUrl = accessUrl+category+"/"+resource.getFilename();
+				String imageUrl = accessUrl+category.toLowerCase()+"/"+resource.getFilename();
 
 				product.setImage(imageUrl);
 				product.setCategory(category);
@@ -245,11 +245,12 @@ public class MyController {
 	}
 	
 	@GetMapping({
-	    "/api/product/images/Grocery/{filename:.+}",
-	    "/api/product/images/Vegetables/{filename:.+}",
-	    "/api/product/images/Fashion/{filename:.+}",
-	    "/api/product/images/Electronics/{filename:.+}",
-	    "/api/product/images/RonyRocket/{filename:.+}"
+	    "/api/product/images/grocery/{filename:.+}",
+	    "/api/product/images/vegetables/{filename:.+}",
+	    "/api/product/images/fashion/{filename:.+}",
+	    "/api/product/images/electronics/{filename:.+}",
+	    "/api/product/images/ronyrocket/{filename:.+}",
+	    "/api/product/images/category/{filename:.+}"
 	})
 	public ResponseEntity<Resource> getImage(HttpServletRequest request, @PathVariable String filename)
 			throws MalformedURLException {
@@ -261,16 +262,18 @@ public class MyController {
 	private Resource loadImages(HttpServletRequest request, String filename) throws MalformedURLException {
 		String requestURI = request.getRequestURI();
 		String newUploadDir = uploadDir;
-		if (requestURI.contains("images/Grocery")) {
+		if (requestURI.contains("images/grocery")) {
 			newUploadDir = uploadDir + "grocery/";
-		}else if (requestURI.contains("images/Vegetables")) {
+		}else if (requestURI.contains("images/vegetables")) {
 			newUploadDir = uploadDir + "vegetables/";
-		}else if (requestURI.contains("images/Fashion")) {
+		}else if (requestURI.contains("images/fashion")) {
 			newUploadDir = uploadDir + "fashion/";
-		}else if (requestURI.contains("images/Electronics")) {
+		}else if (requestURI.contains("images/electronics")) {
 			newUploadDir = uploadDir + "electronics/";
-		}else if (requestURI.contains("images/RonyRocket")) {
+		}else if (requestURI.contains("images/ronyrocket")) {
 			newUploadDir = uploadDir + "ronyrocket/";
+		}else if (requestURI.contains("images/category")) {
+			newUploadDir = uploadDir + "category/";
 		}
 
 		Path imagePath = Paths.get(newUploadDir).resolve(filename);
