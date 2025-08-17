@@ -191,31 +191,31 @@ public class MyController {
 
 	public List<ProductDTO> getAllOtherProducts(Long userProfileId) throws IOException {
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		Resource[] resources = resolver.getResources("classpath:static/grocery/*.*");
+		//Resource[] resources = resolver.getResources("classpath:static/grocery/*.*");
 		List<ProductDTO> products = new ArrayList();
 		Long id = 100000l;
-		populateDefaultProduct(userProfileId, resources, products, id,ProductCategoryEnum.Grocery.name());
+		populateDefaultProduct(userProfileId, products, id,ProductCategoryEnum.Grocery.name());
 		
-		resources = resolver.getResources("classpath:static/vegetables/*.*");
+		//resources = resolver.getResources("classpath:static/vegetables/*.*");
 		id = 200000l;
-		populateDefaultProduct(userProfileId, resources, products, id,ProductCategoryEnum.Vegetables.name());
+		populateDefaultProduct(userProfileId, products, id,ProductCategoryEnum.Vegetables.name());
 		
-		resources = resolver.getResources("classpath:static/fashion/*.*");
+		//resources = resolver.getResources("classpath:static/fashion/*.*");
 		id = 300000l;
-		populateDefaultProduct(userProfileId, resources, products, id,ProductCategoryEnum.Fashion.name());
+		populateDefaultProduct(userProfileId, products, id,ProductCategoryEnum.Fashion.name());
 		
-		resources = resolver.getResources("classpath:static/ronyrocket/*.*");
+		//resources = resolver.getResources("classpath:static/ronyrocket/*.*");
 		id = 400000l;
-		populateDefaultProduct(userProfileId, resources, products, id,ProductCategoryEnum.RonyRocket.name());
+		populateDefaultProduct(userProfileId, products, id,ProductCategoryEnum.RonyRocket.name());
 		
-		resources = resolver.getResources("classpath:static/electronics/*.*");
+		//resources = resolver.getResources("classpath:static/electronics/*.*");
 		id = 500000l;
-		populateDefaultProduct(userProfileId, resources, products, id,ProductCategoryEnum.Electronics.name());
+		populateDefaultProduct(userProfileId, products, id,ProductCategoryEnum.Electronics.name());
 
 		return products;
 	}
 
-	private void populateDefaultProduct(Long userProfileId, Resource[] resources, List<ProductDTO> products, Long id, String category) {
+	private void populateDefaultProduct(Long userProfileId, List<ProductDTO> products, Long id, String category) {
 		
 		File folder = new File(uploadDir + category.toLowerCase() + "/");
 		
