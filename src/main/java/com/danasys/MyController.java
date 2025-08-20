@@ -25,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.danasys.dto.BusinessProfileDetailsDTO;
 import com.danasys.dto.LoginMobileRequest;
 import com.danasys.dto.LoginRequest;
+import com.danasys.dto.LoginTheemDTO;
 import com.danasys.dto.ProductCategoryDTO;
 import com.danasys.dto.ProductCategoryEnum;
 import com.danasys.dto.ProductCategorySADetailsDTO;
@@ -130,6 +131,24 @@ public class MyController {
 		List<ProductDTO> prodicts = getAllOtherProducts(1l);
 
 		return prodicts;
+
+	}
+	
+	@GetMapping("/api/user/loginTheem")
+	@Operation(summary = "Login theem", description = "Login theem APIr")
+	public LoginTheemDTO loginTheem() throws IOException {
+
+		LoginTheemDTO theem = new LoginTheemDTO();
+		String backGroundImage = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("background.jpg")
+				.toUriString();
+		
+		String compenyLogo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("logo.png")
+				.toUriString();
+		
+		theem.setBackGroundImageURL(backGroundImage);
+		theem.setCompenyLogo(compenyLogo);
+
+		return theem;
 
 	}
 
