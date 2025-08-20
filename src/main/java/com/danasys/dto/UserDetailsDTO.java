@@ -24,6 +24,10 @@ public class UserDetailsDTO {
 	private String greetingOfTheDay;
 	
 	private List<String> dealOfTheDayImages;
+	
+	private Long serviceAreaId;
+	
+	private String userWalletImage;
 
 
 }

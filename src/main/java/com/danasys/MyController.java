@@ -87,6 +87,7 @@ public class MyController {
 		userDetailsDTO.setEmail("dana@dana.com");
 		userDetailsDTO.setFullname("Sri Ram");
 		userDetailsDTO.setStatus(StatusEnum.ACTIVE);
+		userDetailsDTO.setServiceAreaId(5l);
 		userDetailsDTO.setAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
 
 		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.jpg")
@@ -114,6 +115,10 @@ public class MyController {
 		
 		userDetailsDTO.setGreetingOfTheDay(greeting);
 		
+		String wallet = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("wallet.png")
+				.toUriString();
+		
+		userDetailsDTO.setUserWalletImage(wallet);
 		return userDetailsDTO;
 	}
 
