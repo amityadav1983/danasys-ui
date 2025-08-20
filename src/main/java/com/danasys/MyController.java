@@ -21,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.danasys.dto.BusinessProfileDetailsDTO;
 import com.danasys.dto.LoginMobileRequest;
 import com.danasys.dto.LoginRequest;
 import com.danasys.dto.ProductCategoryDTO;
 import com.danasys.dto.ProductCategoryEnum;
+import com.danasys.dto.ProductCategorySADetailsDTO;
 import com.danasys.dto.ProductDTO;
 import com.danasys.dto.StatusEnum;
 import com.danasys.dto.UserDTO;
@@ -124,8 +127,8 @@ public class MyController {
 
 	}
 
-	@GetMapping("/api/product/productCategoryList")
-	@Operation(summary = "Product category list", description = "All listed product category")
+	//@GetMapping("/api/product/productCategoryList")
+	//@Operation(summary = "Product category list", description = "All listed product category")
 	public List<ProductCategoryDTO> productCategoryList() throws IOException {
 
 		List<ProductCategoryDTO> list = new ArrayList<>();
@@ -191,6 +194,96 @@ public class MyController {
 		list.add(dto5);
 
 		return list;
+	}
+	
+	@GetMapping("/api/user/productCategoryList/{serviceArea}")
+	@Operation(summary = "Product category list", description = "All listed product category")
+	public List<ProductCategorySADetailsDTO> findAllCategoryByServiceArea(@PathVariable Long serviceArea){
+		List<ProductCategorySADetailsDTO> productCategoryDTOList = new ArrayList<>();
+		
+		ProductCategorySADetailsDTO cat1 = new ProductCategorySADetailsDTO();
+		cat1.setId(1l);
+		cat1.setCategoryName(ProductCategoryEnum.Grocery);
+		String imageUrl1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("grocery.png")
+				.toUriString();
+		cat1.setImage(imageUrl1);
+		cat1.setTheemColorCode("#228B22");
+		
+		BusinessProfileDetailsDTO b1 = new BusinessProfileDetailsDTO();
+		b1.setId(1l);
+		b1.setBusinessLogoPath(imageUrl1);
+		b1.setStoreName("Gupta Ji General Store");
+		
+		BusinessProfileDetailsDTO b2 = new BusinessProfileDetailsDTO();
+		b2.setId(2l);
+		b2.setBusinessLogoPath(imageUrl1);
+		b2.setStoreName("Bansal Ji General Store");
+		
+		List<BusinessProfileDetailsDTO> bList = new ArrayList<>();
+		bList.add(b2);
+		bList.add(b1);
+		cat1.setLinkedBusinessProfile(bList);
+		
+		//CAT 2
+		ProductCategorySADetailsDTO cat2 = new ProductCategorySADetailsDTO();
+		cat2.setId(2l);
+		cat2.setCategoryName(ProductCategoryEnum.Vegetables);
+		String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("vegetable.png")
+				.toUriString();
+		cat2.setImage(imageUrl2);
+		cat2.setTheemColorCode("#228B22");
+		
+		BusinessProfileDetailsDTO b3 = new BusinessProfileDetailsDTO();
+		b3.setId(3l);
+		b3.setBusinessLogoPath(imageUrl2);
+		b3.setStoreName("Ramu vegetable Store");
+		List<BusinessProfileDetailsDTO> bList2 = new ArrayList<>();
+		bList2.add(b3);
+		cat2.setLinkedBusinessProfile(bList2);
+		
+		
+		//CAT 3
+				ProductCategorySADetailsDTO cat3 = new ProductCategorySADetailsDTO();
+				cat3.setId(3l);
+				cat3.setCategoryName(ProductCategoryEnum.Fashion);
+				String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("fashion.png")
+						.toUriString();
+				cat3.setImage(imageUrl3);
+				cat3.setTheemColorCode("#228B22");
+				
+				BusinessProfileDetailsDTO b4 = new BusinessProfileDetailsDTO();
+				b4.setId(4l);
+				b4.setBusinessLogoPath(imageUrl3);
+				b4.setStoreName("Ramu vegetable Store");
+				List<BusinessProfileDetailsDTO> bList3 = new ArrayList<>();
+				bList3.add(b4);
+				cat3.setLinkedBusinessProfile(bList3);
+		
+				//CAT 4
+				ProductCategorySADetailsDTO cat4 = new ProductCategorySADetailsDTO();
+				cat4.setId(4l);
+				cat4.setCategoryName(ProductCategoryEnum.Electronics);
+				String imageUrl4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("electronics.png")
+						.toUriString();
+				cat4.setImage(imageUrl4);
+				cat4.setTheemColorCode("#228B22");
+				
+				//CAT 5
+				ProductCategorySADetailsDTO cat5 = new ProductCategorySADetailsDTO();
+				cat5.setId(5l);
+				cat5.setCategoryName(ProductCategoryEnum.RonyRocket);
+				String imageUrl5 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("ronyrocket.png")
+						.toUriString();
+				cat5.setImage(imageUrl5);
+				cat5.setTheemColorCode("#228B22");
+
+				productCategoryDTOList.add(cat1);
+				productCategoryDTOList.add(cat2);
+				productCategoryDTOList.add(cat3);
+				productCategoryDTOList.add(cat4);
+				productCategoryDTOList.add(cat5);
+				
+		return productCategoryDTOList;
 	}
 
 	public List<ProductDTO> getAllOtherProducts(Long userProfileId) throws IOException {
