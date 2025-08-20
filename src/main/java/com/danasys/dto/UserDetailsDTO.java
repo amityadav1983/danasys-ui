@@ -19,7 +19,9 @@ public class UserDetailsDTO {
 
 	private StatusEnum status;
 	
-	private String address;
+	private String houseNo;
+	
+	private String fullAddress;
 	
 	private String greetingOfTheDay;
 	
