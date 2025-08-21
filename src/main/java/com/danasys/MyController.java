@@ -31,7 +31,7 @@ import com.danasys.dto.ProductCategoryEnum;
 import com.danasys.dto.ProductCategorySADetailsDTO;
 import com.danasys.dto.ProductDTO;
 import com.danasys.dto.StatusEnum;
-import com.danasys.dto.UserDTO;
+import com.danasys.dto.RegisterUserRequest;
 import com.danasys.dto.UserDetailsDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,12 +65,12 @@ public class MyController {
 	}
 
 	@PostMapping("/public/registerUser")
-	public ResponseEntity<?> registerUser(@RequestBody UserDTO userDto) {
+	public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequest userDto) {
 		return ResponseEntity.ok("User registered successfully");
 	}
 
 	@PostMapping("/public/registerUser/sendEmailOTP")
-	public ResponseEntity<?> sendOTP(@RequestBody UserDTO userDto) {
+	public ResponseEntity<?> sendOTP(@RequestBody RegisterUserRequest userDto) {
 		return ResponseEntity.ok("OTP Send to email id");
 	}
 	
