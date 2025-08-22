@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -17,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,6 +37,13 @@ import com.danasys.dto.ProductDTO;
 import com.danasys.dto.StatusEnum;
 import com.danasys.dto.RegisterUserRequest;
 import com.danasys.dto.UserDetailsDTO;
+import com.danasys.user.request.ResetPasswordRequest;
+import com.danasys.user.request.UserBusinessProfilesRequest;
+import com.danasys.user.request.UserPasswordRequest;
+import com.danasys.user.request.UserProfileUpdateRequest;
+import com.danasys.user.request.UserServiceAreaRequest;
+import com.danasys.user.response.UserAddresses;
+import com.danasys.user.response.UserServiceArea;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -63,17 +74,129 @@ public class MyController {
 		return ResponseEntity.ok().body("Login successful");
 
 	}
-
+	//User Registration API - start
 	@PostMapping("/public/registerUser")
 	public ResponseEntity<?> registerUser(@RequestBody RegisterUserRequest userDto) {
-		return ResponseEntity.ok("User registered successfully");
+		return ResponseEntity.ok("User Registered and select your service Area and Update your profile. Please check your email for your ReferalCode.");
+	}
+	@PostMapping("/public/forgotPassword")
+	@Operation(summary = "forgot password", description = "forgot password for user.")
+	public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+		return ResponseEntity.ok("Reset link sent to your email : " + email + ". Please check your inbox.");
 	}
 
-	@PostMapping("/public/registerUser/sendEmailOTP")
-	public ResponseEntity<?> sendOTP(@RequestBody RegisterUserRequest userDto) {
-		return ResponseEntity.ok("OTP Send to email id");
+	@PostMapping("/public/resetPassword")
+	@Operation(summary = "Reset the user password", description = "Reset the user password using a token.")
+	public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest req) {
+		return ResponseEntity.ok("Password reset with status: SUCCESS");
 	}
+
+		
+	@PostMapping("/public/sendEmailOTP")
+	@Operation(summary = "send OTP to email for registration", description = "OTP sent to email for registration.")
+	public ResponseEntity<?> sendEmailOTP(@RequestParam String email) {
+		return ResponseEntity.ok("OTP Send to your email id. Please check your inbox for registration.");
+	}
+
+
+	/*
+	 * @PostMapping("/public/registerUser/sendEmailOTP") public ResponseEntity<?>
+	 * sendOTP(@RequestBody RegisterUserRequest userDto) { return
+	 * ResponseEntity.ok("OTP Send to email id"); }
+	 */
+	//User Registration API - start
 	
+	// user Info API start --
+	@PostMapping("/api/user/linkServiceArea")
+	@Operation(summary = "Request to link new service area", description = "API to request to link service area")
+	public ResponseEntity<?> linkServiceArea(@RequestBody UserServiceAreaRequest userServiceAreaRequest,
+			Principal principal) throws IOException {
+		return ResponseEntity.ok("Service area added successfully to user.");
+	}
+
+	@GetMapping("/api/user/serviceAreaList")
+	@Operation(summary = "load all service area Areas", description = "load all service area Areas.")
+	public  ResponseEntity<?>serviceAreaList(Authentication authentication) throws IOException {
+		List<UserServiceArea> userServiceAreaList = new ArrayList<>();
+		
+			UserServiceArea userServiceAreaItem1 = new UserServiceArea();
+			userServiceAreaItem1.setId(1l);
+			userServiceAreaItem1.setFullAddress("Paramount Golfforeste, UPSIDC");
+			userServiceAreaItem1.setDistrict("Greater Noida");
+			userServiceAreaItem1.setState("UP");
+			userServiceAreaItem1.setPinCode(201309);
+			userServiceAreaItem1.setStatus(StatusEnum.ACTIVE);
+			
+		
+		
+			UserServiceArea userServiceAreaItem2 = new UserServiceArea();
+			userServiceAreaItem2.setId(2l);
+			userServiceAreaItem2.setFullAddress("Panchsheel Greens 2");
+			userServiceAreaItem2.setDistrict("Sector 16B");
+			userServiceAreaItem2.setState("Greater Noida");
+			userServiceAreaItem2.setPinCode(201306);
+			userServiceAreaItem2.setStatus(StatusEnum.ACTIVE);
+			
+			UserServiceArea userServiceAreaItem3 = new UserServiceArea();
+			userServiceAreaItem3.setId(2l);
+			userServiceAreaItem3.setFullAddress("Dummy Service area");
+			userServiceAreaItem3.setDistrict("Sector 16B");
+			userServiceAreaItem3.setState("Greater Noida");
+			userServiceAreaItem3.setPinCode(201306);
+			userServiceAreaItem3.setStatus(StatusEnum.ACTIVE);
+			
+			userServiceAreaList.add(userServiceAreaItem1);
+			userServiceAreaList.add(userServiceAreaItem2);
+			userServiceAreaList.add(userServiceAreaItem3);
+		
+		return  ResponseEntity.ok(userServiceAreaList);
+
+	} 
+	
+	@GetMapping("/api/user/loadUserAddresses")
+	@Operation(summary = "load all user addresses", description = "load all user addresses.")
+	public ResponseEntity<?> loadUserAddressList(Principal principal) throws IOException {
+		List<UserAddresses> userAddressList = new ArrayList();
+		UserAddresses address1 = new UserAddresses();
+		address1.setId(11l);
+		address1.setAddress("E2 702, Paramount Golfforeste, UPSIDC, Greater Noida, UP - 201309");
+		address1.setDefault(true);
+		userAddressList.add(address1);
+		return ResponseEntity.ok(userAddressList);
+
+	}
+
+	
+	@PutMapping("/api/user/updateUserAddresses/{id}")
+	@Operation(summary = "Set selected address as user deafult address", description = "Set selected address as user deafult address.")
+	public ResponseEntity<?> updateUserAddresses(@PathVariable Long id, Principal principal)
+			throws IOException {
+		return ResponseEntity.ok("User address status updated as default.");
+	}
+
+	@PostMapping(value = "/api/user/updateUserPassword")
+	@Operation(summary = "Change user password", description = "Change user password.")
+	public ResponseEntity<?> updateUserPassword(@RequestBody UserPasswordRequest userPasswordRequest,
+			Principal principal) {
+			return ResponseEntity.ok("SUCCESS: Password changed successfully");
+	}
+
+
+	@PostMapping(value = "/updateUserProfile")
+	@Operation(summary = "update user profile", description = "Update user prfofile.")
+	public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest,
+			Principal principal) {
+		return ResponseEntity.ok("SUCCESS: User profile updated and service area is valid");
+	}
+
+	@PostMapping(value = "/createUserBusinessProfile")
+	@Operation(summary = "Create or Update user Business profile", description = "Create or Update user Business profile.")
+	public ResponseEntity<?> createUpdateUserBusinessProfile(
+			@RequestBody UserBusinessProfilesRequest userBusinessProfileCreateUpdateRequest) {
+		return ResponseEntity.ok("SUCCESS:User Business profile updated: 0, created: 1 sucessfully for user: testuser.test@gmail.com");
+
+	}
+	//user Info API end --
 	@PostMapping("/public/registerUser/sendMobileOTP")
 	public ResponseEntity<?> sendOTP(@RequestBody LoginMobileRequest loginRequest) {
 		return ResponseEntity.ok("OTP Send to email id");
