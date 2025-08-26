@@ -8,13 +8,11 @@ import com.danasys.dto.ProductCategoryDTO;
 import lombok.Data;
 
 @Data
-public class BusinessProfileRequest {
+public class UpdateBusinessProfileRequest {
 	private Long id;
 	private String ownerName;
 	
 	private String storeName;
-
-	private ProductCategoryDTO category;
 
 	private UserBusinessAddressRequest businessAddresses;
 }

@@ -37,7 +37,9 @@ import com.danasys.dto.ProductDTO;
 import com.danasys.dto.StatusEnum;
 import com.danasys.dto.RegisterUserRequest;
 import com.danasys.dto.UserDetailsDTO;
+import com.danasys.user.request.BusinessProfileRequest;
 import com.danasys.user.request.ResetPasswordRequest;
+import com.danasys.user.request.UpdateBusinessProfileRequest;
 import com.danasys.user.request.UserBusinessProfilesRequest;
 import com.danasys.user.request.UserPasswordRequest;
 import com.danasys.user.request.UserProfileUpdateRequest;
@@ -98,7 +100,10 @@ public class MyController {
 		return ResponseEntity.ok("OTP Send to your email id. Please check your inbox for registration.");
 	}
 
-
+	@PostMapping("/public/sendMobileOTP")
+	public ResponseEntity<?> sendOTP(@RequestParam String mobileNumber) {
+		return ResponseEntity.ok("OTP Send to phone number : " + mobileNumber + ". Please check your messages.");
+	}
 	/*
 	 * @PostMapping("/public/registerUser/sendEmailOTP") public ResponseEntity<?>
 	 * sendOTP(@RequestBody RegisterUserRequest userDto) { return
@@ -190,17 +195,19 @@ public class MyController {
 	}
 
 	@PostMapping(value = "/createUserBusinessProfile")
-	@Operation(summary = "Create or Update user Business profile", description = "Create or Update user Business profile.")
-	public ResponseEntity<?> createUpdateUserBusinessProfile(
-			@RequestBody UserBusinessProfilesRequest userBusinessProfileCreateUpdateRequest) {
-		return ResponseEntity.ok("SUCCESS:User Business profile updated: 0, created: 1 sucessfully for user: testuser.test@gmail.com");
+	@Operation(summary = "Create user Business profile", description = "Create user Business profile.")
+	public ResponseEntity<?> createUserBusinessProfile(@RequestBody BusinessProfileRequest createBusinessProfileRequest,Principal principal) {
+		return ResponseEntity.ok("SUCCESS: Business profile created sucessfully for user: Test User");
 
 	}
-	//user Info API end --
-	@PostMapping("/public/registerUser/sendMobileOTP")
-	public ResponseEntity<?> sendOTP(@RequestBody LoginMobileRequest loginRequest) {
-		return ResponseEntity.ok("OTP Send to email id");
+	@PostMapping(value = "/updateUserBusinessProfile")
+	@Operation(summary = "Update user Business profile", description = "Update user Business profile.")
+	public ResponseEntity<?> updateUserBusinessProfile(
+			@RequestBody UpdateBusinessProfileRequest updateBusinessProfileRequest, Principal principal) {
+		return ResponseEntity.ok("SUCCESS: Business profile updated sucessfully for user: Test User");
 	}
+	//user Info API end --
+	
 
 	@GetMapping("/api/user/getUserDetails")
 	@Operation(summary = "Get user details", description = "API for get user details")
