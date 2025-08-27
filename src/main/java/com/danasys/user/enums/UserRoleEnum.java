@@ -1,0 +1,6 @@
+package com.danasys.user.enums;
+
+public enum UserRoleEnum {
+
+	ROLE_SUPERADMIN,ROLE_SUPERADMIN_MGR,ROLE_BUSINESS_USER, ROLE_BUSINESS_USER_MGR,ROLE_USER,ROLE_SHAREHOLDER
+}
