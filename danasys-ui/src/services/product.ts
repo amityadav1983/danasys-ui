@@ -1,24 +1,33 @@
 import api from './api';
 
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   description: string;
   price: number;
-  discountedPrice?: number;
-  images: string[];
+  offerPrice: number;
   category: string;
-  brand: string;
-  inStock: boolean;
-  rating?: number;
-  reviews?: number;
+  quantity: number;
+  image: string;
+  moreAbout: string;
+  businessUserProfileId: number;
+  status: string | null;
+  version: number;
+}
+
+export interface BusinessProfile {
+  id: number;
+  storeName: string;
+  businessLogoPath: string;
 }
 
 export interface ProductCategory {
-  id: string;
-  name: string;
+  id: number;
+  categoryName: string;
   image?: string;
   productCount: number;
+  themeColorCode?: string;
+  linkedBusinessProfile: BusinessProfile[];
 }
 
 export const productService = {
@@ -38,9 +47,27 @@ export const productService = {
     return response.data;
   },
 
-  // Get product categories
-  getCategories: async (): Promise<ProductCategory[]> => {
-    const response = await api.get('/api/product/productCategoryList');
+  // Get product categories with serviceAreaId
+  getCategories: async (serviceAreaId: number): Promise<ProductCategory[]> => {
+    const response = await api.get(`/api/user/productCategoryList/${serviceAreaId}`);
+    return response.data;
+  },
+
+  // Get products by business profile
+  getProductsByBusinessProfile: async (businessUserProfileId: number, params?: {
+    category?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    products: Product[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> => {
+    const response = await api.get('/api/product/productList', { 
+      params: { ...params, businessUserProfileId }
+    });
     return response.data;
   },
 

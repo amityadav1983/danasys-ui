@@ -19,16 +19,16 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-    console.log('🔍 LoginGuard: Checking authentication status...');
+    // console.log('🔍 LoginGuard: Checking authentication status...');
     const checkAuthStatus = () => {
       const loginStatus = localStorage.getItem('userLoggedIn');
-      console.log('🔍 LoginGuard: localStorage loginStatus =', loginStatus);
+      // console.log('🔍 LoginGuard: localStorage loginStatus =', loginStatus);
       
       if (loginStatus === 'true') {
-        console.log('🔍 LoginGuard: User is logged in, fetching details...');
+        // console.log('🔍 LoginGuard: User is logged in, fetching details...');
         fetchUserDetails();
       } else {
-        console.log('🔍 LoginGuard: User is not logged in, showing login form');
+        // console.log('🔍 LoginGuard: User is not logged in, showing login form');
         setIsLoggedIn(false);
         setLoading(false);
         setShowLogin(true);
@@ -40,7 +40,7 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
 
   const fetchUserDetails = async () => {
     try {
-      console.log('🔍 LoginGuard: Making API call to /api/user/getUserDetails...');
+      // console.log('🔍 LoginGuard: Making API call to /api/user/getUserDetails...');
       const response = await fetch('/api/user/getUserDetails');
       
       if (response.ok) {
@@ -52,7 +52,7 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
           data = await response.text();
         }
         
-        console.log('🔍 LoginGuard: User details fetched successfully:', data);
+        // console.log('🔍 LoginGuard: User details fetched successfully:', data);
         setUserData(data);
         setIsLoggedIn(true);
         setShowLogin(false);
@@ -60,7 +60,7 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
         throw new Error('Failed to fetch user details');
       }
     } catch (error) {
-      console.error('❌ LoginGuard: Error fetching user details:', error);
+      // console.error('❌ LoginGuard: Error fetching user details:', error);
       setIsLoggedIn(false);
       setShowLogin(true);
     } finally {
@@ -69,7 +69,7 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
   };
 
   const handleLogin = async (credentials: any) => {
-    console.log('🔍 LoginGuard: Login attempt with credentials:', credentials);
+    // console.log('🔍 LoginGuard: Login attempt with credentials:', credentials);
     
     try {
       let response;
@@ -99,7 +99,7 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
           responseData = await response.text();
         }
         
-        console.log('🔍 LoginGuard: Login successful!');
+        // console.log('🔍 LoginGuard: Login successful!');
         localStorage.setItem('userLoggedIn', 'true');
         
         // Fetch user details and show home page
@@ -109,13 +109,13 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
         throw new Error(`Login failed: ${response.status} - ${errorData}`);
       }
     } catch (error) {
-      console.error('❌ LoginGuard: Login error:', error);
+      // console.error('❌ LoginGuard: Login error:', error);
       alert(`Login failed: ${error instanceof Error ? error.message : 'Please try again.'}`);
     }
   };
 
   const handleLogout = () => {
-    console.log('🔍 LoginGuard: Logout called');
+    // console.log('🔍 LoginGuard: Logout called');
     localStorage.removeItem('userLoggedIn');
     setIsLoggedIn(false);
     setUserData(null);

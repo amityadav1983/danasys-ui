@@ -263,16 +263,16 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
             Email
           </div>
           <Input
-            type="email"
-            placeholder=""
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onFocus={() => setEmailFocused(true)}
-            onBlur={() => setEmailFocused(false)}
-            className="bg-transparent border-0 rounded-xl px-4 py-3 pt-4 pr-20 focus:ring-0 focus:outline-none"
-            required
-            disabled={isLoading || isVerifyingEmail}
-          />
+  type="email"
+  placeholder=""
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  onFocus={() => setEmailFocused(true)}
+  onBlur={() => setEmailFocused(false)}
+  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4 pr-20"
+  required
+  disabled={isLoading || isVerifyingEmail}
+/>
           <button
             onClick={handleEmailVerify}
             disabled={!email.trim() || isVerifyingEmail || isLoading}
@@ -317,16 +317,16 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
               OTP
             </div>
             <Input
-              type="text"
-              placeholder=""
-              value={otp}
-              onChange={(e) => handleOtpChange(e.target.value)}
-              onFocus={() => setOtpFocused(true)}
-              onBlur={() => setOtpFocused(false)}
-              className="bg-transparent border-0 rounded-xl px-4 py-3 pt-4 focus:ring-0 focus:outline-none"
-              maxLength={6}
-              disabled={isLoading}
-            />
+  type="text"
+  placeholder=""
+  value={otp}
+  onChange={(e) => handleOtpChange(e.target.value)}
+  onFocus={() => setOtpFocused(true)}
+  onBlur={() => setOtpFocused(false)}
+  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
+  maxLength={6}
+  disabled={isLoading}
+/>
           </div>
         </div>
       )}
@@ -357,16 +357,16 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
             Password
           </div>
           <Input
-            type="password"
-            placeholder=""
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onFocus={() => setPasswordFocused(true)}
-            onBlur={() => setPasswordFocused(false)}
-            className="bg-transparent border-0 rounded-xl px-4 py-3 pt-4 focus:ring-0 focus:outline-none"
-            required
-            disabled={isLoading || !isEmailVerified}
-          />
+  type="password"
+  placeholder=""
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  onFocus={() => setPasswordFocused(true)}
+  onBlur={() => setPasswordFocused(false)}
+  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
+  required
+  disabled={isLoading || !isEmailVerified}
+/>
         </div>
       </div>
 
@@ -396,16 +396,16 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
             Full Name
           </div>
           <Input
-            type="text"
-            placeholder=""
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            onFocus={() => setFullNameFocused(true)}
-            onBlur={() => setFullNameFocused(false)}
-            className="bg-transparent border-0 rounded-xl px-4 py-3 pt-4 focus:ring-0 focus:outline-none"
-            required
-            disabled={isLoading || !isEmailVerified}
-          />
+  type="text"
+  placeholder=""
+  value={fullName}
+  onChange={(e) => setFullName(e.target.value)}
+  onFocus={() => setFullNameFocused(true)}
+  onBlur={() => setFullNameFocused(false)}
+  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
+  required
+  disabled={isLoading || !isEmailVerified}
+/>
         </div>
       </div>
 
@@ -435,15 +435,15 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
             Contact Info (optional)
           </div>
           <Input
-            type="text"
-            placeholder=""
-            value={contactInfo}
-            onChange={(e) => setContactInfo(e.target.value)}
-            onFocus={() => setContactInfoFocused(true)}
-            onBlur={() => setContactInfoFocused(false)}
-            className="bg-transparent border-0 rounded-xl px-4 py-3 pt-4 focus:ring-0 focus:outline-none"
-            disabled={isLoading || !isEmailVerified}
-          />
+  type="text"
+  placeholder=""
+  value={contactInfo}
+  onChange={(e) => setContactInfo(e.target.value)}
+  onFocus={() => setContactInfoFocused(true)}
+  onBlur={() => setContactInfoFocused(false)}
+  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
+  disabled={isLoading || !isEmailVerified}
+/>
         </div>
       </div>
 
@@ -487,16 +487,16 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
             Captcha
           </div>
           <Input
-            type="text"
-            placeholder=""
-            value={captchaInput}
-            onChange={(e) => handleCaptchaChange(e.target.value)}
-            onFocus={() => setCaptchaFocused(true)}
-            onBlur={() => setCaptchaFocused(false)}
-            className="bg-transparent border-0 rounded-xl px-4 py-3 pt-4 focus:ring-0 focus:outline-none"
-            required
-            disabled={isLoading || !isEmailVerified}
-          />
+  type="text"
+  placeholder=""
+  value={captchaInput}
+  onChange={(e) => handleCaptchaChange(e.target.value)}
+  onFocus={() => setCaptchaFocused(true)}
+  onBlur={() => setCaptchaFocused(false)}
+  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
+  required
+  disabled={isLoading || !isEmailVerified}
+/>
         </div>
       </div>
       {!isCaptchaValid && captchaInput && (

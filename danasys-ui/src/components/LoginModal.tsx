@@ -19,9 +19,9 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
   useEffect(() => {
-    console.log('🔍 LoginModal: useEffect running, isOpen =', isOpen);
+    // console.log('🔍 LoginModal: useEffect running, isOpen =', isOpen);
     if (isOpen) {
-      console.log('🔍 LoginModal: Modal is open, resetting state...');
+      // console.log('🔍 LoginModal: Modal is open, resetting state...');
       setActiveTab("login");
       setShowRegister(false);
       setShowOtpModal(false);
@@ -29,31 +29,31 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
     }
   }, [isOpen]);
 
-  console.log('🔍 LoginModal: Rendering with props:', { isOpen, onClose: !!onClose, onLogin: !!onLogin });
+  // console.log('🔍 LoginModal: Rendering with props:', { isOpen, onClose: !!onClose, onLogin: !!onLogin });
 
   if (!isOpen) {
-    console.log('🔍 LoginModal: Modal is not open, returning null');
+    // console.log('🔍 LoginModal: Modal is not open, returning null');
     return null;
   }
 
   const handleOtpVerify = (otp: string) => {
-    console.log('🔍 LoginModal: handleOtpVerify called with OTP:', otp);
+    // console.log('🔍 LoginModal: handleOtpVerify called with OTP:', otp);
     setShowOtpModal(false);
     // Don't close the main login modal - let user stay on login form
     // onClose(); // Commented out to prevent closing
   };
 
   const handlePhoneContinue = (phone: string) => {
-    console.log('🔍 LoginModal: Phone continue called with phone:', phone);
-    console.log('🔍 LoginModal: Setting phoneNumber to:', phone);
+    // console.log('🔍 LoginModal: Phone continue called with phone:', phone);
+    // console.log('🔍 LoginModal: Setting phoneNumber to:', phone);
     setPhoneNumber(phone);
-    console.log('🔍 LoginModal: Setting showOtpModal to true');
+    // console.log('🔍 LoginModal: Setting showOtpModal to true');
     setShowOtpModal(true);
-    console.log('🔍 LoginModal: showOtpModal should now be true');
+    // console.log('🔍 LoginModal: showOtpModal should now be true');
   };
 
-  console.log('🔍 LoginModal: Modal is open, rendering content...');
-  console.log('🔍 LoginModal: Current state - showOtpModal:', showOtpModal, 'phoneNumber:', phoneNumber);
+  // console.log('🔍 LoginModal: Modal is open, rendering content...');
+  // console.log('🔍 LoginModal: Current state - showOtpModal:', showOtpModal, 'phoneNumber:', phoneNumber);
 
   return (
     <>
@@ -88,19 +88,18 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
                 </button>
               </div> */}
 
-              {/* Logo */}
-              <div className="text-center flex-shrink-0 mt-8">
-                <div className="w-32 h-32  rounded-full flex items-center justify-center mx-auto shadow-2xl bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm border border-white/30">
-                  <img
-                    src={newLogo} 
-                    alt="Logo"
-                    className="w-28 h-28  object-contain drop-shadow-lg"
-                  />
-                </div>
-                <p className="text-black/90 text-sm mt-3 font-medium">
-                  Earn points, live better!
-                </p>
-              </div>
+{/* Logo */}
+<div className="text-center flex-shrink-0 mt-6">
+  <img
+    src={newLogo}
+    alt="Logo"
+    className="max-w-[200px] mx-auto object-contain mb-10 mt-5 drop-shadow-lg"
+  />
+  <p className="text-black/90 text-sm mt-3 font-medium">
+    Earn points, live better!
+  </p>
+</div>
+
 
               {/* Tabs */}
               <div className="flex justify-center gap-6 text-black font-medium border-b border-gray-200 mt-4 pb-2">

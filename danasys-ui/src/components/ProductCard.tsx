@@ -28,6 +28,7 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
 
   return (
     <div
+      id={`product-${product_id}`}   // 👈 unique id added for scroll
       className="_card h-[270px] w-[180px] relative flex cursor-pointer mb-2 mx-auto sm:mx-0"
       onClick={handleProductClick}
     >
@@ -37,7 +38,7 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
         </div>
       )}
       <div className="h-[154px] w-154px">
-        <img src={image_url} alt="" className="h-full w-full p-2" />
+        <img src={image_url} alt={name} className="h-full w-full p-2" />
       </div>
       <div className="overflow-hidden text-left flex flex-col mt-auto">
         <div className="_text-default text-[13px] font-medium leading-tight line-clamp-2 mb-0.5">

@@ -1,6 +1,5 @@
-import CartButton from './CartButton';
+import ViewCartButton from '../shared/ViewCartButton';
 import CartItemsBill from './CartItemsBill';
 import CartPanel from './CartPanel';
-import SuggestedItems from './SuggestedItems';
 
-export { CartButton, CartPanel, CartItemsBill, SuggestedItems };
+export { ViewCartButton, CartPanel, CartItemsBill };
