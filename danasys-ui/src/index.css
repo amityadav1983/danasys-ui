@@ -26,6 +26,27 @@
   --border-default-color: rgb(221, 221, 221);
   --border-muted-color: rgb(238, 238, 238);
 
+  /* New Lavender Theme Colors */
+  --lavender-light: #E7D9FB;
+  --lavender-default: #EADCFD;
+  --lavender-white: #FFFFFF;
+  --accent-purple: #8B5CF6;
+  --accent-pink: #EC4899;
+  --accent-pastel-blue: #93C5FD;
+  --neutral-gray-700: #374151;
+  --neutral-gray-500: #6B7280;
+  --neutral-gray-200: #E5E7EB;
+
+  /* Gradient Variables */
+  --header-gradient: linear-gradient(180deg, 
+    rgba(231, 217, 251, 0.8) 0%,           /* --lavender-light at 80% */
+    rgba(234, 220, 253, 0.8) 20%,          /* --lavender-default at 80% */
+    rgba(234, 220, 253, 0.6) 40%,          /* --lavender-default at 60% */
+    rgba(234, 220, 253, 0.4) 60%,          /* --lavender-default at 40% */
+    rgba(234, 220, 253, 0.2) 80%,          /* --lavender-default at 20% */
+    rgba(255, 255, 255, 0) 100%            /* Fully transparent */
+  );
+
   --nav-shadow: rgb(0 0 0 / 7%) 0px 0px 10px 0px;
   --searchbox-shadow: rgb(28 28 28 / 8%) 0px 2px 8px;
   --couponcard-shadow: rgb(28 28 28 / 15%) 0px 2px 4px;
@@ -290,4 +311,43 @@ input[type="number"] {
 .login-bg {
   background: url('../public/shopping-bg.jpg') no-repeat center center;
   background-size: cover;
+}
+
+
+@layer components {
+  .floating-search-input {
+    @apply transition-all duration-300;
+  }
+
+  .floating-search-input:focus {
+    @apply ring-2 ring-blue-500 ring-opacity-50;
+  }
+}
+
+/* Animation for search bar */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%) translateX(-50%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) translateX(-50%);
+    opacity: 1;
+  }
+}
+
+._nav {
+  transition: background-color 0.3s ease;
+}
+
+
+@keyframes highlight {
+  0% { background-color: transparent; }
+  25% { background-color: rgba(59, 130, 246, 0.1); }
+  75% { background-color: rgba(59, 130, 246, 0.1); }
+  100% { background-color: transparent; }
+}
+
+.highlight-product {
+  animation: highlight 2s ease-in-out;
 }

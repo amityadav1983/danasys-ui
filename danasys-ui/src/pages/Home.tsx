@@ -8,52 +8,93 @@ import {
   HighlightedPromo,
   ProductsRow,
 } from '../components/home';
+import { authService } from '../services/auth';
+import { productService } from '../services/product';
 
 const Home = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const location = useLocation();
+  const [categoriesData, setCategoriesData] = useState<any[]>([]);
 
   const getSelectedCategory = () => {
     const params = new URLSearchParams(location.search);
-    return params.get('category') || 'Grocery';
+    return params.get('category') || categoriesData[0]?.categoryName || 'Grocery';
   };
 
   useEffect(() => {
-    const category = getSelectedCategory();
+    const fetchProducts = async () => {
+      try {
+        const category = getSelectedCategory();
+        setLoading(true);
+        setError(null);
 
-    setLoading(true);
-    setError(null);
+        // Get user details to get serviceAreaId
+        const userDetails = await authService.getUserDetails();
+        const serviceAreaId = userDetails.serviceAreaId;
 
-    fetch(`/api/product/productList?category=${encodeURIComponent(category)}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok');
-        return res.json();
-      })
-      .then((data) => {
-        const filtered = Array.isArray(data)
-          ? data.filter((p: any) => !p.category || p.category.toLowerCase() === category.toLowerCase())
-          : [];
-        const listToMap = filtered; // strictly show only selected category
+        if (!serviceAreaId) {
+          throw new Error('Service area ID not found in user details');
+        }
 
-        const mappedProducts = listToMap.map((item: any) => ({
-          product_id: item.id,
-          name: item.name,
-          price: item.offerPrice,
-          mrp: item.price,
-          image_url: item.image,
-          unit: '',
-          discount: item.price > item.offerPrice ? ((item.price - item.offerPrice) / item.price) * 100 : 0,
-          offer: '',
-        }));
-        setProducts(mappedProducts);
+        // Get categories to find business profile for the selected category
+        const categories = await productService.getCategories(serviceAreaId);
+        setCategoriesData(categories);
+        
+        // Find the selected category and get its first business profile
+        const selectedCategoryData = categories.find(
+          cat => cat.categoryName.toLowerCase() === category.toLowerCase()
+        );
+
+        if (!selectedCategoryData || selectedCategoryData.linkedBusinessProfile.length === 0) {
+          setProducts([]);
+          setLoading(false);
+          return;
+        }
+
+        // Use the first business profile for the selected category
+        const businessProfileId = selectedCategoryData.linkedBusinessProfile[0].id;
+        
+        // Get products from API
+        const productsData = await productService.getProductsByBusinessProfile(businessProfileId, {
+          category
+        });
+        console.log('Fetched products data:', productsData);
+
+        if (Array.isArray(productsData)) {
+          // Map products
+          const mappedProducts = productsData.map((item: any) => ({
+            product_id: item.id,
+            name: item.name,
+            price: item.offerPrice,
+            mrp: item.price,
+            image_url: item.image,
+            unit: '',
+            discount: item.price > item.offerPrice ? ((item.price - item.offerPrice) / item.price) * 100 : 0,
+            offer: '',
+            category: item.category
+          }));
+
+          // Filter by selected category
+          const filteredProducts = mappedProducts.filter(
+            product => product.category.toLowerCase() === category.toLowerCase()
+          );
+
+          setProducts(filteredProducts);
+        } else {
+          throw new Error('Invalid products data structure');
+        }
+
         setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch products');
         setLoading(false);
-      });
+      }
+    };
+
+    fetchProducts();
   }, [location.search]);
 
   const selectedCategory = getSelectedCategory();
@@ -68,10 +109,15 @@ const Home = () => {
       {loading && <div>Loading products...</div>}
       {error && <div style={{ color: 'red' }}>Error: {error}</div>}
       {!loading && !error && products.length > 0 && (
-        <ProductsRow data={{ title: `${selectedCategory} Products`, show_header: true }} objects={[{ data: { products: products } }]} />
+        <ProductsRow 
+          data={{ title: `${selectedCategory} Products`, show_header: true }} 
+          objects={[{ data: { products: products || [] } }]} 
+        />
       )}
       {!loading && !error && products.length === 0 && (
-        <div className="py-8 text-center text-gray-600">No products found for {selectedCategory}.</div>
+        <div className="py-8 text-center text-gray-600">
+          No products found for {selectedCategory}.
+        </div>
       )}
     </div>
   );

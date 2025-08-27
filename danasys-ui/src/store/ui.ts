@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialState = {
-  cartPanel: false
+  cartPanel: false,
+  themeColor: '#349FDE' // default
 }
 
 const uiSlice = createSlice({
@@ -13,9 +14,12 @@ const uiSlice = createSlice({
     },
     hideCart: (state) => {
       state.cartPanel = false;
+    },
+    setThemeColor: (state, action: PayloadAction<string>) => {
+      state.themeColor = action.payload;
     }
   },
 })
 
-export default uiSlice.reducer
-export const { showCart, hideCart } = uiSlice.actions;
+export default uiSlice.reducer;
+export const { showCart, hideCart, setThemeColor } = uiSlice.actions;

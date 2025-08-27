@@ -11,9 +11,13 @@ const ItemsGrid = (props: Props) => {
 
   return (
     <div className="mb-8 w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-        {items?.map((item, i) => (
-          <div key={i} className="flex justify-center">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+        {items?.map((item) => (
+          <div
+            key={item.product_id}
+            id={`product-${item.product_id}`}
+            className="flex justify-center"
+          >
             <ProductCard data={item} />
           </div>
         ))}

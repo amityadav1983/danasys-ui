@@ -62,10 +62,10 @@ const LocationPicker = () => {
         <div className="flex flex-col">
           <p className="font-semibold text-lg leading-tight flex items-center gap-1">
             <MdLocationPin className="text-blue-500 text-3xl" />
-            {t('deliveryInMinutes', 'Delivery in 10 minutes')}
+            {t('deliveryInMinutes', 'Delivery Address')}
           </p>
           <div className="flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
-            <span className="text-sm _text-default max-w-[200px] truncate" title={location.address}>
+            <span className="text-sm _text-default max-w-[200px] ml-8 truncate" title={location.address}>
               {location.address}
             </span>
             <IoIosArrowDown 

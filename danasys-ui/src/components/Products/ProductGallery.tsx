@@ -14,14 +14,16 @@ const responsive = {
   },
   mobile: {
     breakpoint: { max: 1024, min: 0 },
-    items: 1,
+    items: 2, // ✅ mobile me ek row me 2 thumbnails
   },
 };
 
 const ProductGallery = ({ images }: { images: string[] }) => {
   const [coverIndex, setCoverIndex] = useState(0);
+
   return (
     <div className="flex flex-col mb-6 lg:mb-0 lg:border-b _border-muted">
+      {/* Large main image (only desktop) */}
       <div className="hidden lg:flex justify-center">
         <img
           src={images[coverIndex]}
@@ -29,6 +31,8 @@ const ProductGallery = ({ images }: { images: string[] }) => {
           alt=""
         />
       </div>
+
+      {/* Carousel */}
       <div className="w-screen lg:w-full">
         <div className="relative mx-10">
           <div className="lg:w-[80%] mt-2.5 mb-8 mx-auto lg:h-[76px]">
@@ -50,7 +54,7 @@ const ProductGallery = ({ images }: { images: string[] }) => {
                 {images?.map((item, i) => (
                   <div
                     key={i}
-                    className={`w-[374px] h-[374px] lg:h-[66px] lg:w-[66px] mx-auto rounded-lg cursor-pointer lg:border ${
+                    className={`h-[200px] w-[50%] lg:h-[66px] lg:w-[66px] mx-auto rounded-lg cursor-pointer lg:border ${
                       coverIndex === i ? 'border-[#0c831f]' : '_border-muted'
                     } overflow-hidden`}
                     onClick={() => setCoverIndex(i)}

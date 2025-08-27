@@ -26,6 +26,7 @@ export interface AuthResponse {
     email: string;
     fullname: string;
     contactInfo?: string;
+    serviceAreaId?: number;
   };
 }
 

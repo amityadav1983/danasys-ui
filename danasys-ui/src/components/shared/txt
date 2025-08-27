@@ -1,0 +1,15 @@
+{/* Logo */}
+          <div className="hidden sm:flex max-w-[150px] md:max-w-[178px] w-full cursor-pointer sm:hover:bg-gray-50/50 items-center justify-center ml-4 bg-transparent">
+            <Link to={'/'}>
+              <img 
+                src={newLogo} 
+                alt="Cost2Cost Logo" 
+                className="h-16 md:h-20 object-contain" 
+              />
+            </Link>
+          </div>
+
+          {/* Location Picker */}
+          <div className="w-full sm:w-[240px] xl:w-[320px] py-3 px-1 sm:p-0 _header_loc flex items-center sm:justify-center cursor-pointer sm:hover:bg-gray-50/50 bg-transparent">
+            <LocationPicker />
+          </div>
