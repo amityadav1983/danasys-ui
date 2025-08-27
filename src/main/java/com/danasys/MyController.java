@@ -222,7 +222,7 @@ public class MyController {
 		userDetailsDTO.setHouseNo("House no-102");
 		userDetailsDTO.setFullAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
 
-		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.jpg")
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.png")
 				.toUriString();
 
 		userDetailsDTO.setUserProfilePicture(imageUrl);
