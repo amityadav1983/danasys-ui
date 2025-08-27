@@ -172,9 +172,9 @@ public class MyController {
 	}
 
 	
-	@PutMapping("/api/user/updateUserAddresses/{id}")
+	@PutMapping("/api/user/setUserDefaultAddresses/{id}")
 	@Operation(summary = "Set selected address as user deafult address", description = "Set selected address as user deafult address.")
-	public ResponseEntity<?> updateUserAddresses(@PathVariable Long id, Principal principal)
+	public ResponseEntity<?> setUserDefaultAddresses(@PathVariable Long id, Principal principal)
 			throws IOException {
 		return ResponseEntity.ok("User address status updated as default.");
 	}
@@ -187,20 +187,20 @@ public class MyController {
 	}
 
 
-	@PostMapping(value = "/updateUserProfile")
+	@PostMapping(value = "/api/user/updateUserProfile")
 	@Operation(summary = "update user profile", description = "Update user prfofile.")
 	public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest,
 			Principal principal) {
 		return ResponseEntity.ok("SUCCESS: User profile updated and service area is valid");
 	}
 
-	@PostMapping(value = "/createUserBusinessProfile")
+	@PostMapping(value = "/api/user/createUserBusinessProfile")
 	@Operation(summary = "Create user Business profile", description = "Create user Business profile.")
 	public ResponseEntity<?> createUserBusinessProfile(@RequestBody BusinessProfileRequest createBusinessProfileRequest,Principal principal) {
 		return ResponseEntity.ok("SUCCESS: Business profile created sucessfully for user: Test User");
 
 	}
-	@PostMapping(value = "/updateUserBusinessProfile")
+	@PostMapping(value = "/api/user/updateUserBusinessProfile")
 	@Operation(summary = "Update user Business profile", description = "Update user Business profile.")
 	public ResponseEntity<?> updateUserBusinessProfile(
 			@RequestBody UpdateBusinessProfileRequest updateBusinessProfileRequest, Principal principal) {
