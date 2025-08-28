@@ -36,6 +36,7 @@ import com.danasys.dto.ProductCategorySADetailsDTO;
 import com.danasys.dto.ProductDTO;
 import com.danasys.dto.StatusEnum;
 import com.danasys.dto.RegisterUserRequest;
+import com.danasys.dto.ServiceAreaDetails;
 import com.danasys.dto.UserDetailsDTO;
 import com.danasys.user.request.BusinessProfileRequest;
 import com.danasys.user.request.ResetPasswordRequest;
@@ -219,7 +220,9 @@ public class MyController {
 	
 	@GetMapping("/api/user/serviceAreaList")
 	@Operation(summary = "load all service area Areas", description = "load all service area Areas.")
-	public  List<UserServiceArea> serviceAreaList(){
+	public  ServiceAreaDetails serviceAreaList(){
+		
+		ServiceAreaDetails details = new ServiceAreaDetails();
 		List<UserServiceArea> userServiceAreaList = new ArrayList<>();
 		
 			UserServiceArea userServiceAreaItem1 = new UserServiceArea();
@@ -241,7 +244,7 @@ public class MyController {
 			userServiceAreaItem2.setStatus(StatusEnum.ACTIVE);
 			
 			UserServiceArea userServiceAreaItem3 = new UserServiceArea();
-			userServiceAreaItem3.setId(2l);
+			userServiceAreaItem3.setId(3l);
 			userServiceAreaItem3.setFullAddress("Dummy Service area");
 			userServiceAreaItem3.setDistrict("Sector 16B");
 			userServiceAreaItem3.setState("Greater Noida");
@@ -251,8 +254,12 @@ public class MyController {
 			userServiceAreaList.add(userServiceAreaItem1);
 			userServiceAreaList.add(userServiceAreaItem2);
 			userServiceAreaList.add(userServiceAreaItem3);
+
 		
-		return  userServiceAreaList;
+			details.setUserServiceAreaList(userServiceAreaList);
+			
+			
+		return  details;
 
 	} 
 
