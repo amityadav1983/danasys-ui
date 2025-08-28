@@ -29,7 +29,7 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
   return (
     <div
       id={`product-${product_id}`}   // 👈 unique id added for scroll
-      className="_card h-[270px] w-[180px] relative flex cursor-pointer mb-2 mx-auto sm:mx-0"
+      className="_card  h-[200px] w-[120px] sm:h-[260px] sm:w-[200px] relative flex cursor-pointer mb-2 mx-auto sm:mx-0"  // Desktop view dimensions
       onClick={handleProductClick}
     >
       {data.offer && (
@@ -37,11 +37,11 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
           {data.offer}
         </div>
       )}
-      <div className="h-[154px] w-154px">
+      <div className="h-[100px] w-[100px] sm:h-[154px] sm:w-[154px]">  {/* Reduced image size for mobile only */}
         <img src={image_url} alt={name} className="h-full w-full p-2" />
       </div>
       <div className="overflow-hidden text-left flex flex-col mt-auto">
-        <div className="_text-default text-[13px] font-medium leading-tight line-clamp-2 mb-0.5">
+        <div className="_text-default text-[13px] font-medium leading-tight line-clamp-2 mb-0.5"> {/* Reduced font size */}
           {name}
         </div>
         <div className="text-sm _text-muted truncate mb-3">{unit}</div>
@@ -58,7 +58,7 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
               <span className="text-[14px] _text-default">₹{mrp}</span>
             </div>
           )}
-          <div className="h-9 w-[90px]">
+<div className="h-6 w-[50px] sm:h-7 sm:w-[70px]">  {/* Smaller button size for mobile view */} 
             <AddToCartButton product={cartProduct} />
           </div>
         </div>

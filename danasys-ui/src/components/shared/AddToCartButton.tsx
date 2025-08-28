@@ -38,12 +38,12 @@ const AddToCartButton = ({ product, size }: ButtonProps) => {
     <div
       className={`flex h-full w-full justify-around rounded-lg uppercase font-bold text-sm cursor-pointer ${
         size === 'lg' ? 'text-lg' : 'text-normal'
-      } bg-[#0c30fe] text-white border border-[#0c30fe]`}
+      } bg-green-600 text-white`}
     >
       <button
         onClick={remove}
         type="button"
-        className="flex items-center justify-center w-8 text-white border-r border-white"
+        className="flex items-center justify-center w-8 text-white"
       >
         <IoRemoveSharp size={18} />
       </button>
@@ -53,7 +53,7 @@ const AddToCartButton = ({ product, size }: ButtonProps) => {
       <button
         onClick={add}
         type="button"
-        className="flex items-center justify-center w-8 text-white border-l border-white"
+        className="flex items-center justify-center w-8 text-white"
       >
         <IoAddSharp size={18} />
       </button>
@@ -62,7 +62,7 @@ const AddToCartButton = ({ product, size }: ButtonProps) => {
     <button
       type="button"
       onClick={handleItemAdd}
-      className={`_add_to_cart ${size === 'lg' ? 'text-md' : 'text-sm'} text-[#0c30fe] border border-[#0c30fe] hover:bg-[#ebefff] font-semibold rounded-md px-3 py-1`}
+      className={`_add_to_cart ${size === 'lg' ? 'text-md' : 'text-sm'} bg-white text-gray-700 font-semibold rounded-md px-3 py-1 flex items-center justify-center h-full w-full`}
     >
       Add
     </button>

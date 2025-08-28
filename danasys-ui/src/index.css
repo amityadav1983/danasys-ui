@@ -63,6 +63,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* global.css ya index.css me daalo */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
+}
 /* Header is no longer fixed, so no padding needed */
 
 @layer components {
