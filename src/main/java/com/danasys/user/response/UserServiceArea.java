@@ -1,5 +1,6 @@
 package com.danasys.user.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.danasys.dto.StatusEnum;
@@ -11,7 +12,11 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class UserServiceArea {
+public class UserServiceArea implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String fullAddress;
 	private int pinCode;

@@ -119,44 +119,7 @@ public class MyController {
 		return ResponseEntity.ok("Service area added successfully to user.");
 	}
 
-	@GetMapping("/api/user/serviceAreaList")
-	@Operation(summary = "load all service area Areas", description = "load all service area Areas.")
-	public List<UserServiceArea> serviceAreaList() throws IOException {
-		List<UserServiceArea> userServiceAreaList = new ArrayList<>();
-		
-			UserServiceArea userServiceAreaItem1 = new UserServiceArea();
-			userServiceAreaItem1.setId(1l);
-			userServiceAreaItem1.setFullAddress("Paramount Golfforeste, UPSIDC");
-			userServiceAreaItem1.setDistrict("Greater Noida");
-			userServiceAreaItem1.setState("UP");
-			userServiceAreaItem1.setPinCode(201309);
-			userServiceAreaItem1.setStatus(StatusEnum.ACTIVE);
-			
-		
-		
-			UserServiceArea userServiceAreaItem2 = new UserServiceArea();
-			userServiceAreaItem2.setId(2l);
-			userServiceAreaItem2.setFullAddress("Panchsheel Greens 2");
-			userServiceAreaItem2.setDistrict("Sector 16B");
-			userServiceAreaItem2.setState("Greater Noida");
-			userServiceAreaItem2.setPinCode(201306);
-			userServiceAreaItem2.setStatus(StatusEnum.ACTIVE);
-			
-			UserServiceArea userServiceAreaItem3 = new UserServiceArea();
-			userServiceAreaItem3.setId(2l);
-			userServiceAreaItem3.setFullAddress("Dummy Service area");
-			userServiceAreaItem3.setDistrict("Sector 16B");
-			userServiceAreaItem3.setState("Greater Noida");
-			userServiceAreaItem3.setPinCode(201306);
-			userServiceAreaItem3.setStatus(StatusEnum.ACTIVE);
-			
-			userServiceAreaList.add(userServiceAreaItem1);
-			userServiceAreaList.add(userServiceAreaItem2);
-			userServiceAreaList.add(userServiceAreaItem3);
-		
-		return  userServiceAreaList;
-
-	} 
+	
 	
 	@GetMapping("/api/user/loadUserAddresses")
 	@Operation(summary = "load all user addresses", description = "load all user addresses.")
@@ -252,6 +215,44 @@ public class MyController {
 		return userDetailsDTO;
 	}
 
+	@GetMapping("/api/user/serviceAreaList")
+	public List<UserServiceArea> serviceAreaList(){
+		List<UserServiceArea> userServiceAreaList = new ArrayList<>();
+		
+			UserServiceArea userServiceAreaItem1 = new UserServiceArea();
+			userServiceAreaItem1.setId(1l);
+			userServiceAreaItem1.setFullAddress("Paramount Golfforeste, UPSIDC");
+			userServiceAreaItem1.setDistrict("Greater Noida");
+			userServiceAreaItem1.setState("UP");
+			userServiceAreaItem1.setPinCode(201309);
+			userServiceAreaItem1.setStatus(StatusEnum.ACTIVE);
+			
+		
+		
+			UserServiceArea userServiceAreaItem2 = new UserServiceArea();
+			userServiceAreaItem2.setId(2l);
+			userServiceAreaItem2.setFullAddress("Panchsheel Greens 2");
+			userServiceAreaItem2.setDistrict("Sector 16B");
+			userServiceAreaItem2.setState("Greater Noida");
+			userServiceAreaItem2.setPinCode(201306);
+			userServiceAreaItem2.setStatus(StatusEnum.ACTIVE);
+			
+			UserServiceArea userServiceAreaItem3 = new UserServiceArea();
+			userServiceAreaItem3.setId(2l);
+			userServiceAreaItem3.setFullAddress("Dummy Service area");
+			userServiceAreaItem3.setDistrict("Sector 16B");
+			userServiceAreaItem3.setState("Greater Noida");
+			userServiceAreaItem3.setPinCode(201306);
+			userServiceAreaItem3.setStatus(StatusEnum.ACTIVE);
+			
+			userServiceAreaList.add(userServiceAreaItem1);
+			userServiceAreaList.add(userServiceAreaItem2);
+			userServiceAreaList.add(userServiceAreaItem3);
+		
+		return  userServiceAreaList;
+
+	} 
+	
 	@GetMapping("/api/product/productList")
 	@Operation(summary = "Product list", description = "Provide list of product for registered user")
 	public List<ProductDTO> productList() throws IOException {
