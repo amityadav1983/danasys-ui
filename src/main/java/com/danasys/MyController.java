@@ -52,9 +52,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
 
-@CrossOrigin(origins = "http://localhost:5173")
+
 @RestController
-@RequestMapping
 @Tag(name = "Danasys API's", description = "APIs for danasys e-commerce functionality")
 public class MyController {
 	
