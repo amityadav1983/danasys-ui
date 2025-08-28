@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,8 +52,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
 
-
 @RestController
+@RequestMapping
 @Tag(name = "Danasys API's", description = "APIs for danasys e-commerce functionality")
 public class MyController {
 	
@@ -114,7 +114,8 @@ public class MyController {
 	// user Info API start --
 	@PostMapping("/api/user/linkServiceArea")
 	@Operation(summary = "Request to link new service area", description = "API to request to link service area")
-	public ResponseEntity<?> linkServiceArea(@RequestBody UserServiceAreaRequest userServiceAreaRequest) throws IOException {
+	public ResponseEntity<?> linkServiceArea(@RequestBody UserServiceAreaRequest userServiceAreaRequest,
+			Principal principal) throws IOException {
 		return ResponseEntity.ok("Service area added successfully to user.");
 	}
 
@@ -122,7 +123,7 @@ public class MyController {
 	
 	@GetMapping("/api/user/loadUserAddresses")
 	@Operation(summary = "load all user addresses", description = "load all user addresses.")
-	public ResponseEntity<?> loadUserAddressList() throws IOException {
+	public ResponseEntity<?> loadUserAddressList(Principal principal) throws IOException {
 		List<UserAddresses> userAddressList = new ArrayList();
 		UserAddresses address1 = new UserAddresses();
 		address1.setId(11l);
@@ -136,34 +137,36 @@ public class MyController {
 	
 	@PutMapping("/api/user/setUserDefaultAddresses/{id}")
 	@Operation(summary = "Set selected address as user deafult address", description = "Set selected address as user deafult address.")
-	public ResponseEntity<?> setUserDefaultAddresses(@PathVariable Long id)
+	public ResponseEntity<?> setUserDefaultAddresses(@PathVariable Long id, Principal principal)
 			throws IOException {
 		return ResponseEntity.ok("User address status updated as default.");
 	}
 
 	@PostMapping(value = "/api/user/updateUserPassword")
 	@Operation(summary = "Change user password", description = "Change user password.")
-	public ResponseEntity<?> updateUserPassword(@RequestBody UserPasswordRequest userPasswordRequest) {
+	public ResponseEntity<?> updateUserPassword(@RequestBody UserPasswordRequest userPasswordRequest,
+			Principal principal) {
 			return ResponseEntity.ok("SUCCESS: Password changed successfully");
 	}
 
 
 	@PostMapping(value = "/api/user/updateUserProfile")
 	@Operation(summary = "update user profile", description = "Update user prfofile.")
-	public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
+	public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest,
+			Principal principal) {
 		return ResponseEntity.ok("SUCCESS: User profile updated and service area is valid");
 	}
 
 	@PostMapping(value = "/api/user/createUserBusinessProfile")
 	@Operation(summary = "Create user Business profile", description = "Create user Business profile.")
-	public ResponseEntity<?> createUserBusinessProfile(@RequestBody BusinessProfileRequest createBusinessProfileRequest) {
+	public ResponseEntity<?> createUserBusinessProfile(@RequestBody BusinessProfileRequest createBusinessProfileRequest,Principal principal) {
 		return ResponseEntity.ok("SUCCESS: Business profile created sucessfully for user: Test User");
 
 	}
 	@PostMapping(value = "/api/user/updateUserBusinessProfile")
 	@Operation(summary = "Update user Business profile", description = "Update user Business profile.")
 	public ResponseEntity<?> updateUserBusinessProfile(
-			@RequestBody UpdateBusinessProfileRequest updateBusinessProfileRequest) {
+			@RequestBody UpdateBusinessProfileRequest updateBusinessProfileRequest, Principal principal) {
 		return ResponseEntity.ok("SUCCESS: Business profile updated sucessfully for user: Test User");
 	}
 	//user Info API end --
@@ -213,9 +216,10 @@ public class MyController {
 		userDetailsDTO.setUserWalletImage(wallet);
 		return userDetailsDTO;
 	}
-
+	
 	@GetMapping("/api/user/serviceAreaList")
-	public List<UserServiceArea> serviceAreaList(){
+	@Operation(summary = "load all service area Areas", description = "load all service area Areas.")
+	public  List<UserServiceArea> serviceAreaList(){
 		List<UserServiceArea> userServiceAreaList = new ArrayList<>();
 		
 			UserServiceArea userServiceAreaItem1 = new UserServiceArea();
@@ -237,7 +241,7 @@ public class MyController {
 			userServiceAreaItem2.setStatus(StatusEnum.ACTIVE);
 			
 			UserServiceArea userServiceAreaItem3 = new UserServiceArea();
-			userServiceAreaItem3.setId(3l);
+			userServiceAreaItem3.setId(2l);
 			userServiceAreaItem3.setFullAddress("Dummy Service area");
 			userServiceAreaItem3.setDistrict("Sector 16B");
 			userServiceAreaItem3.setState("Greater Noida");
@@ -251,7 +255,7 @@ public class MyController {
 		return  userServiceAreaList;
 
 	} 
-	
+
 	@GetMapping("/api/product/productList")
 	@Operation(summary = "Product list", description = "Provide list of product for registered user")
 	public List<ProductDTO> productList() throws IOException {
@@ -280,7 +284,8 @@ public class MyController {
 
 	}
 
-
+	//@GetMapping("/api/product/productCategoryList")
+	//@Operation(summary = "Product category list", description = "All listed product category")
 	public List<ProductCategoryDTO> productCategoryList() throws IOException {
 
 		List<ProductCategoryDTO> list = new ArrayList<>();
