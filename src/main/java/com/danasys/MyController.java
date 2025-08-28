@@ -121,7 +121,7 @@ public class MyController {
 
 	@GetMapping("/api/user/serviceAreaList")
 	@Operation(summary = "load all service area Areas", description = "load all service area Areas.")
-	public  ResponseEntity<?>serviceAreaList(Authentication authentication) throws IOException {
+	public  ResponseEntity<List<UserServiceArea>> serviceAreaList() throws IOException {
 		List<UserServiceArea> userServiceAreaList = new ArrayList<>();
 		
 			UserServiceArea userServiceAreaItem1 = new UserServiceArea();
