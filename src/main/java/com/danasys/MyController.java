@@ -124,13 +124,21 @@ public class MyController {
 	
 	@GetMapping("/api/user/loadUserAddresses")
 	@Operation(summary = "load all user addresses", description = "load all user addresses.")
-	public ResponseEntity<?> loadUserAddressList(Principal principal) throws IOException {
+	public ResponseEntity<?> loadUserAddressList() throws IOException {
 		List<UserAddresses> userAddressList = new ArrayList();
 		UserAddresses address1 = new UserAddresses();
 		address1.setId(11l);
 		address1.setAddress("E2 702, Paramount Golfforeste, UPSIDC, Greater Noida, UP - 201309");
 		address1.setDefault(true);
 		userAddressList.add(address1);
+		
+		UserAddresses address2 = new UserAddresses();
+		address2.setId(12l);
+		address2.setAddress("F - 504 , Paramount Golfforeste, UPSIDC, Greater Noida, UP - 201309");
+		address2.setDefault(true);
+		userAddressList.add(address2);
+		
+		
 		return ResponseEntity.ok(userAddressList);
 
 	}
