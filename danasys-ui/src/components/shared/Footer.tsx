@@ -77,7 +77,7 @@ const Footer = () => {
               &copy; Danasys (formerly known as Design Inc Private Limited), 2025. All rights reserved.
             </div>
 
-            <div className="flex flex-1 md:flex-row items-center gap-3">
+            {/* <div className="flex flex-1 md:flex-row items-center gap-3">
               <h4 className="font-semibold text-md leading-none lg:mr-4 text-gray-800">
                 Download App
               </h4>
@@ -95,7 +95,7 @@ const Footer = () => {
                   className="h-full w-full object-cover"
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* ✅ Social Icons */}
             <div className="flex-1 flex items-center md:justify-end gap-4 lg:gap-6">
