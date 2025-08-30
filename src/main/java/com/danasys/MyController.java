@@ -605,26 +605,30 @@ public class MyController {
 		
 		List<BusinessDashboaardFunctionalityDTO> buIconDetails = new ArrayList<>();
 		
-		String ic1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_businessprofile.png")
 				.toUriString();
-		String ic2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_products.png")
 				.toUriString();
-		String ic3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_orders.png")
 				.toUriString();
-		String ic4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_moneytransfer.png")
 				.toUriString();
-		String ic5 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic5 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_reports.png")
 				.toUriString();
-		String ic6 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic6 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_companyprofile.png")
 				.toUriString();
-		String ic7 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic7 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_trending.png")
 				.toUriString();
-		String ic8 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic8 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_annualreport.png")
 				.toUriString();
-		String ic9 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic9 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_activation.png")
 				.toUriString();
-		String ic10 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+		String ic10 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_communication.png")
 				.toUriString();
+		
+		String ic11 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_users.png")
+				.toUriString();
+		
 		
 		BusinessDashboaardFunctionalityDTO icone1 = new BusinessDashboaardFunctionalityDTO();
 		icone1.setBuIconPath(ic1);
@@ -667,6 +671,10 @@ public class MyController {
 		icone10.setBuIconPath(ic10);
 		icone10.setName("Communication");
 		
+		BusinessDashboaardFunctionalityDTO icone11 = new BusinessDashboaardFunctionalityDTO();
+		icone11.setBuIconPath(ic11);
+		icone11.setName("Users");
+		
 		buIconDetails.add(icone2);
 		buIconDetails.add(icone1);
 		buIconDetails.add(icone3);
@@ -677,6 +685,7 @@ public class MyController {
 		buIconDetails.add(icone8);
 		buIconDetails.add(icone9);
 		buIconDetails.add(icone10);
+		buIconDetails.add(icone11);
 		
 		
 		buDashboard.setBuIconDetails(buIconDetails);
