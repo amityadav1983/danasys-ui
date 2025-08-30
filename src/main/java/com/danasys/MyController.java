@@ -585,7 +585,7 @@ public class MyController {
 		
 		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptastore.png")
 				.toUriString();
-		
+		bp.setId(1l);
 		bp.setBusinessLogoPath(imageUrl);
 		bp.setOwnerName("Ramesh Gupta");
 		bp.setStoreName("Gupta general Store");
@@ -597,6 +597,7 @@ public class MyController {
 		bp1.setBusinessLogoPath(imageUrl1);
 		bp1.setOwnerName("Ramesh Gupta");
 		bp1.setStoreName("Gupta Vegitable SHOP");
+		bp1.setId(2l);
 		
 		userBusinessProfileDTOList.add(bp);
 		userBusinessProfileDTOList.add(bp1);
