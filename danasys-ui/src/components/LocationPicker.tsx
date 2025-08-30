@@ -166,7 +166,7 @@ const LocationPicker = () => {
                   <div className="flex items-start gap-2">
                     <MdLocationPin className="text-blue-500 text-xl mt-1 flex-shrink-0" />
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800 mb-1">
+                      <h4 className="font-semibold text-gray-800  mb-1">
                         Delivery Address{" "}
                         {location?.id === addr.id && (
                           <span className="ml-2 text-xs text-green-600 font-medium">
@@ -177,12 +177,12 @@ const LocationPicker = () => {
                       <p className="text-sm text-gray-600 leading-relaxed">
                         {addr.address}
                       </p>
-                      <p className="text-xs text-gray-500 mt-2">
+                      {/* <p className="text-xs text-gray-500 mt-2">
                         Delivery in 10 minutes
                       </p>
                       <p className="text-xs text-gray-400 mt-1">
                         Address ID: {addr.id}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
 

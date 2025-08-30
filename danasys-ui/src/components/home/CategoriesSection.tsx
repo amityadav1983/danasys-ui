@@ -166,7 +166,7 @@ const CategoriesSection = () => {
               onClick={() => handleCategoryClick(category.categoryName)}
             >
               <div
-                className={`w-14 h-14 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-500 ${
+                className={`w-12 h-12 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-500 ${
                   selectedCategory === category.categoryName
                     ? 'scale-110'
                     : 'hover:scale-125'
@@ -210,7 +210,7 @@ const CategoriesSection = () => {
                     }
                   >
                     <div
-                      className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-300 hover:scale-125 ${
+                      className={`w-12 h-12 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-300 hover:scale-125 ${
                         isSelected ? 'ring-2 ring-blue-500 p-1' : ''
                       }`}
                     >
@@ -224,7 +224,7 @@ const CategoriesSection = () => {
                           target.nextElementSibling?.classList.remove('hidden');
                         }}
                       />
-                      <div className="hidden w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs">
+                      <div className="hidden w-full h-full bg-gray-300 flex items-center text-sm justify-center text-gray-600 text-xs">
                         {businessProfile.storeName.charAt(0)}
                       </div>
                     </div>

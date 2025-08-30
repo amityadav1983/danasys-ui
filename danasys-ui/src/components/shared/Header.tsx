@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import LocationPicker from '../LocationPicker';
@@ -20,30 +20,41 @@ const Header = () => {
 
   const { searchQuery, setSearchQuery, filteredProducts, setFilteredProducts } = useSearch();
 
-  const categoriesRef = useRef<HTMLDivElement | null>(null);
-
   const selectedCategoryData = categories.find((cat: any) => cat.categoryName === selectedCategory);
   const themeColor = selectedCategoryData?.theemColorCode || '#349FDE';
 
-  // 👇 IntersectionObserver to detect when categories pass
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeroPast, setIsHeroPast] = useState(false);
+
+  // 👇 Scroll listener for immediate white background on scroll
   useEffect(() => {
-    if (!categoriesRef.current) return;
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // 👇 IntersectionObserver for hero area to show search bar
+  useEffect(() => {
+    const heroAreaElement = document.querySelector('section.mt-4');
+    if (!heroAreaElement) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          setShowSearch(false); // categories visible -> hide search
-        } else {
-          setShowSearch(true); // categories passed -> show search
-        }
+        setIsHeroPast(!entries[0].isIntersecting);
       },
-      { threshold: 0 }
+      { threshold: 0, rootMargin: '-50px 0px 0px 0px' }
     );
 
-    observer.observe(categoriesRef.current);
+    observer.observe(heroAreaElement);
 
     return () => {
-      if (categoriesRef.current) observer.unobserve(categoriesRef.current);
+      observer.unobserve(heroAreaElement);
     };
   }, []);
 
@@ -106,152 +117,160 @@ const Header = () => {
 
   return (
     <>
-      <header
-  className="_nav px-2 sm:px-0 fixed top-0 left-0 right-0 z-50 border-none shadow-none transition-colors duration-300"
-  style={{
-    background: showSearch 
-      ? "#ffffff" // 👈 scroll ke baad white
-      : "var(--header-gradient)", // 👈 default gradient
-  }}
->
-  <div className="min-h-[100px] sm:min-h-[120px] flex flex-col justify-center text-white">
-    {/* ✅ Mobile Header */}
-    <div className="flex w-full items-center justify-between sm:hidden">
-      {/* Left → Delivery Address */}
-      <div className="cursor-pointer">
-        <LocationPicker />
-      </div>
-
-      {/* Right → User Profile */}
-      <UserProfile />
-    </div>
-
-    {/* ✅ Desktop Header */}
-    <div className="hidden sm:flex h-full bg-transparent relative">
-      {/* Logo */}
-      <div className="hidden sm:flex max-w-[150px] md:max-w-[178px] w-full cursor-pointer items-center justify-center ml-4 bg-transparent">
-        <Link to={'/'}>
-          <img
-            src={newLogo}
-            alt="Cost2Cost Logo"
-            className="h-16 md:h-20 object-contain drop-shadow-md"
-          />
-        </Link>
-      </div>
-
-      {/* Location Picker */}
-      <div className="w-full sm:w-[240px] xl:w-[320px] py-3 px-1 sm:p-0 flex items-center text-black sm:justify-center cursor-pointer bg-transparent">
-        <LocationPicker />
-      </div>
-
-      {/* Delivery Toggle */}
-      <div className="px-3 items-center hidden sm:flex">
-        <DeliveryToggle />
-      </div>
-
-      {/* Wallet Image */}
-      {userDetails?.userWalletImage && (
-        <div className="px-3 items-center hidden sm:flex">
-          <img
-            src={userDetails.userWalletImage}
-            alt="Wallet"
-            className="w-12 h-12 ml-6 object-contain cursor-pointer drop-shadow-md"
-          />
-        </div>
-      )}
-
-      {/* Search Bar */}
-      <div className="flex-1 justify-center items-center relative hidden sm:flex">
-        <div
-          className={`transition-all duration-300 ease-in-out ${
-            showSearch ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
-          }`}
+      {/* Gradient background for header and categories */}
+      <div className="relative">
+        <div 
+          className="absolute top-0 left-0 right-0 h-[350px] sm:h-[450px] pointer-events-none"
+          style={{ background: 'var(--header-gradient)' }}
+        />
+        
+        <header
+          className="_nav px-4 sm:px-8 fixed top-0 left-0 right-0 z-50 border-none shadow-none transition-colors duration-300"
+          style={{
+            background: isScrolled ? '#f8f8f8ff' : 'transparent',
+          }}
         >
-          <div className="relative flex items-center">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={handleSearch}
-              className="w-[250px] md:w-[300px] h-10 px-4 py-2 pl-10 rounded-full border border-gray-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 backdrop-blur-sm"
-            />
-            <FiSearch
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={18}
-            />
-          </div>
+          <div className="min-h-[100px] sm:min-h-[120px] flex flex-col justify-center text-white">
+            {/* ✅ Mobile Header (3 items equal space) */}
+            <div className="flex w-full items-center sm:hidden">
+              <div className="flex-1 flex justify-start text-black px-2">
+                <LocationPicker />
+              </div>
+              <div className="flex-1 flex justify-center px-2">
+                <DeliveryToggle />
+              </div>
+              <div className="flex-1 flex justify-end px-2">
+                <UserProfile />
+              </div>
+            </div>
 
-          {filteredProducts.length > 0 && (
-            <ul className="absolute top-12 left-0 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
-              {filteredProducts.map((product) => (
-                <li
-                  key={product.id}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                  onClick={() => handleSelectProduct(product.id)}
-                >
+            {/* ✅ Desktop Header (6 items equal space) */}
+            <div className="hidden sm:flex w-full h-full bg-transparent items-center">
+              {/* Logo with equal spacing from left */}
+              <div className="flex-1 flex justify-start items-center">
+                <Link to={'/'}>
                   <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-8 h-8 object-contain"
+                    src={newLogo}
+                    alt="Cost2Cost Logo"
+                    className="h-16 md:h-20  object-contain drop-shadow-md"
                   />
-                  <span>{product.name}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+                </Link>
+              </div>
 
-      {/* User Profile */}
-      <div className="py-2 flex h-full items-center mr-4 bg-transparent">
-        <UserProfile />
-      </div>
-    </div>
-  </div>
-</header>
+              {/* Location Picker (stacked text + black) */}
+              <div className="flex-1 flex flex-col justify-center items-start px-4  text-black">
+                <LocationPicker />
+              </div>
 
+              {/* Delivery Toggle */}
+              <div className="flex-1 flex justify-center items-center px-4">
+                <DeliveryToggle />
+              </div>
 
-      {/* Spacer div */}
-      <div className="h-[80px] sm:h-[50px] mb-1 sm:mb-0"></div> 
+              {/* Wallet Image */}
+              <div className="flex-1 flex justify-center items-center px-4">
+                {userDetails?.userWalletImage && (
+                  <img
+                    src={userDetails.userWalletImage}
+                    alt="Wallet"
+                    className="w-12 h-12 object-contain cursor-pointer drop-shadow-md"
+                  />
+                )}
+              </div>
 
-      {/* 👇 Categories Section (tracked for mobile scroll) */}
-      <div ref={categoriesRef} className="sm:mt-4">
-        {/* Yaha aap apna categories wala UI render karte ho */}
-      </div>
-
-      {/* ✅ Mobile Sticky Search - appears only after categories scroll */}
-      {showSearch && (
-        <div className="sm:hidden sticky top-[80px] z-40 bg-white px-2 py-2 shadow">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={handleSearch}
-              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <FiSearch
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={18}
-            />
-          </div>
-
-          {filteredProducts.length > 0 && (
-            <ul className="absolute mt-2 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
-              {filteredProducts.map((product) => (
-                <li
-                  key={product.id}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                  onClick={() => handleSelectProduct(product.id)}
+              {/* Search Bar */}
+              <div className="flex-1 flex justify-center items-center px-4 relative">
+                <div
+                className={`transition-all duration-300 ease-in-out ${
+                  isHeroPast ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+                }`}
                 >
-                  <img src={product.image} alt={product.name} className="w-8 h-8 object-contain" />
-                  <span>{product.name}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={searchQuery}
+                      onChange={handleSearch}
+                      className="w-[250px] md:w-[300px] h-10 px-4 py-2 pl-10 rounded-full border border-gray-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 backdrop-blur-sm"
+                    />
+                    <FiSearch
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={18}
+                    />
+                  </div>
+
+                  {filteredProducts.length > 0 && (
+                    <ul className="absolute top-12 left-0 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
+                      {filteredProducts.map((product) => (
+                        <li
+                          key={product.id}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                          onClick={() => handleSelectProduct(product.id)}
+                        >
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-8 h-8 object-contain"
+                          />
+                          <span>{product.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              {/* User Profile with equal spacing from right */}
+              <div className="flex-1 flex justify-end items-center">
+                <UserProfile />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Spacer */}
+        <div className="h-[80px] sm:h-[50px] mb-1 sm:mb-0"></div>
+
+        {/* Categories Section */}
+        <div className="sm:mt-4">
+          {/* Categories UI render here */}
         </div>
-      )}
+      </div>
+
+      {/* ✅ Mobile Sticky Search (header ke bahar) */}
+{isHeroPast && (
+  <div className="sm:hidden fixed top-[100px] left-0 right-0 z-40 bg-white px-2 py-2 shadow">
+    <div className="relative">
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={searchQuery}
+        onChange={handleSearch}
+        className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <FiSearch
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        size={18}
+      />
+    </div>
+
+    {filteredProducts.length > 0 && (
+      <ul className="absolute mt-2 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
+        {filteredProducts.map((product) => (
+          <li
+            key={product.id}
+            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+            onClick={() => handleSelectProduct(product.id)}
+          >
+            <img src={product.image} alt={product.name} className="w-8 h-8 object-contain" />
+            <span>{product.name}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+)}
+
     </>
   );
 };

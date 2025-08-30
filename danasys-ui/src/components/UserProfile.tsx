@@ -5,6 +5,7 @@ import {
   FaSignOutAlt,
   FaUserEdit,
   FaMapMarkerAlt,
+  FaKey,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -126,7 +127,7 @@ const UserProfile = () => {
             alt={userData.fullname}
             className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm"
           />
-          <svg
+          {/* <svg
             className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
               showDropdown ? "rotate-180" : ""
             }`}
@@ -140,12 +141,12 @@ const UserProfile = () => {
               strokeWidth={2}
               d="M19 9l-7 7-7-7"
             />
-          </svg>
+          </svg> */}
         </div>
 
         {/* Dropdown */}
         {showDropdown && (
-          <div className="absolute top-full right-0 mt-3 w-72 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-y-auto max-h-[400px] hide-scrollbar animate-fadeIn no-scrollbar">
+          <div className="absolute top-full right-0 mt-3 w-72 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-visible animate-fadeIn">
             {/* User Info */}
             <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-b border-gray-100">
               <img
@@ -190,6 +191,19 @@ const UserProfile = () => {
                 </span>
               </div>
 
+              <div
+                className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setShowDropdown(false);
+                  dispatch(showModal({ type: "updatePassword" }));
+                }}
+              >
+                <FaKey className="text-orange-600" size={18} />
+                <span className="text-sm font-medium text-gray-700">
+                  Update Password
+                </span>
+              </div>
+
               <div className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
                 <FaShoppingBag className="text-blue-600" size={18} />
                 <span className="text-sm font-medium text-gray-700">
@@ -197,8 +211,8 @@ const UserProfile = () => {
                 </span>
               </div>
 
-              {/* Language Selector */}
-              <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors">
+              {/* ✅ Language Selector Fix */}
+              <div className="relative">
                 <LanguageSelector />
               </div>
 

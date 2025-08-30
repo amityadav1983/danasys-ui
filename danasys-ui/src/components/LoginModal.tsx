@@ -4,12 +4,21 @@ import OtpModal from "./OtpModal";
 import EmailLogin from "./EmailLogin";
 import PhoneLogin from "./PhoneLogin";
 import Register from "./Register";
-import newLogo from '../assets/images/COST2COST.png';
+import newLogo from "../assets/images/COST2COST.png";
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (credentials: { email: string; password: string } | { phone: string; otp: string }) => Promise<void>;
+  onLogin: (
+    credentials:
+      | { email: string; password: string }
+      | { phone: string; otp: string }
+  ) => Promise<void>;
+}
+
+interface ThemeResponse {
+  backGroundImageURL?: string;
+  companyLogo?: string;
 }
 
 const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
@@ -18,50 +27,65 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
+  // Theme states
+  const [backgroundImage, setBackgroundImage] = useState<string>("/shopping-bg.jpg");
+  const [companyLogo, setCompanyLogo] = useState<string>(newLogo);
+
   useEffect(() => {
-    // console.log('🔍 LoginModal: useEffect running, isOpen =', isOpen);
     if (isOpen) {
-      // console.log('🔍 LoginModal: Modal is open, resetting state...');
       setActiveTab("login");
       setShowRegister(false);
       setShowOtpModal(false);
       setPhoneNumber("");
+
+      // API call for theme
+      const fetchTheme = async () => {
+        try {
+          const res = await fetch("/api/user/loginTheem");
+          if (!res.ok) throw new Error("Failed to fetch theme");
+
+          const data: ThemeResponse = await res.json();
+
+          if (data.backGroundImageURL) {
+            setBackgroundImage(data.backGroundImageURL);
+          } else {
+            setBackgroundImage("/shopping-bg.jpg"); // fallback
+          }
+
+          if (data.companyLogo) {
+            setCompanyLogo(data.companyLogo);
+          } else {
+            setCompanyLogo(newLogo); // fallback
+          }
+        } catch (error) {
+          console.error("Theme API error:", error);
+          setBackgroundImage("/shopping-bg.jpg");
+          setCompanyLogo(newLogo);
+        }
+      };
+
+      fetchTheme();
     }
   }, [isOpen]);
 
-  // console.log('🔍 LoginModal: Rendering with props:', { isOpen, onClose: !!onClose, onLogin: !!onLogin });
-
-  if (!isOpen) {
-    // console.log('🔍 LoginModal: Modal is not open, returning null');
-    return null;
-  }
+  if (!isOpen) return null;
 
   const handleOtpVerify = (otp: string) => {
-    // console.log('🔍 LoginModal: handleOtpVerify called with OTP:', otp);
     setShowOtpModal(false);
-    // Don't close the main login modal - let user stay on login form
-    // onClose(); // Commented out to prevent closing
   };
 
   const handlePhoneContinue = (phone: string) => {
-    // console.log('🔍 LoginModal: Phone continue called with phone:', phone);
-    // console.log('🔍 LoginModal: Setting phoneNumber to:', phone);
     setPhoneNumber(phone);
-    // console.log('🔍 LoginModal: Setting showOtpModal to true');
     setShowOtpModal(true);
-    // console.log('🔍 LoginModal: showOtpModal should now be true');
   };
-
-  // console.log('🔍 LoginModal: Modal is open, rendering content...');
-  // console.log('🔍 LoginModal: Current state - showOtpModal:', showOtpModal, 'phoneNumber:', phoneNumber);
 
   return (
     <>
-      {/* Background with image */}
+      {/* Background with API image */}
       <div
         className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50"
         style={{
-          backgroundImage: `url(/shopping-bg.jpg)`,
+          backgroundImage: `url(${backgroundImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -74,32 +98,19 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
           className="relative w-full max-w-[520px] mx-auto px-4 z-10"
           onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="relative w-full h-[560px] rounded-3xl overflow-hidden shadow-3xl bg-white/100 backdrop-blur-md animate-fade-scale-slide"
-          >
+          <div className="relative w-full h-[560px] rounded-3xl overflow-hidden shadow-3xl bg-white/100 backdrop-blur-md animate-fade-scale-slide">
             <div className="relative z-10 h-full flex flex-col">
-              {/* Top back button */}
-              {/* <div className="p-4 pt-5">
-                <button
-                  onClick={onClose}
-                  className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/30 backdrop-blur-sm"
-                >
-                  <ArrowLeft className="w-5 h-5 text-black" />
-                </button>
-              </div> */}
-
-{/* Logo */}
-<div className="text-center flex-shrink-0 mt-6">
-  <img
-    src={newLogo}
-    alt="Logo"
-    className="max-w-[200px] mx-auto object-contain mb-10 mt-5 drop-shadow-lg"
-  />
-  <p className="text-black/90 text-sm mt-3 font-medium">
-    Earn points, live better!
-  </p>
-</div>
-
+              {/* Logo */}
+              <div className="text-center flex-shrink-0 mt-6">
+                <img
+                  src={companyLogo}
+                  alt="Logo"
+                  className="max-w-[200px] mx-auto object-contain mb-10 mt-5 drop-shadow-lg"
+                />
+                <p className="text-black/90 text-sm mt-3 font-medium">
+                  Earn points, live better!
+                </p>
+              </div>
 
               {/* Tabs */}
               <div className="flex justify-center gap-6 text-black font-medium border-b border-gray-200 mt-4 pb-2">
@@ -128,7 +139,10 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
               {/* Content */}
               <div className="flex-1 flex flex-col justify-start items-center px-5 pb-5 space-y-4 overflow-y-auto scrollbar-hide">
                 {activeTab === "login" && !showRegister && (
-                  <EmailLogin onRegisterClick={() => setShowRegister(true)} onLogin={onLogin} />
+                  <EmailLogin
+                    onRegisterClick={() => setShowRegister(true)}
+                    onLogin={onLogin}
+                  />
                 )}
                 {activeTab === "login" && showRegister && (
                   <Register onBackToLogin={() => setShowRegister(false)} />

@@ -1,9 +1,10 @@
-# UpdateProfile Popup Dimension Changes
+# Search Bar Visibility Implementation Plan
 
 ## Steps to Complete:
-1. [ ] Reduce the width of the popup by changing `max-w-md` to `max-w-sm`
-2. [ ] Adjust the padding and spacing to reduce overall height
-3. [ ] Test the changes to ensure proper functionality
+1. [ ] Modify Header.tsx to accept a heroAreaRef prop and update IntersectionObserver logic
+2. [ ] Update Home.tsx to create a ref for HeroArea and pass it to Header component
+3. [ ] Test the scrolling behavior to ensure search bar appears only after hero area is scrolled past
 
-## Files to Modify:
-- src/components/updates/UpdateProfile.tsx
+## Current Status:
+- Plan approved by user
+- Starting implementation

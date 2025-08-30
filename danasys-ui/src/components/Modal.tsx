@@ -6,6 +6,7 @@ import OrderSuccessModal from "./OrderSuccessModal";
 import LoginModal from "./LoginModal";
 import UpdateProfile from "./Updates/UpdateProfile";
 import UpdateAddress from "./Updates/UpdateAddress";
+import UpdatePassword from "./Updates/UpdatePassword";
 
 const Modal = () => {
   const { type, data } = useAppSelector((state) => state.modal.modalData);
@@ -29,9 +30,11 @@ const Modal = () => {
         }}
       />
     ) : type === "updateProfile" ? (
-      <UpdateProfile/>
+      <UpdateProfile onClose={handleClose}/>
     ) : type === "updateAddress" ? (
       <UpdateAddress onClose={handleClose} />
+    ) : type === "updatePassword" ? (
+      <UpdatePassword onClose={handleClose} />
     ) : null;
 
   return (
