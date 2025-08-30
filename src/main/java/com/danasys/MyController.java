@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.danasys.dto.BusinessDashboaardFunctionalityDTO;
 import com.danasys.dto.BusinessProfileDetailsDTO;
 import com.danasys.dto.LoginMobileRequest;
 import com.danasys.dto.LoginRequest;
@@ -35,9 +36,12 @@ import com.danasys.dto.ProductCategoryEnum;
 import com.danasys.dto.ProductCategorySADetailsDTO;
 import com.danasys.dto.ProductDTO;
 import com.danasys.dto.StatusEnum;
+import com.danasys.dto.UserBusinessDashboardDTO;
+import com.danasys.dto.UserBusinessProfileDTO;
 import com.danasys.dto.RegisterUserRequest;
 import com.danasys.dto.ServiceAreaDetails;
 import com.danasys.dto.UserDetailsDTO;
+import com.danasys.user.enums.UserRoleEnum;
 import com.danasys.user.request.BusinessProfileRequest;
 import com.danasys.user.request.ResetPasswordRequest;
 import com.danasys.user.request.UpdateBusinessProfileRequest;
@@ -193,6 +197,7 @@ public class MyController {
 		userDetailsDTO.setServiceAreaId(5l);
 		userDetailsDTO.setHouseNo("House no-102");
 		userDetailsDTO.setFullAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
+		userDetailsDTO.setRole(UserRoleEnum.ROLE_USER);
 
 		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.png")
 				.toUriString();
@@ -517,6 +522,7 @@ public class MyController {
 				product.setDescription("good product");
 				product.setBusinessUserProfileId(userProfileId);
 				product.setId(id);
+				product.setStarRating(4.5);
 
 				products.add(product);
 
@@ -567,4 +573,122 @@ public class MyController {
 		}
 		return resource;
 	}
+	
+	
+	@GetMapping("/loadBusinessUserDashboard/{userProfileId}")
+	public ResponseEntity<?> loadBusinessUserDashboard(@PathVariable Long userProfileId) {
+		
+		UserBusinessDashboardDTO buDashboard = new UserBusinessDashboardDTO();
+		
+		List<UserBusinessProfileDTO> userBusinessProfileDTOList = new ArrayList<>();
+		UserBusinessProfileDTO bp = new UserBusinessProfileDTO();
+		
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptastore.png")
+				.toUriString();
+		
+		bp.setBusinessLogoPath(imageUrl);
+		bp.setOwnerName("Ramesh Gupta");
+		bp.setStoreName("Gupta general Store");
+		
+		String imageUrl1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		
+		UserBusinessProfileDTO bp1 = new UserBusinessProfileDTO();
+		bp1.setBusinessLogoPath(imageUrl1);
+		bp1.setOwnerName("Ramesh Gupta");
+		bp1.setStoreName("Gupta Vegitable SHOP");
+		
+		userBusinessProfileDTOList.add(bp);
+		userBusinessProfileDTOList.add(bp1);
+		
+		
+		List<BusinessDashboaardFunctionalityDTO> buIconDetails = new ArrayList<>();
+		
+		String ic1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic5 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic6 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic7 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic8 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic9 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		String ic10 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		
+		BusinessDashboaardFunctionalityDTO icone1 = new BusinessDashboaardFunctionalityDTO();
+		icone1.setBuIconPath(ic1);
+		icone1.setName("Business User");
+		
+		BusinessDashboaardFunctionalityDTO icone2 = new BusinessDashboaardFunctionalityDTO();
+		icone2.setBuIconPath(ic2);
+		icone2.setName("Product");
+		
+		BusinessDashboaardFunctionalityDTO icone3 = new BusinessDashboaardFunctionalityDTO();
+		icone3.setBuIconPath(ic3);
+		icone3.setName("Orders");
+		
+		BusinessDashboaardFunctionalityDTO icone4 = new BusinessDashboaardFunctionalityDTO();
+		icone4.setBuIconPath(ic4);
+		icone4.setName("Payments");
+		
+		
+		BusinessDashboaardFunctionalityDTO icone5 = new BusinessDashboaardFunctionalityDTO();
+		icone5.setBuIconPath(ic5);
+		icone5.setName("Reports");
+		
+		BusinessDashboaardFunctionalityDTO icone6 = new BusinessDashboaardFunctionalityDTO();
+		icone6.setBuIconPath(ic6);
+		icone6.setName("Compemy Profile");
+		
+		BusinessDashboaardFunctionalityDTO icone7 = new BusinessDashboaardFunctionalityDTO();
+		icone7.setBuIconPath(ic7);
+		icone7.setName("Trend");
+		
+		BusinessDashboaardFunctionalityDTO icone8 = new BusinessDashboaardFunctionalityDTO();
+		icone8.setBuIconPath(ic8);
+		icone8.setName("Anual report");
+		
+		BusinessDashboaardFunctionalityDTO icone9 = new BusinessDashboaardFunctionalityDTO();
+		icone9.setBuIconPath(ic9);
+		icone9.setName("Activation");
+		
+		BusinessDashboaardFunctionalityDTO icone10 = new BusinessDashboaardFunctionalityDTO();
+		icone10.setBuIconPath(ic10);
+		icone10.setName("Communication");
+		
+		buIconDetails.add(icone2);
+		buIconDetails.add(icone1);
+		buIconDetails.add(icone3);
+		buIconDetails.add(icone4);
+		buIconDetails.add(icone5);
+		buIconDetails.add(icone6);
+		buIconDetails.add(icone7);
+		buIconDetails.add(icone8);
+		buIconDetails.add(icone9);
+		buIconDetails.add(icone10);
+		
+		
+		buDashboard.setBuIconDetails(buIconDetails);
+		buDashboard.setUserBusinessProfileDTOList(userBusinessProfileDTOList);
+		return ResponseEntity.ok(buDashboard);
+
+	}
+	
+	@PostMapping(value = "/createUserBusinessProfile")
+	public ResponseEntity<?> createUserBusinessProfile(@RequestBody BusinessProfileRequest createBusinessProfileRequest) {
+		
+		
+		return ResponseEntity.ok("SUCCESS: Business profile created sucessfully");
+	}
+	
 }

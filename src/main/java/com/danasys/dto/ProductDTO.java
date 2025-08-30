@@ -25,5 +25,6 @@ public class ProductDTO implements Serializable {
     private Long businessUserProfileId;
     private String status;
     private int version;
+    private Double starRating;
 
 }

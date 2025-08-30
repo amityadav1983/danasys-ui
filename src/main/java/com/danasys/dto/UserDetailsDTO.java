@@ -2,6 +2,8 @@ package com.danasys.dto;
 
 import java.util.List;
 
+import com.danasys.user.enums.UserRoleEnum;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +32,8 @@ public class UserDetailsDTO {
 	private Long serviceAreaId;
 	
 	private String userWalletImage;
+	
+	private UserRoleEnum role;
 
 
 }
