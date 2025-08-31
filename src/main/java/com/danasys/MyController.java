@@ -525,7 +525,7 @@ public class MyController {
 
 				product.setImage(imageUrl);
 				product.setCategory(category);
-				product.setMoreAbout("good product");
+				product.setMoreAbout(fileName);
 				product.setOfferPrice(100d);
 				product.setPrice(120d);
 				product.setQuantity(10);
