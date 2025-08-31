@@ -35,5 +35,8 @@ public class UserDetailsDTO {
 	
 	private UserRoleEnum role;
 
+	private String myQRCode;
+	
+	private String companyLogo;
 
 }

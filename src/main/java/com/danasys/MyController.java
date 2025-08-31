@@ -38,6 +38,7 @@ import com.danasys.dto.ProductDTO;
 import com.danasys.dto.StatusEnum;
 import com.danasys.dto.UserBusinessDashboardDTO;
 import com.danasys.dto.UserBusinessProfileDTO;
+import com.danasys.dto.UserConnection;
 import com.danasys.dto.RegisterUserRequest;
 import com.danasys.dto.ServiceAreaDetails;
 import com.danasys.dto.UserDetailsDTO;
@@ -228,6 +229,15 @@ public class MyController {
 				.toUriString();
 		
 		userDetailsDTO.setUserWalletImage(wallet);
+		
+		String qrCode = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user5QRCode.png")
+				.toUriString();
+		
+		userDetailsDTO.setMyQRCode(qrCode);
+		
+		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("COST2COST_Red.png")
+		.toUriString();
+		userDetailsDTO.setCompanyLogo(logo);
 		return userDetailsDTO;
 	}
 	
@@ -700,5 +710,58 @@ public class MyController {
 		
 		return ResponseEntity.ok("SUCCESS: Business profile created sucessfully");
 	}
+	
+	@GetMapping("/myConnections/{userProfileId}")
+	@Operation(summary = "User connections", description = "User connections")
+	public ResponseEntity<?> myConnections(@PathVariable Long userProfileId) {
+		UserConnection connection = new UserConnection();
+		
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.png")
+				.toUriString();
+
+		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.png")
+				.toUriString();
+
+		String name="Rajesh Gupta";
+		String nameChild1="Tejas Shah";
+		String nameCHild2="SP Mishra";
+		if(userProfileId==2) {
+			 name="Tejas Shah";
+			 nameChild1="Lalit Singh";
+			 nameCHild2="Hari ram";
+		}
+		
+		connection.setClearedPoint(150d);
+		connection.setUnclearedPoint(220d);
+		connection.setProfileImagePath(imageUrl);
+		connection.setDisplayName(name);
+		connection.setTotalConnection(2);
+		connection.setCompanyLogo(logo);
+		List<UserConnection> connections = new ArrayList<>();
+		
+		UserConnection connectionChild = new UserConnection();
+		connectionChild.setClearedPoint(102d);
+		connectionChild.setUnclearedPoint(540d);
+		connectionChild.setDisplayName(nameChild1);
+		connectionChild.setProfileImagePath(imageUrl);
+		connectionChild.setTotalConnection(2);
+		
+		UserConnection connectionChild1 = new UserConnection();
+		connectionChild1.setClearedPoint(202d);
+		connectionChild1.setUnclearedPoint(840d);
+		connectionChild1.setDisplayName(nameCHild2);
+		connectionChild1.setProfileImagePath(imageUrl);
+		connection.setTotalConnection(2);
+
+		
+		connections.add(connectionChild);
+		connections.add(connectionChild1);
+		
+		connection.setChild(connections);
+		return ResponseEntity.ok(connection);
+
+	}
+	
+
 	
 }
