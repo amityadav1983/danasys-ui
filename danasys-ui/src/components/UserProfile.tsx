@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { FaRegUser, FaShoppingBag, FaSignOutAlt } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import LanguageSelector from './LanguageSelector';
-import LoginModal from './LoginModal';
-import DeliveryToggle from './DeliveryToggle';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  FaRegUser,
+  FaShoppingBag,
+  FaSignOutAlt,
+  FaUserEdit,
+  FaMapMarkerAlt,
+  FaKey,
+} from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "./LanguageSelector";
+import LoginModal from "./LoginModal";
+import DeliveryToggle from "./DeliveryToggle";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { show as showModal } from "../store/modal";
 
 interface UserData {
   fullname: string;
@@ -21,19 +29,39 @@ const UserProfile = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useAppDispatch();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const loginStatus = localStorage.getItem('userLoggedIn');
-    if (loginStatus === 'true') {
+    const loginStatus = localStorage.getItem("userLoggedIn");
+    if (loginStatus === "true") {
       fetchUserDetails();
     } else {
       setLoading(false);
     }
   }, []);
 
+  // outside click handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    if (showDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDropdown]);
+
   const fetchUserDetails = async () => {
     try {
-      const response = await fetch('/api/user/getUserDetails');
+      const response = await fetch("/api/user/getUserDetails");
       if (response.ok) {
         const data = await response.json();
         setUserData(data);
@@ -47,7 +75,7 @@ const UserProfile = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('userLoggedIn');
+    localStorage.removeItem("userLoggedIn");
     setIsLoggedIn(false);
     setUserData(null);
     setShowDropdown(false);
@@ -70,15 +98,15 @@ const UserProfile = () => {
           onClick={() => setShowLogin(true)}
         >
           <span className="font-medium _text-default hidden sm:block">
-            {t('login')}
+            {t("login")}
           </span>
           <span className="sm:hidden _text-default">
             <FaRegUser size={22} />
           </span>
         </div>
 
-        <LoginModal 
-          isOpen={showLogin} 
+        <LoginModal
+          isOpen={showLogin}
           onClose={() => setShowLogin(false)}
           onLogin={() => fetchUserDetails()}
         />
@@ -88,7 +116,8 @@ const UserProfile = () => {
 
   return (
     <>
-      <div className="relative">
+      <div className="relative" ref={dropdownRef}>
+        {/* Profile Button */}
         <div
           className="flex items-center gap-2 cursor-pointer sm:hover:bg-gray-50 p-2 rounded-lg"
           onClick={() => setShowDropdown(!showDropdown)}
@@ -96,72 +125,120 @@ const UserProfile = () => {
           <img
             src={userData.userProfilePicture}
             alt={userData.fullname}
-            className="w-10 h-10 rounded-full object-cover"
+            className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm"
           />
-          <svg
+          {/* <svg
             className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-              showDropdown ? 'rotate-180' : ''
+              showDropdown ? "rotate-180" : ""
             }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg> */}
         </div>
 
+        {/* Dropdown */}
         {showDropdown && (
-          <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-4 min-w-[280px]">
-            <div className="flex items-center gap-3 pb-3 border-b border-gray-200 mb-3">
+          <div className="absolute top-full right-0 mt-3 w-72 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-visible animate-fadeIn">
+            {/* User Info */}
+            <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-b border-gray-100">
               <img
                 src={userData.userProfilePicture}
                 alt={userData.fullname}
-                className="w-12 h-12 rounded-full object-cover"
+                className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
               />
               <div className="flex-1">
-                <h4 className="font-semibold text-gray-800">{userData.fullname}</h4>
-                <p className="text-sm text-gray-600">{userData.email}</p>
+                <h4 className="font-semibold text-gray-800 text-sm">
+                  {userData.fullname}
+                </h4>
+                <p className="text-xs text-gray-600 truncate">{userData.email}</p>
                 <p className="text-xs text-gray-500">{userData.contactInfo}</p>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Link
-                to="/orders"
-                className="flex items-center gap-3 w-full px-3 py-2 text-left hover:bg-gray-50 rounded-lg transition-colors"
-                onClick={() => setShowDropdown(false)}
+            {/* Menu Options */}
+            <div className="p-2 space-y-1">
+              <div
+                className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setShowDropdown(false);
+                  dispatch(showModal({ type: "updateAddress" }));
+                }}
               >
-                <FaShoppingBag className="text-blue-600" size={18} />
-                <span className="font-medium _text-default text-sm">
-                  {t('myOrders')}
+                <FaMapMarkerAlt className="text-purple-600" size={18} />
+                <span className="text-sm font-medium text-gray-700">
+                  Update Address
                 </span>
-              </Link>
+              </div>
 
-              <div className="flex items-center gap-3 w-full px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors">
+              <div
+                className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setShowDropdown(false);
+                  dispatch(showModal({ type: "updateProfile" }));
+                }}
+              >
+                <FaUserEdit className="text-green-600" size={18} />
+                <span className="text-sm font-medium text-gray-700">
+                  Update Profile
+                </span>
+              </div>
+
+              <div
+                className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setShowDropdown(false);
+                  dispatch(showModal({ type: "updatePassword" }));
+                }}
+              >
+                <FaKey className="text-orange-600" size={18} />
+                <span className="text-sm font-medium text-gray-700">
+                  Update Password
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                <FaShoppingBag className="text-blue-600" size={18} />
+                <span className="text-sm font-medium text-gray-700">
+                  {t("myOrders")}
+                </span>
+              </div>
+
+              {/* ✅ Language Selector Fix */}
+              <div className="relative">
                 <LanguageSelector />
               </div>
 
-              {/* ✅ Mobile only - Delivery Toggle & Wallet */}
+              {/* Mobile only */}
               <div className="sm:hidden space-y-2">
-                <div className="flex items-center gap-3 w-full px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors">
+                <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors">
                   <DeliveryToggle />
                 </div>
-
                 {userData.userWalletImage && (
-                  <div className="flex items-center gap-3 w-full px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors">
+                  <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors">
                     <img
                       src={userData.userWalletImage}
                       alt="Wallet"
                       className="w-6 h-6 object-contain"
                     />
-                    <span className="text-sm font-medium">My Wallet</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      My Wallet
+                    </span>
                   </div>
                 )}
               </div>
 
+              {/* Logout */}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-3 w-full px-3 py-2 text-left hover:bg-gray-50 rounded-lg transition-colors text-red-600"
+                className="flex items-center gap-3 w-full px-3 py-2 text-left rounded-xl hover:bg-red-50 transition-colors text-red-600"
               >
                 <FaSignOutAlt size={18} />
                 <span className="font-medium text-sm">Logout</span>
@@ -171,8 +248,8 @@ const UserProfile = () => {
         )}
       </div>
 
-      <LoginModal 
-        isOpen={showLogin} 
+      <LoginModal
+        isOpen={showLogin}
         onClose={() => setShowLogin(false)}
         onLogin={() => fetchUserDetails()}
       />

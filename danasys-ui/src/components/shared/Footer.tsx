@@ -52,15 +52,15 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* <div className="bg-[#fcfcfc] py-6 mt-2 min-h-[60px]">
+      <div className="bg-[#fcfcfc] py-6 mt-2 min-h-[60px]">
         <div className="_container">
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center">
             <div className="text-xs flex-1 _text-muted lg:max-w-md pr-6">
-              &copy; Bring Commerce Private Limited (formerly known as Loafers
+              &copy; Cost2Cost Private Limited (formerly known as Loafers
               Inc Private Limited), 2016-2022
             </div>
 
-            <div className="flex flex-1 md:flex-row items-center gap-2">
+            {/* <div className="flex flex-1 md:flex-row items-center gap-2">
               <h4 className="font-bold text-md leading-none lg:mr-4 _text-default">
                 Download App
               </h4>
@@ -78,7 +78,7 @@ const Footer = () => {
                   className="h-full w-full object-cover"
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="flex-1 flex items-center md:justify-end gap-4 lg:gap-6">
               <div className="cursor-pointer w-10 h-10 rounded-full bg-neutral-900 text-white flex items-center justify-center">
@@ -96,7 +96,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
     </footer>
   );
 };

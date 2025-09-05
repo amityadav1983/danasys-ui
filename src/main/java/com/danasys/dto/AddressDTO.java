@@ -22,6 +22,7 @@ public class AddressDTO  implements Serializable {
 
 	private ServiceAreaDTO serviceArea;
 
+
 	private AddressTypeEnum type;
 
 	private String fullAddress;
@@ -30,6 +31,7 @@ public class AddressDTO  implements Serializable {
 	public String toString() {
 		return "AddressDTO [type=" + type + ", fullAddress=" + fullAddress + " - " + serviceArea + " ]";
 	}
+
 	
 	
 }

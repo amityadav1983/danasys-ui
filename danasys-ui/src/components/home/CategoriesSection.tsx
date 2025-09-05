@@ -158,15 +158,15 @@ const CategoriesSection = () => {
     <section className="pt-8 relative">
       <div className="_container">
         {/* ✅ Category Icons (scrollable on mobile, centered on desktop) */}
-        <div className="flex gap-4 sm:gap-8 mb-6 overflow-x-auto sm:overflow-visible sm:justify-center scrollbar-hide">
+        <div className="flex gap-2 sm:gap-8 mb-6 overflow-x-auto sm:overflow-visible sm:justify-center scrollbar-hide">
           {categories.map((category) => (
             <div
               key={category.id}
-              className="cursor-pointer relative flex-shrink-0 w-1/3 sm:w-auto"
+              className="cursor-pointer relative flex-shrink-0 w-1/4 sm:w-auto"
               onClick={() => handleCategoryClick(category.categoryName)}
             >
               <div
-                className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-500 ${
+                className={`w-12 h-12 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-500 ${
                   selectedCategory === category.categoryName
                     ? 'scale-110'
                     : 'hover:scale-125'
@@ -210,7 +210,7 @@ const CategoriesSection = () => {
                     }
                   >
                     <div
-                      className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-300 hover:scale-125 ${
+                      className={`w-12 h-12 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-300 hover:scale-125 ${
                         isSelected ? 'ring-2 ring-blue-500 p-1' : ''
                       }`}
                     >
@@ -224,7 +224,7 @@ const CategoriesSection = () => {
                           target.nextElementSibling?.classList.remove('hidden');
                         }}
                       />
-                      <div className="hidden w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs">
+                      <div className="hidden w-full h-full bg-gray-300 flex items-center text-sm justify-center text-gray-600 text-xs">
                         {businessProfile.storeName.charAt(0)}
                       </div>
                     </div>

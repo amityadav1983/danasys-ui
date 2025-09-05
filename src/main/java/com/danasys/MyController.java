@@ -9,7 +9,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -30,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.danasys.dto.AddressDTO;
 import com.danasys.dto.BankAccountDTO;
+import com.danasys.dto.BusinessDashboaardFunctionalityDTO;
 import com.danasys.dto.BusinessProfileDetailsDTO;
 import com.danasys.dto.LoginMobileRequest;
 import com.danasys.dto.LoginRequest;
@@ -40,10 +40,14 @@ import com.danasys.dto.ProductCategorySADetailsDTO;
 import com.danasys.dto.ProductDTO;
 import com.danasys.dto.RegisterUserRequest;
 import com.danasys.dto.ServiceAreaDTO;
+import com.danasys.dto.ServiceAreaDetails;
 import com.danasys.dto.StatusEnum;
+import com.danasys.dto.UserBusinessDashboardDTO;
 import com.danasys.dto.UserBusinessProfileDTO;
+import com.danasys.dto.UserConnection;
 import com.danasys.dto.UserDetailsDTO;
 import com.danasys.dto.UserProfileDTO;
+import com.danasys.user.enums.UserRoleEnum;
 import com.danasys.user.request.BusinessProfileRequest;
 import com.danasys.user.request.DelegationRequest;
 import com.danasys.user.request.ResetPasswordRequest;
@@ -63,7 +67,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping
 @Tag(name = "Danasys API's", description = "APIs for danasys e-commerce functionality")
 public class MyController {
-	public static final String MULTIPART_FORM_DATA_VALUE = "multipart/form-data";
+	
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
@@ -126,54 +130,25 @@ public class MyController {
 		return ResponseEntity.ok("Service area added successfully to user.");
 	}
 
-	@GetMapping("/api/user/serviceAreaList")
-	@Operation(summary = "load all service area Areas", description = "load all service area Areas.")
-	public  ResponseEntity<?>serviceAreaList(Authentication authentication) throws IOException {
-		List<UserServiceArea> userServiceAreaList = new ArrayList<>();
-		
-			UserServiceArea userServiceAreaItem1 = new UserServiceArea();
-			userServiceAreaItem1.setId(1l);
-			userServiceAreaItem1.setFullAddress("Paramount Golfforeste, UPSIDC");
-			userServiceAreaItem1.setDistrict("Greater Noida");
-			userServiceAreaItem1.setState("UP");
-			userServiceAreaItem1.setPinCode(201309);
-			userServiceAreaItem1.setStatus(StatusEnum.ACTIVE);
-			
-		
-		
-			UserServiceArea userServiceAreaItem2 = new UserServiceArea();
-			userServiceAreaItem2.setId(2l);
-			userServiceAreaItem2.setFullAddress("Panchsheel Greens 2");
-			userServiceAreaItem2.setDistrict("Sector 16B");
-			userServiceAreaItem2.setState("Greater Noida");
-			userServiceAreaItem2.setPinCode(201306);
-			userServiceAreaItem2.setStatus(StatusEnum.ACTIVE);
-			
-			UserServiceArea userServiceAreaItem3 = new UserServiceArea();
-			userServiceAreaItem3.setId(2l);
-			userServiceAreaItem3.setFullAddress("Dummy Service area");
-			userServiceAreaItem3.setDistrict("Sector 16B");
-			userServiceAreaItem3.setState("Greater Noida");
-			userServiceAreaItem3.setPinCode(201306);
-			userServiceAreaItem3.setStatus(StatusEnum.ACTIVE);
-			
-			userServiceAreaList.add(userServiceAreaItem1);
-			userServiceAreaList.add(userServiceAreaItem2);
-			userServiceAreaList.add(userServiceAreaItem3);
-		
-		return  ResponseEntity.ok(userServiceAreaList);
-
-	} 
+	
 	
 	@GetMapping("/api/user/loadUserAddresses")
 	@Operation(summary = "load all user addresses", description = "load all user addresses.")
-	public ResponseEntity<?> loadUserAddressList(Principal principal) throws IOException {
+	public ResponseEntity<?> loadUserAddressList() throws IOException {
 		List<UserAddresses> userAddressList = new ArrayList();
 		UserAddresses address1 = new UserAddresses();
 		address1.setId(11l);
 		address1.setAddress("E2 702, Paramount Golfforeste, UPSIDC, Greater Noida, UP - 201309");
 		address1.setDefault(true);
 		userAddressList.add(address1);
+		
+		UserAddresses address2 = new UserAddresses();
+		address2.setId(12l);
+		address2.setAddress("F - 504 , Paramount Golfforeste, UPSIDC, Greater Noida, UP - 201309");
+		address2.setDefault(true);
+		userAddressList.add(address2);
+		
+		
 		return ResponseEntity.ok(userAddressList);
 
 	}
@@ -339,6 +314,7 @@ public class MyController {
 		userDetailsDTO.setServiceAreaId(5l);
 		userDetailsDTO.setHouseNo("House no-102");
 		userDetailsDTO.setFullAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
+		userDetailsDTO.setRole(UserRoleEnum.ROLE_USER);
 
 		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.png")
 				.toUriString();
@@ -369,8 +345,62 @@ public class MyController {
 				.toUriString();
 		
 		userDetailsDTO.setUserWalletImage(wallet);
+		
+		String qrCode = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user5QRCode.png")
+				.toUriString();
+		
+		userDetailsDTO.setMyQRCode(qrCode);
+		
+		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("COST2COST_Red.png")
+		.toUriString();
+		userDetailsDTO.setCompanyLogo(logo);
 		return userDetailsDTO;
 	}
+	
+	@GetMapping("/api/user/serviceAreaList")
+	@Operation(summary = "load all service area Areas", description = "load all service area Areas.")
+	public  ServiceAreaDetails serviceAreaList(){
+		
+		ServiceAreaDetails details = new ServiceAreaDetails();
+		List<UserServiceArea> userServiceAreaList = new ArrayList<>();
+		
+			UserServiceArea userServiceAreaItem1 = new UserServiceArea();
+			userServiceAreaItem1.setId(1l);
+			userServiceAreaItem1.setFullAddress("Paramount Golfforeste, UPSIDC");
+			userServiceAreaItem1.setDistrict("Greater Noida");
+			userServiceAreaItem1.setState("UP");
+			userServiceAreaItem1.setPinCode(201309);
+			userServiceAreaItem1.setStatus(StatusEnum.ACTIVE);
+			
+		
+		
+			UserServiceArea userServiceAreaItem2 = new UserServiceArea();
+			userServiceAreaItem2.setId(2l);
+			userServiceAreaItem2.setFullAddress("Panchsheel Greens 2");
+			userServiceAreaItem2.setDistrict("Sector 16B");
+			userServiceAreaItem2.setState("Greater Noida");
+			userServiceAreaItem2.setPinCode(201306);
+			userServiceAreaItem2.setStatus(StatusEnum.ACTIVE);
+			
+			UserServiceArea userServiceAreaItem3 = new UserServiceArea();
+			userServiceAreaItem3.setId(3l);
+			userServiceAreaItem3.setFullAddress("Dummy Service area");
+			userServiceAreaItem3.setDistrict("Sector 16B");
+			userServiceAreaItem3.setState("Greater Noida");
+			userServiceAreaItem3.setPinCode(201306);
+			userServiceAreaItem3.setStatus(StatusEnum.ACTIVE);
+			
+			userServiceAreaList.add(userServiceAreaItem1);
+			userServiceAreaList.add(userServiceAreaItem2);
+			userServiceAreaList.add(userServiceAreaItem3);
+
+		
+			details.setUserServiceAreaList(userServiceAreaList);
+			
+			
+		return  details;
+
+	} 
 
 	@GetMapping("/api/product/productList")
 	@Operation(summary = "Product list", description = "Provide list of product for registered user")
@@ -611,13 +641,14 @@ public class MyController {
 
 				product.setImage(imageUrl);
 				product.setCategory(category);
-				product.setMoreAbout("good product");
+				product.setMoreAbout(fileName);
 				product.setOfferPrice(100d);
 				product.setPrice(120d);
 				product.setQuantity(10);
 				product.setDescription("good product");
 				product.setBusinessUserProfileId(userProfileId);
 				product.setId(id);
+				product.setStarRating(4.5);
 
 				products.add(product);
 
@@ -668,4 +699,185 @@ public class MyController {
 		}
 		return resource;
 	}
+	
+	
+	@GetMapping("/loadBusinessUserDashboard/{userProfileId}")
+	public ResponseEntity<?> loadBusinessUserDashboard(@PathVariable Long userProfileId) {
+		
+		UserBusinessDashboardDTO buDashboard = new UserBusinessDashboardDTO();
+		
+		List<UserBusinessProfileDTO> userBusinessProfileDTOList = new ArrayList<>();
+		UserBusinessProfileDTO bp = new UserBusinessProfileDTO();
+		
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptastore.png")
+				.toUriString();
+		bp.setId(1l);
+		bp.setBusinessLogoPath(imageUrl);
+		bp.setOwnerName("Ramesh Gupta");
+		bp.setStoreName("Gupta general Store");
+		
+		String imageUrl1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("guptaveg.png")
+				.toUriString();
+		
+		UserBusinessProfileDTO bp1 = new UserBusinessProfileDTO();
+		bp1.setBusinessLogoPath(imageUrl1);
+		bp1.setOwnerName("Ramesh Gupta");
+		bp1.setStoreName("Gupta Vegitable SHOP");
+		bp1.setId(2l);
+		
+		userBusinessProfileDTOList.add(bp);
+		userBusinessProfileDTOList.add(bp1);
+		
+		
+		List<BusinessDashboaardFunctionalityDTO> buIconDetails = new ArrayList<>();
+		
+		String ic1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_businessprofile.png")
+				.toUriString();
+		String ic2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_products.png")
+				.toUriString();
+		String ic3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_orders.png")
+				.toUriString();
+		String ic4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_moneytransfer.png")
+				.toUriString();
+		String ic5 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_reports.png")
+				.toUriString();
+		String ic6 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_companyprofile.png")
+				.toUriString();
+		String ic7 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_trending.png")
+				.toUriString();
+		String ic8 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_annualreport.png")
+				.toUriString();
+		String ic9 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_activation.png")
+				.toUriString();
+		String ic10 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_communication.png")
+				.toUriString();
+		
+		String ic11 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("bu_users.png")
+				.toUriString();
+		
+		
+		BusinessDashboaardFunctionalityDTO icone1 = new BusinessDashboaardFunctionalityDTO();
+		icone1.setBuIconPath(ic1);
+		icone1.setName("Business User");
+		
+		BusinessDashboaardFunctionalityDTO icone2 = new BusinessDashboaardFunctionalityDTO();
+		icone2.setBuIconPath(ic2);
+		icone2.setName("Product");
+		
+		BusinessDashboaardFunctionalityDTO icone3 = new BusinessDashboaardFunctionalityDTO();
+		icone3.setBuIconPath(ic3);
+		icone3.setName("Orders");
+		
+		BusinessDashboaardFunctionalityDTO icone4 = new BusinessDashboaardFunctionalityDTO();
+		icone4.setBuIconPath(ic4);
+		icone4.setName("Payments");
+		
+		
+		BusinessDashboaardFunctionalityDTO icone5 = new BusinessDashboaardFunctionalityDTO();
+		icone5.setBuIconPath(ic5);
+		icone5.setName("Reports");
+		
+		BusinessDashboaardFunctionalityDTO icone6 = new BusinessDashboaardFunctionalityDTO();
+		icone6.setBuIconPath(ic6);
+		icone6.setName("Compemy Profile");
+		
+		BusinessDashboaardFunctionalityDTO icone7 = new BusinessDashboaardFunctionalityDTO();
+		icone7.setBuIconPath(ic7);
+		icone7.setName("Trend");
+		
+		BusinessDashboaardFunctionalityDTO icone8 = new BusinessDashboaardFunctionalityDTO();
+		icone8.setBuIconPath(ic8);
+		icone8.setName("Anual report");
+		
+		BusinessDashboaardFunctionalityDTO icone9 = new BusinessDashboaardFunctionalityDTO();
+		icone9.setBuIconPath(ic9);
+		icone9.setName("Activation");
+		
+		BusinessDashboaardFunctionalityDTO icone10 = new BusinessDashboaardFunctionalityDTO();
+		icone10.setBuIconPath(ic10);
+		icone10.setName("Communication");
+		
+		BusinessDashboaardFunctionalityDTO icone11 = new BusinessDashboaardFunctionalityDTO();
+		icone11.setBuIconPath(ic11);
+		icone11.setName("Users");
+		
+		buIconDetails.add(icone2);
+		buIconDetails.add(icone1);
+		buIconDetails.add(icone3);
+		buIconDetails.add(icone4);
+		buIconDetails.add(icone5);
+		buIconDetails.add(icone6);
+		buIconDetails.add(icone7);
+		buIconDetails.add(icone8);
+		buIconDetails.add(icone9);
+		buIconDetails.add(icone10);
+		buIconDetails.add(icone11);
+		
+		
+		buDashboard.setBuIconDetails(buIconDetails);
+		buDashboard.setUserBusinessProfileDTOList(userBusinessProfileDTOList);
+		return ResponseEntity.ok(buDashboard);
+
+	}
+	
+	@PostMapping(value = "/createUserBusinessProfile")
+	public ResponseEntity<?> createUserBusinessProfile(@RequestBody BusinessProfileRequest createBusinessProfileRequest) {
+		
+		
+		return ResponseEntity.ok("SUCCESS: Business profile created sucessfully");
+	}
+	
+	@GetMapping("/myConnections/{userProfileId}")
+	@Operation(summary = "User connections", description = "User connections")
+	public ResponseEntity<?> myConnections(@PathVariable Long userProfileId) {
+		UserConnection connection = new UserConnection();
+		
+		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.png")
+				.toUriString();
+
+		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.png")
+				.toUriString();
+
+		String name="Rajesh Gupta";
+		String nameChild1="Tejas Shah";
+		String nameCHild2="SP Mishra";
+		if(userProfileId==2) {
+			 name="Tejas Shah";
+			 nameChild1="Lalit Singh";
+			 nameCHild2="Hari ram";
+		}
+		
+		connection.setClearedPoint(150d);
+		connection.setUnclearedPoint(220d);
+		connection.setProfileImagePath(imageUrl);
+		connection.setDisplayName(name);
+		connection.setTotalConnection(2);
+		connection.setCompanyLogo(logo);
+		List<UserConnection> connections = new ArrayList<>();
+		
+		UserConnection connectionChild = new UserConnection();
+		connectionChild.setClearedPoint(102d);
+		connectionChild.setUnclearedPoint(540d);
+		connectionChild.setDisplayName(nameChild1);
+		connectionChild.setProfileImagePath(imageUrl);
+		connectionChild.setTotalConnection(2);
+		
+		UserConnection connectionChild1 = new UserConnection();
+		connectionChild1.setClearedPoint(202d);
+		connectionChild1.setUnclearedPoint(840d);
+		connectionChild1.setDisplayName(nameCHild2);
+		connectionChild1.setProfileImagePath(imageUrl);
+		connection.setTotalConnection(2);
+
+		
+		connections.add(connectionChild);
+		connections.add(connectionChild1);
+		
+		connection.setChild(connections);
+		return ResponseEntity.ok(connection);
+
+	}
+	
+
+	
 }

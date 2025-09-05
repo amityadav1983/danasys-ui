@@ -11,7 +11,7 @@ const ItemsGrid = (props: Props) => {
 
   return (
     <div className="mb-8 w-full">
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8"> {/* Further increased gap for mobile */}
         {items?.map((item) => (
           <div
             key={item.product_id}

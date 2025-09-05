@@ -1,9 +1,12 @@
-import { useAppDispatch } from '../hooks/useAppDispatch';
-import { useAppSelector } from '../hooks/useAppSelector';
-import { hide as hideModal } from '../store/modal';
-import DiscountInfo from './home/DiscountInfo';
-import OrderSuccessModal from './OrderSuccessModal';
-import LoginModal from './LoginModal';
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { useAppSelector } from "../hooks/useAppSelector";
+import { hide as hideModal } from "../store/modal";
+import DiscountInfo from "./home/DiscountInfo";
+import OrderSuccessModal from "./OrderSuccessModal";
+import LoginModal from "./LoginModal";
+import UpdateProfile from "./Updates/UpdateProfile";
+import UpdateAddress from "./Updates/UpdateAddress";
+import UpdatePassword from "./Updates/UpdatePassword";
 
 const Modal = () => {
   const { type, data } = useAppSelector((state) => state.modal.modalData);
@@ -14,11 +17,11 @@ const Modal = () => {
   };
 
   const output =
-    type === 'discount' ? (
+    type === "discount" ? (
       <DiscountInfo data={data} onClose={handleClose} />
-    ) : type === 'orderSuccess' && data ? (
+    ) : type === "orderSuccess" && data ? (
       <OrderSuccessModal data={data} />
-    ) : type === 'login' ? (
+    ) : type === "login" ? (
       <LoginModal
         isOpen={true}
         onClose={handleClose}
@@ -26,6 +29,12 @@ const Modal = () => {
           console.log("User attempted login", credentials);
         }}
       />
+    ) : type === "updateProfile" ? (
+      <UpdateProfile onClose={handleClose}/>
+    ) : type === "updateAddress" ? (
+      <UpdateAddress onClose={handleClose} />
+    ) : type === "updatePassword" ? (
+      <UpdatePassword onClose={handleClose} />
     ) : null;
 
   return (

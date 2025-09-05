@@ -38,7 +38,7 @@ public class UserDetailsDTO {
 	private String userWalletImage;
 	
 	private UserRoleEnum role;
-	
+
 	private String myQRCode;
 	
 	private String companyLogo;
