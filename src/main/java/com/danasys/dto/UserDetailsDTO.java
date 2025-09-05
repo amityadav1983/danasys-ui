@@ -2,11 +2,17 @@ package com.danasys.dto;
 
 import java.util.List;
 
+import com.danasys.user.enums.UserRoleEnum;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDetailsDTO {
 
 	private String fullname;
@@ -30,6 +36,12 @@ public class UserDetailsDTO {
 	private Long serviceAreaId;
 	
 	private String userWalletImage;
+	
+	private UserRoleEnum role;
+	
+	private String myQRCode;
+	
+	private String companyLogo;
 
 
 }

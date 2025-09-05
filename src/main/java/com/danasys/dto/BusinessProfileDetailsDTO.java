@@ -2,7 +2,6 @@ package com.danasys.dto;
 
 import java.io.Serializable;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,4 +12,6 @@ public class BusinessProfileDetailsDTO  implements Serializable {
 	private Long id;
 	private String storeName;
 	private String businessLogoPath;
+	private int minumumPlatformFees;
+	private int maxPlatformPercentage;
 }

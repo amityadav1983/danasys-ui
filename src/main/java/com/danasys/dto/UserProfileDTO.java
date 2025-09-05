@@ -9,29 +9,27 @@ import lombok.Setter;
 @Getter
 public class UserProfileDTO {
 
-	 	private Long id;
+	private Long id;
 
-	    private String fullname;
+	private String fullname;
 
-	    private String email;
-	    
-	    private String contactInfo;
+	private String email;
 
-	    private String userProfilePicture;
+	private String contactInfo;
 
-	    private UserProfileDTO parentProfile;
+	private String userProfilePicture;
 
-	    private UserProfileDTO managerProfile;
+	private UserProfileDTO parentProfile;
 
-	    private String status;
-	    
-	    private String refernceNo;
+	private UserProfileDTO managerProfile;
 
-	    private List<UserProfileDTO> childProfiles;
+	private StatusEnum status;
 
-	    private List<UserProfileDTO> managedProfiles;
-	    
-	    private List<UserBusinessProfileDTO> businessProfiles;
-	    
-	    private String fullAddress;
+	private String refernceNo;
+
+	private List<UserProfileDTO> childProfiles;
+
+	private List<UserProfileDTO> managedProfiles;
+
+	private List<UserBusinessProfileDTO> businessProfiles;
 }
