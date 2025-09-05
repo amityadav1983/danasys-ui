@@ -1,6 +1,5 @@
 package com.danasys.user.request;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.danasys.dto.ProductCategoryDTO;
@@ -16,5 +15,5 @@ public class BusinessProfileRequest {
 
 	private ProductCategoryDTO category;
 
-	private UserBusinessAddressRequest businessAddresses;
+	private List<UserBusinessAddressRequest> businessAddresses;
 }

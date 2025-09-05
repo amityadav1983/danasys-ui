@@ -1,9 +1,6 @@
 package com.danasys.user.request;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import com.danasys.dto.ProductCategoryDTO;
 
 import lombok.Data;
 
@@ -14,5 +11,5 @@ public class UpdateBusinessProfileRequest {
 	
 	private String storeName;
 
-	private UserBusinessAddressRequest businessAddresses;
+	private List<UserBusinessAddressRequest> businessAddresses;
 }

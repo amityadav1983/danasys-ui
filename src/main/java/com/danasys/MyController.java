@@ -283,7 +283,7 @@ public class MyController {
 	
 	@GetMapping("/api/user/searchUser")
 	@Operation(summary = "perform user search", description = "perform user search.")
-	public ResponseEntity<?> searchUser(@RequestParam String keyword) {
+	public ResponseEntity<?> searchUser(@RequestParam String userEmail, @RequestParam String contactNumber) {
 		UserProfileDTO userProfile = new UserProfileDTO();
 		userProfile.setId(1l);
 		userProfile.setFullname("Sri Ram");
