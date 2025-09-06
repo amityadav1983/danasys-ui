@@ -52,6 +52,7 @@ import com.danasys.user.request.BusinessProfileRequest;
 import com.danasys.user.request.DelegationRequest;
 import com.danasys.user.request.ResetPasswordRequest;
 import com.danasys.user.request.UpdateBusinessProfileRequest;
+import com.danasys.user.request.UpdateUserRolesRequest;
 import com.danasys.user.request.UserPasswordRequest;
 import com.danasys.user.request.UserProfileUpdateRequest;
 import com.danasys.user.request.UserServiceAreaRequest;
@@ -889,6 +890,130 @@ public class MyController {
 		connection.setChild(connections);
 		return ResponseEntity.ok(connection);
 
+	}
+	
+	//Admin APIS
+	
+
+	//Service Area Operations
+	@PutMapping("/api/admin/approveServiceArea/{id}/approve")
+	public ResponseEntity<?> approveServiceArea(@PathVariable Long id) {
+		return ResponseEntity.ok("service area approved successfully");
+	}
+	
+	@PostMapping("/api/admin/updateServiceArea")
+	public ResponseEntity<?> updateServiceArea(@RequestBody ServiceAreaDTO serviceArea) {
+		return ResponseEntity.ok("service area updated successfully");
+	}
+	
+	@PutMapping("/api/admin/removeServiceArea/{id}/remove")
+	public ResponseEntity<?> removeServiceArea(@PathVariable Long id) {
+		return ResponseEntity.ok("service area removed successfully");
+	}
+	
+	@GetMapping("/api/admin/allRegisteredServiceAreas")
+	@Operation(summary = "Load all service Areas", description = "API for admin to view all register service areas.")
+	public ResponseEntity<List<ServiceAreaDTO>> getAllRegisteredServiceArea() {
+		List<ServiceAreaDTO> serviceAreas = new ArrayList<>();
+		ServiceAreaDTO userServiceAreaItem1 = new ServiceAreaDTO();
+		userServiceAreaItem1.setId(1l);
+		userServiceAreaItem1.setFullAddress("Paramount Golfforeste, UPSIDC");
+		userServiceAreaItem1.setDistrict("Greater Noida");
+		userServiceAreaItem1.setState("UP");
+		userServiceAreaItem1.setPinCode(201309);
+		userServiceAreaItem1.setStatus(StatusEnum.ACTIVE);
+		ServiceAreaDTO userServiceAreaItem2 = new ServiceAreaDTO();
+		userServiceAreaItem1.setId(1l);
+		userServiceAreaItem1.setFullAddress("Paramount Golfforeste, UPSIDC");
+		userServiceAreaItem1.setDistrict("Greater Noida");
+		userServiceAreaItem1.setState("UP");
+		userServiceAreaItem1.setPinCode(201309);
+		userServiceAreaItem1.setStatus(StatusEnum.ACTIVE);
+		ServiceAreaDTO userServiceAreaItem3 = new ServiceAreaDTO();
+		userServiceAreaItem1.setId(1l);
+		userServiceAreaItem1.setFullAddress("Paramount Golfforeste, UPSIDC");
+		userServiceAreaItem1.setDistrict("Greater Noida");
+		userServiceAreaItem1.setState("UP");
+		userServiceAreaItem1.setPinCode(201309);
+		userServiceAreaItem1.setStatus(StatusEnum.ACTIVE);
+		
+		serviceAreas.add(userServiceAreaItem1);
+		serviceAreas.add(userServiceAreaItem2);
+		serviceAreas.add(userServiceAreaItem3);
+		return ResponseEntity.ok(serviceAreas);
+	}
+	
+// Product Category Operations
+	@PutMapping("/api/admin/approveCategory/{id}/approve")
+	public ResponseEntity<?> approveNewCategory(@PathVariable Long id) {
+		return ResponseEntity.ok("Product category approved successfully");
+	}
+	
+	@PostMapping("/api/admin/updateCategory")
+	public ResponseEntity<?> updateCategory(@RequestBody ProductCategoryDTO productCategory) {
+		return ResponseEntity.ok("Product category updated successfully");
+	}
+	
+	@PutMapping("/api/admin/removeCategory/{id}/remove")
+	public ResponseEntity<?> removeCategory(@PathVariable Long id) {
+		return ResponseEntity.ok("Product category removed successfully");
+	}
+		
+	@GetMapping("/api/admin/allRegisteredProductCategory")
+	@Operation(summary = "Load all Product Categories", description = "API for admin to view all product categories.")
+	public ResponseEntity<List<ProductCategoryDTO>> getAllRegisteredProductCategory() {
+		List<ProductCategoryDTO> productCategories = new ArrayList<>();
+		ProductCategoryDTO productCategory = new ProductCategoryDTO();
+		productCategory.setCategoryName(ProductCategoryEnum.Grocery);
+		ProductCategoryDTO productCategory1 = new ProductCategoryDTO();
+		productCategory.setCategoryName(ProductCategoryEnum.Electronics);
+		ProductCategoryDTO productCategory2 = new ProductCategoryDTO();
+		productCategory.setCategoryName(ProductCategoryEnum.Fashion);
+		ProductCategoryDTO productCategory3 = new ProductCategoryDTO();
+		productCategory.setCategoryName(ProductCategoryEnum.OTHERS);
+		ProductCategoryDTO productCategory4 = new ProductCategoryDTO();
+		productCategory.setCategoryName(ProductCategoryEnum.Vegetables);
+		
+		productCategories.add(productCategory);
+		productCategories.add(productCategory1);
+		productCategories.add(productCategory2);
+		productCategories.add(productCategory3);
+		productCategories.add(productCategory4);
+		return ResponseEntity.ok(productCategories);
+	}
+
+	// admin User Operations
+	@PutMapping("/api/admin/user/{userId}/modifyUserPermissions")
+	@Operation(summary = "Admin can modify user permission", description = "API for admin to add or remove role from user")
+	public ResponseEntity<?> modifyUserPermissions(@PathVariable Long userId,
+			@RequestBody UpdateUserRolesRequest request) {
+		return ResponseEntity.ok("User permisson assigned successfully");
+	}
+	
+	@PutMapping("/api/admin/user/{userId}/activateUser")
+	@Operation(summary = "API for admin to Activate user", description = "API for admin to Activate user")
+	public ResponseEntity<?> activateUser(@PathVariable Long userId) {
+		return ResponseEntity.ok("User activated successfully");
+	}
+	
+	@PutMapping("/api/admin/user/{userId}/deActivateUser")
+	@Operation(summary = "API for admin to deActivate user", description = "API for admin to deActivate user")
+	public ResponseEntity<?> deActivateUser(@PathVariable Long userId) {
+		return ResponseEntity.ok("User deactivated successfully");
+	}
+	
+	@PutMapping("/api/admin/user/{userId}/removeUser")
+	@Operation(summary = "Admin can remove user", description = "API for admin to remove user")
+	public ResponseEntity<?> removeUser(@PathVariable Long userId) {
+		return ResponseEntity.ok("User Removed successfully");
+	}
+
+
+	@Operation(summary = "Upload Service Area CSV", description = "API for admin to upload service area details from a CSV file")
+	@PostMapping(value = "/api/admin/uploadSericeAreaCsv", consumes = "multipart/form-data")
+	public ResponseEntity<?> uploadSericeAreaCsv(@RequestPart("file") MultipartFile file) {
+		return ResponseEntity.ok("Uploaded Service Area: " + 10 + " | Skipped (duplicates): " + 2);
+		
 	}
 	
 
