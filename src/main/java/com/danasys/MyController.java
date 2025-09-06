@@ -55,6 +55,7 @@ import com.danasys.user.request.UpdateBusinessProfileRequest;
 import com.danasys.user.request.UserPasswordRequest;
 import com.danasys.user.request.UserProfileUpdateRequest;
 import com.danasys.user.request.UserServiceAreaRequest;
+import com.danasys.user.response.ManagerDto;
 import com.danasys.user.response.UserAddresses;
 import com.danasys.user.response.UserServiceArea;
 
@@ -297,6 +298,18 @@ public class MyController {
 	public ResponseEntity<?> assignDelegationRole(@RequestBody DelegationRequest request) {
 		String status = "Delegation assigned to user successfully.";
 		return ResponseEntity.ok(status);
+	}
+	
+	@GetMapping("/api/user/getUserMangers")
+	@Operation(summary = "load user manager", description = "load user manager.")
+	public ResponseEntity<?> loadUserManagers() {
+		ManagerDto userManager = new ManagerDto();
+		userManager.setId(1L);
+		userManager.setFullname("Amit");
+		userManager.setContactInfo("123456");
+		userManager.setEmail("amit.danasys@gmail.com");
+		return ResponseEntity.ok(userManager);
+
 	}
 
 	//user Info API end --
