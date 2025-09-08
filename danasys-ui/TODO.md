@@ -1,10 +1,14 @@
-# Search Bar Visibility Implementation Plan
+# TODO: Update Business Profile Update Button Behavior
 
-## Steps to Complete:
-1. [ ] Modify Header.tsx to accept a heroAreaRef prop and update IntersectionObserver logic
-2. [ ] Update Home.tsx to create a ref for HeroArea and pass it to Header component
-3. [ ] Test the scrolling behavior to ensure search bar appears only after hero area is scrolled past
+## Tasks
+- [ ] Modify BusinessProfileForm.tsx to accept optional profile prop for editing
+- [ ] Prefill form data when profile prop is provided
+- [ ] Adjust submit logic to handle both create and update API calls
+- [ ] Update BusinessProfile.tsx to use BusinessProfileForm for updates
+- [ ] Remove UpdateBusinessProfileForm usage from BusinessProfile.tsx
+- [ ] Test update flow to ensure no popup opens and form works correctly
+- [ ] Verify add new profile functionality still works
 
-## Current Status:
-- Plan approved by user
-- Starting implementation
+## Status
+- [x] Plan approved by user
+- [ ] Tasks in progress

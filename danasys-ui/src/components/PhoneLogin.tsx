@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import api from "../services/api";
 
 interface PhoneLoginProps {
   onContinue: (phone: string) => void;
@@ -24,47 +25,24 @@ const PhoneLogin: React.FC<PhoneLoginProps> = ({ onContinue, onLogin }) => {
     setIsLoading(true);
     try {
       console.log('🔍 PhoneLogin: Sending OTP to phone:', phone);
-      console.log('🔍 PhoneLogin: Making API call to /public/registerUser/sendMobileOTP...');
-      
-      const response = await fetch('/public/registerUser/sendMobileOTP', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ mobileNumber: phone }),
-      });
+      console.log('🔍 PhoneLogin: Making API call to /public/sendMobileOTP...');
 
-      console.log('🔍 PhoneLogin: OTP API response status:', response.status);
-      console.log('🔍 PhoneLogin: OTP API response ok:', response.ok);
-      console.log('🔍 PhoneLogin: OTP API response headers:', Object.fromEntries(response.headers.entries()));
+      const response = await api.post(`/public/sendMobileOTP?mobileNumber=${encodeURIComponent(phone)}`, {});
 
-      if (response.ok) {
-        // Check content type to handle both JSON and text responses
-        const contentType = response.headers.get('content-type');
-        console.log('🔍 PhoneLogin: Response content-type:', contentType);
-        
-        let responseData;
-        if (contentType && contentType.includes('application/json')) {
-          responseData = await response.json();
-          console.log('🔍 PhoneLogin: OTP API response data (JSON):', responseData);
-        } else {
-          responseData = await response.text();
-          console.log('🔍 PhoneLogin: OTP API response data (Text):', responseData);
-        }
-        
-        console.log('🔍 PhoneLogin: OTP sent successfully!');
-        
-        setShowError(false);
-        // Call onContinue to open OTP modal
-        onContinue(phone);
-      } else {
-        const errorData = await response.text();
-        console.error('❌ PhoneLogin: OTP API error response:', errorData);
-        throw new Error(`Failed to send OTP: ${response.status}`);
-      }
-    } catch (error) {
+      console.log('🔍 PhoneLogin: OTP API response:', response);
+
+      console.log('🔍 PhoneLogin: OTP sent successfully!');
+
+      setShowError(false);
+      // Call onContinue to open OTP modal
+      onContinue(phone);
+    } catch (error: any) {
       console.error('❌ PhoneLogin: Error sending OTP:', error);
-      alert('Failed to send OTP. Please try again.');
+      if (error.response?.data) {
+        alert(error.response.data);
+      } else {
+        alert('Failed to send OTP. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }

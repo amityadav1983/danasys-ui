@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import TermsCondition from "./TermsCondition"; // import popup
 
 interface RegisterProps {
   onBackToLogin: () => void;
@@ -18,6 +19,8 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [hideOtp, setHideOtp] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   
   // Email verification states
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -90,14 +93,14 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
       console.log('🔍 Register: Email OTP API response status:', response.status);
 
       // Always show OTP input regardless of API response
-      setOtpMessage("OTP sent to your mail");
+      // setOtpMessage("OTP sent to your mail");
       setShowOtpInput(true);
       console.log('🔍 Register: Showing OTP input field');
 
     } catch (err: any) {
       console.error("❌ Register: Email verification error:", err);
       // Don't show error message, just show OTP input
-      setOtpMessage("OTP sent to your mail");
+      // setOtpMessage("OTP sent to your mail");
       setShowOtpInput(true);
       console.log('🔍 Register: Showing OTP input field despite error');
     } finally {
@@ -106,14 +109,21 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
   };
 
   // OTP validation function
-  const handleOtpChange = (value: string) => {
-    setOtp(value);
-    if (value.length === 6) { // Assuming 6-digit OTP
-      setIsEmailVerified(true);
-    } else {
-      setIsEmailVerified(false);
-    }
-  };
+const handleOtpChange = (value: string) => {
+  setOtp(value);
+  if (value.length === 4) { // Assuming 6-digit OTP
+    setIsEmailVerified(true);
+
+    // Start timer to hide OTP field after 5 sec
+    setTimeout(() => {
+      setHideOtp(true);
+    }, 5000);
+  } else {
+    setIsEmailVerified(false);
+    setHideOtp(false); // reset if incomplete OTP
+  }
+};
+
 
   const isFormValid =
     email.trim() &&
@@ -269,7 +279,7 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
   onChange={(e) => setEmail(e.target.value)}
   onFocus={() => setEmailFocused(true)}
   onBlur={() => setEmailFocused(false)}
-  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4 pr-20"
+  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4 pr-20 text-black-600"
   required
   disabled={isLoading || isVerifyingEmail}
 />
@@ -291,45 +301,60 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
       )}
 
       {/* OTP Input with Floating Label Design */}
-      {showOtpInput && (
-        <div className="relative">
-          <div className="relative bg-white rounded-xl">
-            {/* Top border */}
-            <div className={`absolute top-0 left-0 right-0 h-0.5 transition-all duration-200 ${
-              otpFocused ? 'bg-blue-500' : 'bg-blue-200'
-            }`}></div>
-            {/* Bottom border */}
-            <div className={`absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-200 ${
-              otpFocused ? 'bg-blue-500' : 'bg-blue-200'
-            }`}></div>
-            {/* Left border */}
-            <div className={`absolute top-0 bottom-0 left-0 w-0.5 transition-all duration-200 ${
-              otpFocused ? 'bg-blue-500' : 'bg-blue-200'
-            }`}></div>
-            {/* Right border */}
-            <div className={`absolute top-0 bottom-0 right-0 w-0.5 transition-all duration-200 ${
-              otpFocused ? 'bg-blue-500' : 'bg-blue-200'
-            }`}></div>
-            
-            <div className={`absolute left-4 bg-white px-2 text-gray-500 text-sm font-medium transition-all duration-200 ${
-              otpFocused || otp ? '-top-2 text-xs text-blue-500' : 'top-3 text-sm'
-            }`}>
-              OTP
-            </div>
-            <Input
-  type="text"
-  placeholder=""
-  value={otp}
-  onChange={(e) => handleOtpChange(e.target.value)}
-  onFocus={() => setOtpFocused(true)}
-  onBlur={() => setOtpFocused(false)}
-  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
-  maxLength={6}
-  disabled={isLoading}
-/>
-          </div>
-        </div>
-      )}
+      {showOtpInput && !hideOtp && (
+  <div
+    className={`relative transition-opacity duration-1000 ${
+      hideOtp ? "opacity-0" : "opacity-100"
+    }`}
+  >
+    <div className="relative bg-white rounded-xl">
+      {/* Top border */}
+      <div
+        className={`absolute top-0 left-0 right-0 h-0.5 transition-all duration-200 ${
+          otpFocused ? "bg-blue-500" : "bg-blue-200"
+        }`}
+      ></div>
+      {/* Bottom border */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-200 ${
+          otpFocused ? "bg-blue-500" : "bg-blue-200"
+        }`}
+      ></div>
+      {/* Left border */}
+      <div
+        className={`absolute top-0 bottom-0 left-0 w-0.5 transition-all duration-200 ${
+          otpFocused ? "bg-blue-500" : "bg-blue-200"
+        }`}
+      ></div>
+      {/* Right border */}
+      <div
+        className={`absolute top-0 bottom-0 right-0 w-0.5 transition-all duration-200 ${
+          otpFocused ? "bg-blue-500" : "bg-blue-200"
+        }`}
+      ></div>
+
+      <div
+        className={`absolute left-4 bg-white px-2 text-gray-500 text-sm font-medium transition-all duration-200 ${
+          otpFocused || otp ? "-top-2 text-xs text-blue-500" : "top-3 text-sm"
+        }`}
+      >
+        OTP
+      </div>
+      <Input
+        type="text"
+        placeholder=""
+        value={otp}
+        onChange={(e) => handleOtpChange(e.target.value)}
+        onFocus={() => setOtpFocused(true)}
+        onBlur={() => setOtpFocused(false)}
+        className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
+        maxLength={4}
+        disabled={isLoading}
+      />
+    </div>
+  </div>
+)}
+
 
       {/* Password Input with Floating Label Design */}
       <div className="relative">
@@ -409,117 +434,108 @@ const Register: React.FC<RegisterProps> = ({ onBackToLogin }) => {
         </div>
       </div>
 
-      {/* Contact Info Input with Floating Label Design */}
-      <div className="relative">
-        <div className="relative bg-white rounded-xl">
-          {/* Top border */}
-          <div className={`absolute top-0 left-0 right-0 h-0.5 transition-all duration-200 ${
-            contactInfoFocused ? 'bg-blue-500' : 'bg-blue-200'
-          }`}></div>
-          {/* Bottom border */}
-          <div className={`absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-200 ${
-            contactInfoFocused ? 'bg-blue-500' : 'bg-blue-200'
-          }`}></div>
-          {/* Left border */}
-          <div className={`absolute top-0 bottom-0 left-0 w-0.5 transition-all duration-200 ${
-            contactInfoFocused ? 'bg-blue-500' : 'bg-blue-200'
-          }`}></div>
-          {/* Right border */}
-          <div className={`absolute top-0 bottom-0 right-0 w-0.5 transition-all duration-200 ${
-            contactInfoFocused ? 'bg-blue-500' : 'bg-blue-200'
-          }`}></div>
-          
-          <div className={`absolute left-4 bg-white px-2 text-gray-500 text-sm font-medium transition-all duration-200 ${
-            contactInfoFocused || contactInfo ? '-top-2 text-xs text-blue-500' : 'top-3 text-sm'
-          }`}>
-            Contact Info (optional)
-          </div>
-          <Input
-  type="text"
-  placeholder=""
-  value={contactInfo}
-  onChange={(e) => setContactInfo(e.target.value)}
-  onFocus={() => setContactInfoFocused(true)}
-  onBlur={() => setContactInfoFocused(false)}
-  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
-  disabled={isLoading || !isEmailVerified}
-/>
-        </div>
-      </div>
+      {/* Captcha Row */}
+<div className="flex items-center gap-2">
+  {/* Input with Floating Label */}
+  <div className="relative flex-1">
+    <div className="relative bg-white rounded-xl">
+      {/* Top border */}
+      <div
+        className={`absolute top-0 left-0 right-0 h-0.5 transition-all duration-200 ${
+          captchaFocused ? "bg-blue-500" : "bg-blue-200"
+        }`}
+      ></div>
+      {/* Bottom border */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-200 ${
+          captchaFocused ? "bg-blue-500" : "bg-blue-200"
+        }`}
+      ></div>
+      {/* Left border */}
+      <div
+        className={`absolute top-0 bottom-0 left-0 w-0.5 transition-all duration-200 ${
+          captchaFocused ? "bg-blue-500" : "bg-blue-200"
+        }`}
+      ></div>
+      {/* Right border */}
+      <div
+        className={`absolute top-0 bottom-0 right-0 w-0.5 transition-all duration-200 ${
+          captchaFocused ? "bg-blue-500" : "bg-blue-200"
+        }`}
+      ></div>
 
-      {/* Captcha */}
-      <div className="flex items-center gap-2">
-        <div className="px-4 py-2 bg-gray-200 rounded-lg font-bold tracking-widest select-none">
-          {captcha}
-        </div>
-        <Button
-          type="button"
-          onClick={generateCaptcha}
-          className="bg-gray-300 hover:bg-gray-400 text-black px-3"
-          disabled={isLoading || !isEmailVerified}
-        >
-          ↻
-        </Button>
+      <div
+        className={`absolute left-4 bg-white px-2 text-gray-500 text-sm font-medium transition-all duration-200 ${
+          captchaFocused || captchaInput
+            ? "-top-2 text-xs text-blue-500"
+            : "top-3 text-sm"
+        }`}
+      >
+        Captcha
       </div>
-      {/* Captcha Input with Floating Label Design */}
-      <div className="relative">
-        <div className="relative bg-white rounded-xl">
-          {/* Top border */}
-          <div className={`absolute top-0 left-0 right-0 h-0.5 transition-all duration-200 ${
-            captchaFocused ? 'bg-blue-500' : 'bg-blue-200'
-          }`}></div>
-          {/* Bottom border */}
-          <div className={`absolute bottom-0 left-0 right-0 h-0.5 transition-all duration-200 ${
-            captchaFocused ? 'bg-blue-500' : 'bg-blue-200'
-          }`}></div>
-          {/* Left border */}
-          <div className={`absolute top-0 bottom-0 left-0 w-0.5 transition-all duration-200 ${
-            captchaFocused ? 'bg-blue-500' : 'bg-blue-200'
-          }`}></div>
-          {/* Right border */}
-          <div className={`absolute top-0 bottom-0 right-0 w-0.5 transition-all duration-200 ${
-            captchaFocused ? 'bg-blue-500' : 'bg-blue-200'
-          }`}></div>
-          
-          <div className={`absolute left-4 bg-white px-2 text-gray-500 text-sm font-medium transition-all duration-200 ${
-            captchaFocused || captchaInput ? '-top-2 text-xs text-blue-500' : 'top-3 text-sm'
-          }`}>
-            Captcha
-          </div>
-          <Input
-  type="text"
-  placeholder=""
-  value={captchaInput}
-  onChange={(e) => handleCaptchaChange(e.target.value)}
-  onFocus={() => setCaptchaFocused(true)}
-  onBlur={() => setCaptchaFocused(false)}
-  className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
-  required
-  disabled={isLoading || !isEmailVerified}
-/>
-        </div>
-      </div>
-      {!isCaptchaValid && captchaInput && (
-        <p className="text-xs text-red-500">Captcha does not match</p>
-      )}
+      <Input
+        type="text"
+        value={captchaInput}
+        onChange={(e) => handleCaptchaChange(e.target.value)}
+        onFocus={() => setCaptchaFocused(true)}
+        onBlur={() => setCaptchaFocused(false)}
+        className="bg-transparent border-0 outline-none focus-visible:ring-0 focus:ring-0 rounded-xl px-4 py-3 pt-4"
+        required
+        disabled={isLoading || !isEmailVerified}
+      />
+    </div>
+  </div>
+
+  {/* Captcha Code */}
+  <div className="px-4 py-2 bg-gray-200 rounded-lg font-bold tracking-widest select-none">
+    {captcha}
+  </div>
+
+  {/* Reload Button */}
+  <Button
+    type="button"
+    onClick={generateCaptcha}
+    className="bg-gray-300 hover:bg-gray-400 text-black px-3"
+    disabled={isLoading || !isEmailVerified}
+  >
+    ↻
+  </Button>
+</div>
+
+{/* Error Message */}
+{!isCaptchaValid && captchaInput && (
+  <p className="text-xs text-red-500 mt-1">Captcha does not match</p>
+)}
+
 
       {/* Terms & Conditions */}
-      <div className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={isChecked}
-          disabled={
-            !isCaptchaValid || !email.trim() || !password.trim() || !fullName.trim() || !isEmailVerified || isLoading
-          }
-          onChange={(e) => setIsChecked(e.target.checked)}
-        />
-        <span>
-          I agree to the{" "}
-          <a href="#" className="underline mb-10">
-            Terms & Conditions
-          </a>
-        </span>
-      </div>
+     <div className="flex items-center gap-2 text-sm">
+  <input
+    type="checkbox"
+    checked={isChecked}
+    disabled={
+      !isCaptchaValid ||
+      !email.trim() ||
+      !password.trim() ||
+      !fullName.trim() ||
+      !isEmailVerified ||
+      isLoading
+    }
+    onChange={(e) => setIsChecked(e.target.checked)}
+  />
+  <span className="text-gray-700">
+    I agree to the{" "}
+    <button
+      type="button"
+      onClick={() => setShowTerms(true)}
+      className="underline text-[#349FDE] hover:text-[#2e90cd]"
+    >
+      Terms & Conditions
+    </button>
+  </span>
+</div>
+
+{showTerms && <TermsCondition onClose={() => setShowTerms(false)} />}
 
       {/* Register Button */}
       <Button

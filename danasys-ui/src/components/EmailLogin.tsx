@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import FloatingInput from "./FloatingInput";
 import googleIcon from "../assets/images/google-icon.png";
+import api from "../services/api";
 
 interface EmailLoginProps {
   onRegisterClick: () => void;
@@ -60,12 +61,39 @@ const EmailLogin: React.FC<EmailLoginProps> = ({ onRegisterClick, onLogin }) => 
 
       {/* Links */}
       <div className="flex justify-between text-xs text-black/90">
-        <button type="button" className="underline">
+        <button
+          type="button"
+          className="underline"
+          onClick={async () => {
+            if (!email.trim()) {
+              alert("Please enter your email to reset password.");
+              return;
+            }
+            try {
+              const response = await api.post(`/public/forgotPassword?email=${encodeURIComponent(email)}`, {});
+              alert(response.data || "Reset link sent to your email. Please check your inbox.");
+            } catch (error: any) {
+              console.error("Forgot password error:", error);
+              if (error.response?.data) {
+                alert(error.response.data);
+              } else {
+                alert("Failed to send reset link. Please try again.");
+              }
+            }
+          }}
+        >
           Forgot Password?
         </button>
         <button type="button" className="underline" onClick={onRegisterClick}>
           Don't have an account?
         </button>
+      </div>
+
+     {/* Divider with OR */}
+      <div className="flex items-center gap-2 my-2">
+        <div className="flex-grow h-px bg-blue-500"></div>
+        <span className="text-blue-800 text-lg font-medium">OR</span>
+        <div className="flex-grow h-px bg-blue-500"></div>
       </div>
 
       {/* Google Button */}

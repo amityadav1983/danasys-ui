@@ -105,11 +105,8 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
                 <img
                   src={companyLogo}
                   alt="Logo"
-                  className="max-w-[200px] mx-auto object-contain mb-10 mt-5 drop-shadow-lg"
+                  className="max-w-[250px] mx-auto object-contain mb-5 mt-5 drop-shadow-lg"
                 />
-                <p className="text-black/90 text-sm mt-3 font-medium">
-                  Earn points, live better!
-                </p>
               </div>
 
               {/* Tabs */}

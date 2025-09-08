@@ -53,7 +53,8 @@ const AddToCartButton = ({ product, size }: ButtonProps) => {
       <button
         onClick={add}
         type="button"
-        className="flex items-center justify-center w-8 text-white"
+        className={`flex items-center justify-center w-8 text-white ${itemCount >= 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
+        disabled={itemCount >= 10}
       >
         <IoAddSharp size={18} />
       </button>

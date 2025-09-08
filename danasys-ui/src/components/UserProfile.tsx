@@ -6,6 +6,8 @@ import {
   FaUserEdit,
   FaMapMarkerAlt,
   FaKey,
+  FaUserFriends,
+  FaUsers,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -13,6 +15,8 @@ import LoginModal from "./LoginModal";
 import DeliveryToggle from "./DeliveryToggle";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { show as showModal } from "../store/modal";
+
+
 
 interface UserData {
   fullname: string;
@@ -44,10 +48,7 @@ const UserProfile = () => {
   // outside click handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     };
@@ -114,6 +115,8 @@ const UserProfile = () => {
     );
   }
 
+
+
   return (
     <>
       <div className="relative" ref={dropdownRef}>
@@ -127,21 +130,6 @@ const UserProfile = () => {
             alt={userData.fullname}
             className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm"
           />
-          {/* <svg
-            className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-              showDropdown ? "rotate-180" : ""
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg> */}
         </div>
 
         {/* Dropdown */}
@@ -191,6 +179,34 @@ const UserProfile = () => {
                 </span>
               </div>
 
+              {/* ✅ My References */}
+              <div
+                className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setShowDropdown(false);
+                  dispatch(showModal({ type: "myReferences" }));
+                }}
+              >
+                <FaUserFriends className="text-pink-600" size={18} />
+                <span className="text-sm font-medium text-gray-700">
+                  My References
+                </span>
+              </div>
+
+              {/* ✅ My Connections */}
+              <div
+                className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setShowDropdown(false);
+                  dispatch(showModal({ type: "myConnections" }));
+                }}
+              >
+                <FaUsers className="text-indigo-600" size={18} />
+                <span className="text-sm font-medium text-gray-700">
+                  My Connections
+                </span>
+              </div>
+
               <div
                 className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => {
@@ -211,16 +227,16 @@ const UserProfile = () => {
                 </span>
               </div>
 
-              {/* ✅ Language Selector Fix */}
+              {/* ✅ Language Selector */}
               <div className="relative">
                 <LanguageSelector />
               </div>
 
               {/* Mobile only */}
               <div className="sm:hidden space-y-2">
-                <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors">
+                {/* <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors">
                   <DeliveryToggle />
-                </div>
+                </div> */}
                 {userData.userWalletImage && (
                   <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors">
                     <img

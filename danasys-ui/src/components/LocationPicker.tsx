@@ -88,7 +88,7 @@ const LocationPicker = () => {
 
   // 👇 Sirf first part of address (comma se pehle)
   const shortAddress = location.address
-    ? location.address.split(",")[0] + "....."
+    ? location.address.split(",")[0] + ""
     : "";
 
   if (loading) {
@@ -119,7 +119,7 @@ const LocationPicker = () => {
         <div className="flex flex-col">
           <p className="font-semibold text-lg leading-tight flex items-center gap-1">
             <MdLocationPin className="text-blue-500 text-3xl" />
-            {t("deliveryInMinutes", "Delivery Address")}
+            {t("deliveryInMinutes", "Address")}
           </p>
 
           <div
@@ -167,7 +167,7 @@ const LocationPicker = () => {
                     <MdLocationPin className="text-blue-500 text-xl mt-1 flex-shrink-0" />
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-800  mb-1">
-                        Delivery Address{" "}
+                        Address{" "}
                         {location?.id === addr.id && (
                           <span className="ml-2 text-xs text-green-600 font-medium">
                             ✅ Selected

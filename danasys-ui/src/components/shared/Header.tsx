@@ -1,66 +1,59 @@
-import { useState, useEffect } from 'react';
-import { FiSearch } from 'react-icons/fi';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import LocationPicker from '../LocationPicker';
-import DeliveryToggle from '../DeliveryToggle';
-import UserProfile from '../UserProfile';
-import newLogo from '../../assets/images/COST2COST.png';
-import { authService } from '../../services/auth';
-import { productService } from '../../services/product';
-import { useSearch } from '../../contexts/SearchContext';
+import { useState, useEffect } from "react";
+import { FiSearch } from "react-icons/fi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import LocationPicker from "../LocationPicker";
+import DeliveryToggle from "../DeliveryToggle";
+import UserProfile from "../UserProfile";
+import newLogo from "../../assets/images/COST2COST.png";
+import { authService } from "../../services/auth";
+import { productService } from "../../services/product";
+import { useSearch } from "../../contexts/SearchContext";
 
 const Header = () => {
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('Grocery');
+  const [selectedCategory, setSelectedCategory] = useState("Grocery");
   const [showSearch, setShowSearch] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [userDetails, setUserDetails] = useState<any>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { searchQuery, setSearchQuery, filteredProducts, setFilteredProducts } = useSearch();
-
-  const selectedCategoryData = categories.find((cat: any) => cat.categoryName === selectedCategory);
-  const themeColor = selectedCategoryData?.theemColorCode || '#349FDE';
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredProducts,
+    setFilteredProducts,
+  } = useSearch();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHeroPast, setIsHeroPast] = useState(false);
 
-  // 👇 Scroll listener for immediate white background on scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 👇 IntersectionObserver for hero area to show search bar
   useEffect(() => {
-    const heroAreaElement = document.querySelector('section.mt-4');
+    const heroAreaElement = document.querySelector("section.mt-4");
     if (!heroAreaElement) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         setIsHeroPast(!entries[0].isIntersecting);
       },
-      { threshold: 0, rootMargin: '-50px 0px 0px 0px' }
+      { threshold: 0, rootMargin: "-50px 0px 0px 0px" }
     );
 
     observer.observe(heroAreaElement);
-
-    return () => {
-      observer.unobserve(heroAreaElement);
-    };
+    return () => observer.unobserve(heroAreaElement);
   }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const fromUrl = params.get('category');
+    const fromUrl = params.get("category");
     if (fromUrl) {
       setSelectedCategory(fromUrl);
     }
@@ -78,13 +71,18 @@ const Header = () => {
         const categoriesData = await productService.getCategories(serviceAreaId);
         setCategories(categoriesData);
 
-        if (categoriesData.length > 0 && categoriesData[0].linkedBusinessProfile.length > 0) {
-          const businessProfileId = categoriesData[0].linkedBusinessProfile[0].id;
-          const productsData = await productService.getProductsByBusinessProfile(businessProfileId);
+        if (
+          categoriesData.length > 0 &&
+          categoriesData[0].linkedBusinessProfile.length > 0
+        ) {
+          const businessProfileId =
+            categoriesData[0].linkedBusinessProfile[0].id;
+          const productsData =
+            await productService.getProductsByBusinessProfile(businessProfileId);
           setProducts(productsData.products);
         }
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error("Error fetching data:", err);
       }
     };
 
@@ -105,11 +103,11 @@ const Header = () => {
   };
 
   const handleSelectProduct = (productId: number) => {
-    setSearchQuery('');
+    setSearchQuery("");
     setFilteredProducts([]);
     const element = document.getElementById(`product-${productId}`);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
     } else {
       navigate(`/product/${productId}`);
     }
@@ -117,58 +115,60 @@ const Header = () => {
 
   return (
     <>
-      {/* Gradient background for header and categories */}
       <div className="relative">
-        <div 
+        <div
           className="absolute top-0 left-0 right-0 h-[350px] sm:h-[450px] pointer-events-none"
-          style={{ background: 'var(--header-gradient)' }}
+          style={{ background: "var(--header-gradient)" }}
         />
-        
+
         <header
           className="_nav px-4 sm:px-8 fixed top-0 left-0 right-0 z-50 border-none shadow-none transition-colors duration-300"
           style={{
-            background: isScrolled ? '#f8f8f8ff' : 'transparent',
+            background: isScrolled ? "#f8f8f8ff" : "transparent",
           }}
         >
-          <div className="min-h-[100px] sm:min-h-[120px] flex flex-col justify-center text-white">
-            {/* ✅ Mobile Header (3 items equal space) */}
-            <div className="flex w-full items-center sm:hidden">
-              <div className="flex-1 flex justify-start text-black px-2">
+          <div className="min-h-[80px] sm:min-h-[120px] mb-5 flex flex-col justify-center">
+            {/* ✅ Mobile Header (2 Rows) */}
+            <div className="sm:hidden w-full text-black">
+              {/* Row 1: Toggle Center */}
+             <div className="flex justify-center mb-2 mt-3">
+  <div className="scale-140"> {/* 👈 ye button ko thoda bada kar dega */}
+    <DeliveryToggle />
+  </div>
+</div>
+
+              {/* Row 2: Location Left - User Right */}
+              <div className="flex justify-between items-center">
                 <LocationPicker />
-              </div>
-              <div className="flex-1 flex justify-center px-2">
-                <DeliveryToggle />
-              </div>
-              <div className="flex-1 flex justify-end px-2">
                 <UserProfile />
               </div>
             </div>
 
-            {/* ✅ Desktop Header (6 items equal space) */}
-            <div className="hidden sm:flex w-full h-full bg-transparent items-center">
-              {/* Logo with equal spacing from left */}
-              <div className="flex-1 flex justify-start items-center">
-                <Link to={'/'}>
+            {/* ✅ Desktop Header (grid layout for equal spacing) */}
+            <div className="hidden sm:grid grid-cols-6 w-full h-full items-center gap-4">
+              {/* 1 - Logo */}
+              <div className="flex justify-start pl-6">
+                <Link to={"/"}>
                   <img
                     src={newLogo}
                     alt="Cost2Cost Logo"
-                    className="h-16 md:h-20  object-contain drop-shadow-md"
+                    className="h-20 md:h-30 object-contain drop-shadow-md"
                   />
                 </Link>
               </div>
 
-              {/* Location Picker (stacked text + black) */}
-              <div className="flex-1 flex flex-col justify-center items-start px-4  text-black">
+              {/* 2 - Location Picker */}
+              <div className="flex justify-center text-black pl-7">
                 <LocationPicker />
               </div>
 
-              {/* Delivery Toggle */}
-              <div className="flex-1 flex justify-center items-center px-4">
+              {/* 3 - Delivery Toggle */}
+              <div className="flex justify-center pl-6">
                 <DeliveryToggle />
               </div>
 
-              {/* Wallet Image */}
-              <div className="flex-1 flex justify-center items-center px-4">
+              {/* 4 - Wallet */}
+              <div className="flex justify-center pr-5">
                 {userDetails?.userWalletImage && (
                   <img
                     src={userDetails.userWalletImage}
@@ -178,12 +178,14 @@ const Header = () => {
                 )}
               </div>
 
-              {/* Search Bar */}
-              <div className="flex-1 flex justify-center items-center px-4 relative">
+              {/* 5 - Search */}
+              <div className="flex justify-center relative pl-10">
                 <div
-                className={`transition-all duration-300 ease-in-out ${
-                  isHeroPast ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
-                }`}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isHeroPast
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 -translate-y-4"
+                  }`}
                 >
                   <div className="relative flex items-center">
                     <input
@@ -220,8 +222,8 @@ const Header = () => {
                 </div>
               </div>
 
-              {/* User Profile with equal spacing from right */}
-              <div className="flex-1 flex justify-end items-center">
+              {/* 6 - User Profile */}
+              <div className="flex justify-center pl-14">
                 <UserProfile />
               </div>
             </div>
@@ -229,48 +231,46 @@ const Header = () => {
         </header>
 
         {/* Spacer */}
-        <div className="h-[80px] sm:h-[50px] mb-1 sm:mb-0"></div>
-
-        {/* Categories Section */}
-        <div className="sm:mt-4">
-          {/* Categories UI render here */}
-        </div>
+        <div className="h-[80px] sm:h-[60px] mb-1 sm:mb-0"></div>
       </div>
 
-      {/* ✅ Mobile Sticky Search (header ke bahar) */}
-{isHeroPast && (
-  <div className="sm:hidden fixed top-[100px] left-0 right-0 z-40 bg-white px-2 py-2 shadow">
-    <div className="relative">
-      <input
-        type="text"
-        placeholder="Search products..."
-        value={searchQuery}
-        onChange={handleSearch}
-        className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <FiSearch
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-        size={18}
-      />
-    </div>
+      {/* ✅ Mobile Sticky Search */}
+      {isHeroPast && (
+        <div className="sm:hidden fixed top-[100px] left-0 right-0 z-40 bg-white px-2 py-2 shadow">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={handleSearch}
+              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <FiSearch
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
+          </div>
 
-    {filteredProducts.length > 0 && (
-      <ul className="absolute mt-2 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
-        {filteredProducts.map((product) => (
-          <li
-            key={product.id}
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-            onClick={() => handleSelectProduct(product.id)}
-          >
-            <img src={product.image} alt={product.name} className="w-8 h-8 object-contain" />
-            <span>{product.name}</span>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
-)}
-
+          {filteredProducts.length > 0 && (
+            <ul className="absolute mt-2 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
+              {filteredProducts.map((product) => (
+                <li
+                  key={product.id}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                  onClick={() => handleSelectProduct(product.id)}
+                >
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-8 h-8 object-contain"
+                  />
+                  <span>{product.name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </>
   );
 };

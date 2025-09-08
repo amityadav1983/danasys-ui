@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
+import api from '../services/api';
 
 interface OtpModalProps {
   isOpen: boolean;
@@ -28,11 +29,7 @@ const OtpModal: FC<OtpModalProps> = ({ isOpen, onClose, onVerify, phoneNumber, o
     return () => clearInterval(timer);
   }, [isOpen]);
 
-  useEffect(() => {
-    if (otp.every((digit) => digit !== '')) {
-      handleVerifyOtp(otp.join(''));
-    }
-  }, [otp]);
+
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
@@ -194,7 +191,7 @@ const OtpModal: FC<OtpModalProps> = ({ isOpen, onClose, onVerify, phoneNumber, o
 
         <button
           onClick={handleVerifyClick}
-          disabled={isLoading}
+          disabled={isLoading || otp.some((digit) => digit === '')}
           className="w-full bg-[#349FDE] hover:bg-[#238ece] text-white py-2 rounded-md font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Verifying...' : 'Verify'}

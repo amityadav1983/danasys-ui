@@ -5,6 +5,11 @@ import { Loader } from './components/shared';
 import Layout from './components/Layout';
 const ProductView = React.lazy(() => import('./pages/ProductView'));
 const OrderHistory = React.lazy(() => import('./pages/OrderHistory'));
+const BusinessLayout = React.lazy(() => import('./business/components/BusinessLayout'));
+const BusinessProfile = React.lazy(() => import('./business/pages/BusinessProfile'));
+const UpdateBusinessProfilePage = React.lazy(() => import('./business/pages/UpdateBusinessProfilePage'));
+const AddUser = React.lazy(() => import('./business/pages/AddUser'));
+const Activation = React.lazy(() => import('./business/pages/Activation'));
 
 const AppWithRouting = () => {
   return (
@@ -27,8 +32,40 @@ const AppWithRouting = () => {
         }
       />
       <Route
+        path="/business/profile"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<BusinessProfile />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/update-profile"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<UpdateBusinessProfilePage />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/add-user"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<AddUser />} />
+          </Suspense>
+        }
+      />
+      <Route
         path="/not-found"
         element={<Layout noFooter={true} component={<Error404 />} />}
+      />
+      <Route
+        path="/business/activation"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<Activation />} />
+          </Suspense>
+        }
       />
       <Route
         path="*"

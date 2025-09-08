@@ -7,6 +7,8 @@ import LoginModal from "./LoginModal";
 import UpdateProfile from "./Updates/UpdateProfile";
 import UpdateAddress from "./Updates/UpdateAddress";
 import UpdatePassword from "./Updates/UpdatePassword";
+import MyConnections from "./MyRef/MyConnections";
+import MyReferences from "./MyRef/MyReferences";
 
 const Modal = () => {
   const { type, data } = useAppSelector((state) => state.modal.modalData);
@@ -35,6 +37,10 @@ const Modal = () => {
       <UpdateAddress onClose={handleClose} />
     ) : type === "updatePassword" ? (
       <UpdatePassword onClose={handleClose} />
+    ) : type === "myConnections" ? (
+      <MyConnections />
+    ) : type === "myReferences" ? (
+      <MyReferences onBack={handleClose} />
     ) : null;
 
   return (

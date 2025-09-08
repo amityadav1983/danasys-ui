@@ -27,6 +27,10 @@ const cartSlice = createSlice({
         (item) => item.product.id === newItem.id
       );
       if (existingItem) {
+        if (existingItem.quantity >= 10) {
+          // Do not add more than 10 items of the same product
+          return;
+        }
         existingItem.quantity++;
         existingItem.totalPrice = existingItem.billPrice + newItem.mrp;
         existingItem.discount = existingItem.discount + (newItem.mrp - newItem.price);
