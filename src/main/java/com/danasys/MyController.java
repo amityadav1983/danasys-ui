@@ -301,6 +301,33 @@ public class MyController {
 		return ResponseEntity.ok(status);
 	}
 	
+	@GetMapping("/api/admin/getAllDeactivedUsers")
+	@Operation(summary = "Load all deactivated Users", description = "API for admin to view all deactivated users.")
+	public ResponseEntity<?> getAllDeactivedUsers() {
+		List<UserProfileDTO> users = new ArrayList<>();
+		UserProfileDTO userProfile = new UserProfileDTO();
+		userProfile.setId(1l);
+		userProfile.setFullname("Sri Ram");
+		userProfile.setEmail("ram@gmail.com");
+		userProfile.setStatus(StatusEnum.OBSOLETE);
+		
+		UserProfileDTO userProfile2 = new UserProfileDTO();
+		userProfile2.setId(2l);
+		userProfile2.setFullname("Sri Shyam");
+		userProfile2.setEmail("shyam@gmail.com");
+		userProfile2.setStatus(StatusEnum.OBSOLETE);
+		
+		UserProfileDTO userProfile3 = new UserProfileDTO();
+		userProfile3.setId(3l);
+		userProfile3.setFullname("Sri Shankar");
+		userProfile3.setEmail("shankar@gmail.com");
+		userProfile3.setStatus(StatusEnum.OBSOLETE);
+		users.add(userProfile);
+		users.add(userProfile2);
+		users.add(userProfile3);
+		return ResponseEntity.ok(users);
+		
+	}
 	@GetMapping("/api/user/getUserMangers")
 	@Operation(summary = "load user manager", description = "load user manager.")
 	public ResponseEntity<?> loadUserManagers() {
