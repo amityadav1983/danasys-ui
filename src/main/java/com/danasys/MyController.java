@@ -897,7 +897,7 @@ public class MyController {
 
 	//Service Area Operations
 	@PutMapping("/api/admin/approveServiceArea/{id}/approve")
-	public ResponseEntity<?> approveServiceArea(@PathVariable Long id) {
+	public ResponseEntity<?> approveServiceArea(@PathVariable Long id, @PathVariable boolean isApprove) {
 		return ResponseEntity.ok("service area approved successfully");
 	}
 	
@@ -945,7 +945,7 @@ public class MyController {
 	
 // Product Category Operations
 	@PutMapping("/api/admin/approveCategory/{id}/approve")
-	public ResponseEntity<?> approveNewCategory(@PathVariable Long id) {
+	public ResponseEntity<?> approveNewCategory(@PathVariable Long id, @PathVariable boolean isApprove) {
 		return ResponseEntity.ok("Product category approved successfully");
 	}
 	
@@ -992,7 +992,7 @@ public class MyController {
 	
 	@PutMapping("/api/admin/user/{userId}/activateUser")
 	@Operation(summary = "API for admin to Activate user", description = "API for admin to Activate user")
-	public ResponseEntity<?> activateUser(@PathVariable Long userId) {
+	public ResponseEntity<?> activateUser(@PathVariable Long userId, @PathVariable boolean isApprove) {
 		return ResponseEntity.ok("User activated successfully");
 	}
 	
