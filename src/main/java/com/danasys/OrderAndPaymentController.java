@@ -15,6 +15,7 @@ import com.danasys.dto.OrderDetailsDTO;
 import com.danasys.dto.OrderStatusUpdateRequest;
 import com.danasys.dto.PurchasedProductDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -181,5 +182,30 @@ public class OrderAndPaymentController {
 		return ResponseEntity.ok(orderList);
 	}
 
+	
+		@GetMapping("/api/payment/getWalletBalance/{userProfileId}")
+		@Operation(summary = "User wallet balance", description = "User wallet balance")
+		public ResponseEntity<Double> getWalletBalance(@PathVariable Long userProfileId) {
+	    	
+	    	return ResponseEntity.ok(100.00d);
+	    }
+	    
+	   	@GetMapping("/api/payment/getUnclearedWalletBalance/{userProfileId}")
+	   	@Operation(summary = "User wallet uncleared balance", description = "\"User wallet uncleared balance")
+	   	public ResponseEntity<Double> getUnclearedWalletBalance(@PathVariable Long userProfileId) {
+	       	return ResponseEntity.ok(500d);
+	       }
+	    
+	   	@GetMapping("/api/payment/getUnclearedReferalPoint/{userProfileId}")
+	   	@Operation(summary = "User wallet uncleared referal point", description = "\"User wallet uncleared referal point")
+	   	public ResponseEntity<Double> getUnclearedReferalPoint(@PathVariable Long userProfileId) {
+	       	return ResponseEntity.ok(400d);
+	       }
+	    
+	   	@GetMapping("/api/payment/getClearedReferalPoint/{userProfileId}")
+	   	@Operation(summary = "User wallet cleared referal point", description = "\"User wallet cleared referal point")
+	   	public ResponseEntity<Double> getClearedReferalPoint(@PathVariable Long userProfileId) {
+	       	return ResponseEntity.ok(320d);
+	       }
 	
 }
