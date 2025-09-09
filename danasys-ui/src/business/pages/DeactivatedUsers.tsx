@@ -66,7 +66,7 @@ const DeactivatedUsers = () => {
             {users.map((u) => (
               <div
                 key={u.id}
-                className="grid grid-cols-3 items-center px-5 py-4 bg-white mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
+                className="grid grid-cols-3 items-center px-5 py-4 bg-red-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
                 group-hover:opacity-40 hover:!opacity-100 hover:bg-red-100 hover:scale-[1.03] hover:shadow-md"
               >
                 {/* User */}

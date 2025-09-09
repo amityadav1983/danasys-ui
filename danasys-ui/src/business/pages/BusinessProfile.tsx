@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BusinessProfileForm from "../components/BusinessProfileForm";
+import { authService } from "../../services/auth";
 
 const BusinessProfile = () => {
   const navigate = useNavigate();
@@ -13,19 +14,38 @@ const BusinessProfile = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState<"my" | "manage">("my");
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  // Fetch user details on mount
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const user = await authService.getUserDetails() as any;
+        setUserRole(user.role || null);
+        if (user.role === 'user') {
+          fetchProfiles(''); // Fetch all profiles for user role
+        }
+      } catch (err) {
+        console.error('Failed to fetch user details:', err);
+      }
+    };
+    fetchUserDetails();
+  }, []);
 
   // Debounce logic for search
   useEffect(() => {
-    const handler = setTimeout(() => {
-      if (userName.trim()) {
-        fetchProfiles(userName);
-      } else {
-        setProfiles([]);
-      }
-    }, 500);
+    if (userRole !== 'user') {
+      const handler = setTimeout(() => {
+        if (userName.trim()) {
+          fetchProfiles(userName);
+        } else {
+          setProfiles([]);
+        }
+      }, 500);
 
-    return () => clearTimeout(handler);
-  }, [userName]);
+      return () => clearTimeout(handler);
+    }
+  }, [userName, userRole]);
 
   // Fetch Business Profiles
   const fetchProfiles = async (searchName: string) => {
@@ -78,14 +98,14 @@ const handleUpdate = (profile: any) => {
       }
 
       alert("Profile removed successfully!");
-      fetchProfiles(userName); // Refresh after delete
+      userRole === 'user' ? fetchProfiles('') : fetchProfiles(userName); // Refresh after delete
     } catch (err: any) {
       alert(err.message || "Error removing profile");
     }
   };
 
  return (
-  <div className="pt-20 p-6">
+  <div className="p-6 pt-20 bg-white min-h-screen">
     <h1 className="text-2xl font-bold mb-6">Business Profiles</h1>
 
     {/* Agar form open hai to sirf form show hoga */}
@@ -96,7 +116,7 @@ const handleUpdate = (profile: any) => {
           setSelectedProfile(null);
         }}
         profile={selectedProfile} // null => add, object => update
-        onSuccess={() => fetchProfiles(userName)}
+        onSuccess={() => userRole === 'user' ? fetchProfiles('') : fetchProfiles(userName)}
       />
     ) : (
       <>
@@ -127,34 +147,50 @@ const handleUpdate = (profile: any) => {
         {/* Tab Content */}
         {activeTab === "my" && (
           <>
-            {/* Search + Add */}
-            <div className="flex items-center gap-4 mb-6">
-              <label className="font-medium">Search with Email / Mobile</label>
-              <input
-                type="text"
-                placeholder="Enter Email or Mobile"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+            {/* Search + Add - Hide if role is 'user' */}
+            {userRole !== 'user' && (
+              <div className="flex items-center gap-4 mb-6">
+                <label className="font-medium">Search with Email / Mobile</label>
+                <input
+                  type="text"
+                  placeholder="Enter Email or Mobile"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
 
-              <button
-                className="bg-green-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-green-700 transition-colors"
-                aria-label="Search"
-                onClick={() => fetchProfiles(userName)}
-              >
-                Search
-              </button>
+                <button
+                  className="bg-green-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-green-700 transition-colors"
+                  aria-label="Search"
+                  onClick={() => fetchProfiles(userName)}
+                >
+                  Search
+                </button>
 
-              <button
-                className="bg-blue-600 text-white rounded-md px-4 py-2 ml-auto flex items-center hover:bg-blue-700 transition-colors"
-                aria-label="Add new item"
-                onClick={() => setShowForm(true)}
-              >
-                <FaPlus className="mr-2" />
-                Add
-              </button>
-            </div>
+                <button
+                  className="bg-blue-600 text-white rounded-md px-4 py-2 ml-auto flex items-center hover:bg-blue-700 transition-colors"
+                  aria-label="Add new item"
+                  onClick={() => setShowForm(true)}
+                >
+                  <FaPlus className="mr-2" />
+                  Add
+                </button>
+              </div>
+            )}
+
+            {/* Add button for user role */}
+            {userRole === 'user' && (
+              <div className="flex justify-end mb-6">
+                <button
+                  className="bg-blue-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-blue-700 transition-colors"
+                  aria-label="Add new item"
+                  onClick={() => setShowForm(true)}
+                >
+                  <FaPlus className="mr-2" />
+                  Add
+                </button>
+              </div>
+            )}
 
             {/* Results */}
             {loading && <p>Loading...</p>}
@@ -175,8 +211,8 @@ const handleUpdate = (profile: any) => {
                   {profiles.map((profile) => (
                     <div
                       key={profile.id}
-                      className="grid grid-cols-4 items-center px-5 py-4 bg-white mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                        group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-50 hover:scale-[1.06] hover:shadow-md"
+                      className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
+                        group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
                     >
                       {/* Logo + Owner */}
                       <div className="flex items-center gap-3">

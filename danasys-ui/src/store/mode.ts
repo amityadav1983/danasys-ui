@@ -24,9 +24,15 @@ const modeSlice = createSlice({
   reducers: {
     setMode: (state, action) => {
       state.currentMode = action.payload;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('currentMode', action.payload);
+      }
     },
     toggleMode: (state) => {
       state.currentMode = state.currentMode === 'user' ? 'business' : 'user';
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('currentMode', state.currentMode);
+      }
     },
   },
 });

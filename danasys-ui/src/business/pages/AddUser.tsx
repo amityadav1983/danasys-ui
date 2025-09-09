@@ -161,8 +161,8 @@ const AddUser = () => {
               {/* Table Body */}
               <div className="space-y-3 group">
                 <div
-                  className="grid grid-cols-3 items-center px-5 py-4 bg-white mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                  group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-50 hover:scale-[1.06] hover:shadow-md"
+                  className="grid grid-cols-3 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
+                  group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
                 >
                   {/* User */}
                   <div className="flex items-center gap-3">

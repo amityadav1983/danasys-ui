@@ -10,6 +10,10 @@ const BusinessProfile = React.lazy(() => import('./business/pages/BusinessProfil
 const UpdateBusinessProfilePage = React.lazy(() => import('./business/pages/UpdateBusinessProfilePage'));
 const AddUser = React.lazy(() => import('./business/pages/AddUser'));
 const Activation = React.lazy(() => import('./business/pages/Activation'));
+const BusinessProducts = React.lazy(() => import('./business/pages/BusinessProducts'));
+const ManageProduct = React.lazy(() => import('./business/pages/ManageProduct'));
+const BusinessOrders = React.lazy(() => import('./business/pages/BusinessOrders'));
+const BusinessPayments = React.lazy(() => import('./business/pages/BusinessPayments'));
 
 const AppWithRouting = () => {
   return (
@@ -64,6 +68,38 @@ const AppWithRouting = () => {
         element={
           <Suspense fallback={<Loader fullscreen />}>
             <BusinessLayout component={<Activation />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/products"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<BusinessProducts />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/manage-products"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<ManageProduct />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/orders"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<BusinessOrders />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/payments"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<BusinessPayments />} />
           </Suspense>
         }
       />

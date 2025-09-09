@@ -116,7 +116,7 @@ const handleUpdate = async (id: number) => {
               : "text-gray-600 hover:text-blue-600"
           }`}
         >
-          Service Area Activation
+          Service Area
         </button>
         <button
           onClick={() => setActiveTab("category")}
@@ -126,7 +126,7 @@ const handleUpdate = async (id: number) => {
               : "text-gray-600 hover:text-blue-600"
           }`}
         >
-          Category Activation
+          Category
         </button>
       </div>
 
@@ -152,8 +152,8 @@ const handleUpdate = async (id: number) => {
                 {areas.map((a) => (
                   <div
                     key={a.id}
-                    className="grid grid-cols-5 items-center px-5 py-4 bg-white mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-50 hover:scale-[1.03] hover:shadow-md"
+                    className="grid grid-cols-5 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
+                group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.03] hover:shadow-md"
                   >
                     <div className="text-gray-800">{a.fullAddress}</div>
                     <div className="text-gray-600">{a.pinCode}</div>

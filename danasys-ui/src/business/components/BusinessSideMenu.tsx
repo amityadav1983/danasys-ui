@@ -33,7 +33,7 @@ const BusinessSideMenu = () => {
   ];
 
   return (
-    <aside className="bg-gradient-to-b from-blue-400 to-blue-400 text-white fixed top-20 left-0 h-screen w-64 flex flex-col justify-between shadow-lg">
+    <aside className="bg-gradient-to-b from-blue-400 to-blue-400 text-white fixed top-20 left-0 h-screen w-64 flex flex-col justify-between">
       {/* ✅ Menu Items */}
       <nav className="flex-1 px-0 mt-3 overflow-y-auto scrollbar-hide mb-10">
         <ul className="space-y-1">

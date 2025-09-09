@@ -150,8 +150,8 @@ const CategoryActivation: React.FC = () => {
             {categories.map((cat, index) => (
               <div
                 key={cat.id ?? `category-${index}`}
-                className="grid grid-cols-4 items-center px-5 py-4 bg-white mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-50 hover:scale-[1.03] hover:shadow-md"
+                className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
+                group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.03] hover:shadow-md"
               >
                 <div className="text-gray-800">{cat.categoryName}</div>
                 <div className="text-gray-600">{cat.description || "-"}</div>
