@@ -3,6 +3,7 @@ package com.danasys.dto;
 import java.io.Serializable;
 
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,9 +23,8 @@ public class ProductDTO implements Serializable {
     private String description;
     private String image;
     private String moreAbout;
-    private Long businessUserProfileId;
+    private Long userBusinessProfileId;
     private String status;
     private int version;
     private Double starRating;
-
 }

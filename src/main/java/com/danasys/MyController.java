@@ -67,7 +67,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping
-@Tag(name = "Danasys API's", description = "APIs for danasys e-commerce functionality")
+@Tag(name = "User management ", description = "APIs For user management")
 public class MyController {
 	
 	@Value("${file.upload-dir}")
@@ -687,7 +687,7 @@ public class MyController {
 				product.setPrice(120d);
 				product.setQuantity(10);
 				product.setDescription("good product");
-				product.setBusinessUserProfileId(userProfileId);
+				product.setUserBusinessProfileId(userProfileId);
 				product.setId(id);
 				product.setStarRating(4.5);
 
