@@ -16,4 +16,6 @@ public class BusinessProfileRequest {
 	private ProductCategoryDTO category;
 
 	private List<UserBusinessAddressRequest> businessAddresses;
+	
+	private BusinesBankAccountRequest bankAccount;
 }

@@ -7,7 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -285,7 +287,7 @@ public class MyController {
 	
 	@GetMapping("/api/user/searchUser")
 	@Operation(summary = "perform user search", description = "perform user search.")
-	public ResponseEntity<?> searchUser(@RequestParam String userEmail, @RequestParam String contactNumber) {
+	public ResponseEntity<?> searchUser(@RequestParam(name = "userEmail", required = false) String userEmail, @RequestParam(name = "contactNumber", required = false) String contactNumber) {
 		UserProfileDTO userProfile = new UserProfileDTO();
 		userProfile.setId(1l);
 		userProfile.setFullname("Sri Ram");
@@ -330,16 +332,47 @@ public class MyController {
 	}
 	@GetMapping("/api/user/getUserMangers")
 	@Operation(summary = "load user manager", description = "load user manager.")
-	public ResponseEntity<?> loadUserManagers() {
-		ManagerDto userManager = new ManagerDto();
+	public ResponseEntity<?> getUserMangers() {
+		List<UserProfileDTO> userManagers = new ArrayList();
+		UserProfileDTO userManager = new UserProfileDTO();
 		userManager.setId(1L);
 		userManager.setFullname("Amit");
 		userManager.setContactInfo("123456");
 		userManager.setEmail("amit.danasys@gmail.com");
-		return ResponseEntity.ok(userManager);
+		
+		UserProfileDTO userManager2 = new UserProfileDTO();
+		userManager2.setId(2L);
+		userManager2.setFullname("Amit");
+		userManager2.setContactInfo("123456");
+		userManager2.setEmail("amit.danasys@gmail.com");
+		
+		userManagers.add(userManager);
+		userManagers.add(userManager2);
+		return ResponseEntity.ok(userManagers);
 
 	}
 
+	@GetMapping("/api/user/getManagedUsers")
+	@Operation(summary = "load users managed by user", description = "load users managed by user.")
+	public ResponseEntity<?> loadManagedUsers() {
+		List<UserProfileDTO> managedUsers = new ArrayList();
+		UserProfileDTO user1 = new UserProfileDTO();
+		user1.setId(1L);
+		user1.setFullname("Dani");
+		user1.setContactInfo("123456");
+		user1.setEmail("Dani.danasys@gmail.com");
+		
+		UserProfileDTO user2 = new UserProfileDTO();
+		user2.setId(2L);
+		user2.setFullname("katya");
+		user2.setContactInfo("123456");
+		user2.setEmail("katya.danasys@gmail.com");
+		
+		managedUsers.add(user1);
+		managedUsers.add(user2);
+		return ResponseEntity.ok(managedUsers);
+
+	}
 	//user Info API end --
 	
 
@@ -857,16 +890,14 @@ public class MyController {
 		
 		buDashboard.setBuIconDetails(buIconDetails);
 		buDashboard.setUserBusinessProfileDTOList(userBusinessProfileDTOList);
+		Set <UserRoleEnum> roles = new HashSet<>();
+		roles.add(UserRoleEnum.ROLE_BUSINESS_USER);
+		roles.add(UserRoleEnum.ROLE_USER);
+		buDashboard.setRoles(roles);
 		return ResponseEntity.ok(buDashboard);
 
 	}
 	
-	@PostMapping(value = "/createUserBusinessProfile")
-	public ResponseEntity<?> createUserBusinessProfile(@RequestBody BusinessProfileRequest createBusinessProfileRequest) {
-		
-		
-		return ResponseEntity.ok("SUCCESS: Business profile created sucessfully");
-	}
 	
 	@GetMapping("/myConnections/{userProfileId}")
 	@Operation(summary = "User connections", description = "User connections")

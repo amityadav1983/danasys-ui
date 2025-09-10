@@ -12,4 +12,6 @@ public class UpdateBusinessProfileRequest {
 	private String storeName;
 
 	private List<UserBusinessAddressRequest> businessAddresses;
+	
+	private BusinesBankAccountRequest bankAccount;
 }
