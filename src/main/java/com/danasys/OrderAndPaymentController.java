@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.danasys.dto.BankTransferRequestDTO;
 import com.danasys.dto.OrdarStatusEnum;
 import com.danasys.dto.OrderDetailsDTO;
 import com.danasys.dto.OrderStatusUpdateRequest;
 import com.danasys.dto.PurchasedProductDTO;
 import com.danasys.dto.TransferMoneyDTO;
+import com.danasys.user.enums.AccountTransferStatusEnum;
+import com.danasys.user.enums.TransferRequestTypeEnum;
 import com.danasys.user.enums.UserRoleEnum;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -236,7 +239,39 @@ public class OrderAndPaymentController {
 
 		}
 	   	
-	 
+	   
+	   	@GetMapping("/api/payment/getPlatformUserBalance")
+	   	public ResponseEntity<Double> getPlatformUserBalance() {
+	       	return ResponseEntity.ok(50000d);
+	       }
 
-	
+	    @GetMapping("/api/payment/getAllPendingTransferRequest")
+		   public ResponseEntity<List<BankTransferRequestDTO>> getAllPendingTransferRequest() {
+			    List<BankTransferRequestDTO> allPendingReq = new ArrayList<>();
+			    
+			    BankTransferRequestDTO dto1 = new BankTransferRequestDTO();
+			    dto1.setAccountId(1l);
+			    dto1.setId(1l);
+			    dto1.setRequestdUserProfileId(2l);
+			    dto1.setStatus(AccountTransferStatusEnum.TRANSFER_REQ_RECIEVED);
+			    dto1.setWalletId(2l);
+			    dto1.setRequestType(TransferRequestTypeEnum.BUSINESS_TRANSFER_MONEY);
+			    dto1.setName("Gupta general store");
+			    
+			    BankTransferRequestDTO dto2 = new BankTransferRequestDTO();
+			    dto2.setAccountId(2l);
+			    dto2.setId(5l);
+			    dto2.setRequestdUserProfileId(2l);
+			    dto2.setStatus(AccountTransferStatusEnum.TRANSFER_REQ_RECIEVED);
+			    dto2.setWalletId(5l);
+			    dto2.setRequestType(TransferRequestTypeEnum.BUSINESS_TRANSFER_MONEY);
+			    dto2.setName("Bansal general store");
+			    
+			    allPendingReq.add(dto2);
+			    allPendingReq.add(dto1);
+			    
+			    
+		       	return ResponseEntity.ok(allPendingReq);
+		       }
+		    
 }
