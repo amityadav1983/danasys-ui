@@ -352,24 +352,36 @@ public class MyController {
 
 	}
 
-	@GetMapping("/api/user/getManagedUsers")
-	@Operation(summary = "load users managed by user", description = "load users managed by user.")
-	public ResponseEntity<?> loadManagedUsers() {
-		List<UserProfileDTO> managedUsers = new ArrayList();
-		UserProfileDTO user1 = new UserProfileDTO();
-		user1.setId(1L);
-		user1.setFullname("Dani");
-		user1.setContactInfo("123456");
-		user1.setEmail("Dani.danasys@gmail.com");
+	@GetMapping("/api/user/getManagedUserBusinessProfiles")
+	@Operation(summary = "load usersBusiness Profile managed by user", description = "load usersBusiness Profile managed by user")
+	public ResponseEntity<?> getManagedUserBusinessProfiles(Principal principal) {
+		List<UserBusinessProfileDTO> managedUsers = new ArrayList<>();
+		UserBusinessProfileDTO userbp1 = new UserBusinessProfileDTO();
+		userbp1.setId(1L);
+		userbp1.setStoreName("Sundari Store");
+		userbp1.setOwnerName("Sundari");
+		userbp1.setBusinessLogoPath(
+				ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("logo.png")
+						.toUriString());
+		ProductCategoryDTO productCategory1 = new ProductCategoryDTO();
+		productCategory1.setId(1l);
+		productCategory1.setCategoryName(ProductCategoryEnum.Fashion);
+		userbp1.setCategory(productCategory1);
 		
-		UserProfileDTO user2 = new UserProfileDTO();
-		user2.setId(2L);
-		user2.setFullname("katya");
-		user2.setContactInfo("123456");
-		user2.setEmail("katya.danasys@gmail.com");
+		UserBusinessProfileDTO userbp2 = new UserBusinessProfileDTO();
+		userbp2.setId(2L);
+		userbp2.setStoreName("Katya Store");
+		userbp2.setOwnerName("Katya");
+		userbp2.setBusinessLogoPath(
+				ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("logo.png")
+						.toUriString());
+		ProductCategoryDTO productCategory2 = new ProductCategoryDTO();
+		productCategory2.setId(1l);
+		productCategory2.setCategoryName(ProductCategoryEnum.Grocery);
+		userbp2.setCategory(productCategory2);
 		
-		managedUsers.add(user1);
-		managedUsers.add(user2);
+		managedUsers.add(userbp1);
+		managedUsers.add(userbp2);
 		return ResponseEntity.ok(managedUsers);
 
 	}
