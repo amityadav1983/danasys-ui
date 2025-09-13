@@ -47,7 +47,7 @@ const PendingWalletTab: React.FC = () => {
                 </p>
               </div>
               <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition">
-                Add Money
+                Transfer Wallet
               </button>
             </div>
 

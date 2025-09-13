@@ -3,7 +3,7 @@ import api from "../../../services/api";
 
 interface Product {
   purchasedProductId: number;
-  product: any; // abhi null aa raha hai API se
+  product: any;
   returnDateLimit: string;
   status: string;
   quantity: number;
@@ -21,17 +21,52 @@ interface ActiveOrder {
   deliveryAddress: string;
 }
 
+interface BusinessProfile {
+  id: number;
+  ownerName: string;
+  userName: string;
+}
+
 const ActiveOrderTab: React.FC = () => {
   const [orders, setOrders] = useState<ActiveOrder[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [role, setRole] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [businessProfiles, setBusinessProfiles] = useState<BusinessProfile[]>([]);
+  const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
+
+  // 🔹 Fetch user role on mount
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await api.get("/api/user/getUserDetails");
+        setRole(res.data.role);
+        // agar user h to profiles bhi fetch karo
+        if (res.data.role === "ROLE_USER") {
+          const profileRes = await api.get(
+            `/api/user/loadUserBusinessProfile?userName=`
+          );
+          setBusinessProfiles(profileRes.data);
+        }
+      } catch (err) {
+        console.error("Error fetching user details:", err);
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+  // 🔹 Fetch orders when profile selected
   useEffect(() => {
     const fetchOrders = async () => {
+      if (!selectedProfileId) return;
       setLoading(true);
       setError(null);
       try {
-        const res = await api.get("/api/order/fetchActiveOrder/1");
+        const res = await api.get(
+          `/api/order/fetchActiveOrder/${selectedProfileId}`
+        );
         setOrders(res.data);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
@@ -41,11 +76,89 @@ const ActiveOrderTab: React.FC = () => {
     };
 
     fetchOrders();
-  }, []);
+  }, [selectedProfileId]);
+
+  // 🔹 Search handler (for non-user roles)
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      const res = await api.get(
+        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(
+          searchQuery
+        )}`
+      );
+      setBusinessProfiles(res.data);
+    } catch (err) {
+      console.error("Error fetching profiles:", err);
+    }
+  };
 
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Active Orders</h2>
+
+      {/* 🔹 ROLE_USER → Direct Dropdown */}
+      {role === "ROLE_USER" && businessProfiles.length > 0 && (
+        <div className="mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Select Profile
+          </label>
+          <select
+            value={selectedProfileId ?? ""}
+            onChange={(e) => setSelectedProfileId(Number(e.target.value))}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          >
+            <option value="">-- Select Profile --</option>
+            {businessProfiles.map((profile) => (
+              <option key={profile.id} value={profile.id}>
+                {profile.ownerName}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* 🔹 Other Roles → Search + Button → Dropdown */}
+      {role !== "ROLE_USER" && (
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+            {/* Search Input + Button */}
+            <div className="flex w-full md:w-2/3 gap-2">
+              <input
+                type="text"
+                placeholder="Enter Email / Username"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              />
+              <button
+                onClick={handleSearch}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                Search
+              </button>
+            </div>
+
+            {/* Dropdown after Search */}
+            {businessProfiles.length > 0 && (
+              <div className="w-full md:w-1/3">
+                <select
+                  value={selectedProfileId ?? ""}
+                  onChange={(e) => setSelectedProfileId(Number(e.target.value))}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                >
+                  <option value="">-- Select Profile --</option>
+                  {businessProfiles.map((profile) => (
+                    <option key={profile.id} value={profile.id}>
+                      {profile.ownerName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Loading State */}
       {loading && <p className="text-gray-600">Loading active orders...</p>}
@@ -81,7 +194,8 @@ const ActiveOrderTab: React.FC = () => {
                         Product #{p.purchasedProductId}
                       </p>
                       <p className="text-sm text-gray-500">
-                        Qty: {p.quantity} | MRP: ₹{p.mrp} | Offer: ₹{p.offerPrice}
+                        Qty: {p.quantity} | MRP: ₹{p.mrp} | Offer: ₹
+                        {p.offerPrice}
                       </p>
                     </div>
                     <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
@@ -124,9 +238,10 @@ const ActiveOrderTab: React.FC = () => {
           ))}
         </div>
       ) : (
-        !loading && (
+        !loading &&
+        selectedProfileId && (
           <div className="bg-white p-6 rounded-xl shadow text-center text-gray-600">
-            No active orders at the moment.
+            No active orders for this profile.
           </div>
         )
       )}

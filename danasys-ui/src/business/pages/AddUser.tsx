@@ -77,8 +77,8 @@ const AddUser = () => {
   };
 
   return (
-    <div className="pt-20 p-6">
-      <h1 className="text-2xl font-bold mb-6">Add User</h1>
+    <div className=" p-6">
+      <h1 className="text-2xl font-bold mb-6 mt-20">User</h1>
 
       {/* Tabs */}
       <div className="flex border-b mb-6">

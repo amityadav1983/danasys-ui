@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import DeliveryToggle from "../../components/DeliveryToggle";
 import UserProfile from "../../components/UserProfile";
-import newLogo from "../../assets/images/COST2COST.png";
+import newLogo from "../../assets/images/white-logo (2).png";
 import { authService } from "../../services/auth";
 import { useAppSelector } from "../../hooks/useAppSelector";
 
@@ -24,22 +24,23 @@ const BusinessHeader = () => {
   }, []);
 
   return (
-    <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-      <div className="flex items-center justify-between px-6 py-4">
-        {/* Logo */}
-        <div className="flex items-center">
-          <Link to="/">
-            <img
-              src={newLogo}
-              alt="Cost2Cost Logo"
-              className="h-12 object-contain"
-            />
-          </Link>
-        </div>
+    <header className="fixed top-0 left-0 right-0 z-50 flex h-20">
+      {/* 🔹 Sidebar Background Extension */}
+      <div className="w-64 bg-gradient-to-b from-blue-400 to-blue-400 flex items-center justify-center">
+        <Link to="/">
+          <img
+            src={newLogo}
+            alt="Cost2Cost Logo"
+            className="h-12 object-contain"
+          />
+        </Link>
+      </div>
 
+      {/* 🔹 Rest of Header (only this part has border bottom) */}
+      <div className="flex-1 bg-white flex items-center justify-between px-6 border-b border-gray-200 shadow-md">
         {/* Center: Toggle Button (hidden in business mode) */}
-        <div className="flex items-center">
-          {currentMode !== 'business' && <DeliveryToggle />}
+        <div>
+          {currentMode !== "business" && <DeliveryToggle />}
         </div>
 
         {/* Right: Wallet and UserProfile */}

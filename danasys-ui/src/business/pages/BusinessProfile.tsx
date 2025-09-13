@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BusinessProfileForm from "../components/BusinessProfileForm";
+import ManageProfile from "./ManageProfile";
 import { authService } from "../../services/auth";
 
 const BusinessProfile = () => {
@@ -105,8 +106,8 @@ const handleUpdate = (profile: any) => {
   };
 
  return (
-  <div className="p-6 pt-20 bg-white min-h-screen">
-    <h1 className="text-2xl font-bold mb-6">Business Profiles</h1>
+  <div className="p-6 bg-white min-h-screen">
+    <h1 className="text-2xl font-bold mb-6 mt-20">Business Profiles</h1>
 
     {/* Agar form open hai to sirf form show hoga */}
     {showForm ? (
@@ -261,11 +262,7 @@ const handleUpdate = (profile: any) => {
           </>
         )}
 
-        {activeTab === "manage" && (
-          <div className="p-6 text-gray-600">
-            <p>Manage Profile content will go here...</p>
-          </div>
-        )}
+        {activeTab === "manage" && <ManageProfile />}
       </>
     )}
   </div>

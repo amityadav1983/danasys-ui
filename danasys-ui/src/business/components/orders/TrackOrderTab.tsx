@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import api from "../../../services/api";
 
 interface Product {
@@ -25,27 +25,43 @@ const TrackOrderTab: React.FC = () => {
   const [order, setOrder] = useState<TrackOrder | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchId, setSearchId] = useState<string>("");
 
-  useEffect(() => {
-    const fetchOrder = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await api.get("/api/order/orderTracker/1");
-        setOrder(res.data);
-      } catch (err: any) {
-        setError(err.message || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrder();
-  }, []);
+  const fetchOrder = async () => {
+    if (!searchId.trim()) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.get(`/api/order/orderTracker/${searchId}`);
+      setOrder(res.data);
+    } catch (err: any) {
+      setOrder(null);
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Track Orders</h2>
+
+      {/* 🔹 Search Bar */}
+      <div className="mb-6 flex gap-2">
+        <input
+          type="text"
+          placeholder="Enter Order ID"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+        />
+        <button
+          onClick={fetchOrder}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          Search
+        </button>
+      </div>
 
       {/* Loading State */}
       {loading && <p className="text-gray-600">Loading tracked order...</p>}

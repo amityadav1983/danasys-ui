@@ -46,9 +46,9 @@ const PendingReferralTab: React.FC = () => {
                   {balance !== null ? balance : "0"}
                 </p>
               </div>
-              <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition">
+              {/* <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition">
                 Redeem Points
-              </button>
+              </button> */}
             </div>
 
             <hr className="my-4" />

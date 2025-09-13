@@ -27,7 +27,7 @@ const BusinessLayout = ({ component }: Props) => {
   }
 
   return (
-<div className="flex min-h-screen bg-white overflow-hidden">
+<div className="flex min-h-screen bg-white overflow-hidden ">
       <BusinessSideMenu />
       <div className="flex-1 flex flex-col ml-64">
         <BusinessHeader />
