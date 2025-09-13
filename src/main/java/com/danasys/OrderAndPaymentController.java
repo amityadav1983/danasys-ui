@@ -11,17 +11,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.danasys.dto.BankTransferRequestDTO;
 import com.danasys.dto.OrdarStatusEnum;
 import com.danasys.dto.OrderDetailsDTO;
 import com.danasys.dto.OrderStatusUpdateRequest;
+import com.danasys.dto.OrderTrackerDTO;
 import com.danasys.dto.PurchasedProductDTO;
 import com.danasys.dto.TransferMoneyDTO;
 import com.danasys.user.enums.AccountTransferStatusEnum;
 import com.danasys.user.enums.TransferRequestTypeEnum;
 import com.danasys.user.enums.UserRoleEnum;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -63,7 +68,32 @@ public class OrderAndPaymentController {
 		productList.add(product1);
 		order.setProducts(productList);
 		
+		OrderTrackerDTO trackerP=new OrderTrackerDTO();;
 		
+		OrderTrackerDTO trackerC = new OrderTrackerDTO();
+		trackerC.setRole(UserRoleEnum.ROLE_USER);
+		trackerC.setActionOn(new Date());
+		trackerC.setActor("USER 1");
+		trackerC.setAction(OrdarStatusEnum.IN_PROGRESS.name());
+		trackerP.getTracker().add(trackerC);
+		
+		OrderTrackerDTO trackerC1 = new OrderTrackerDTO();
+		trackerC1.setRole(UserRoleEnum.ROLE_USER);
+		trackerC1.setActionOn(new Date());
+		trackerC1.setActor("USER 1");
+		trackerC1.setAction(OrdarStatusEnum.ORDER_PLACED.name());
+		trackerP.getTracker().add(trackerC1);
+		
+		
+		OrderTrackerDTO trackerC2 = new OrderTrackerDTO();
+		trackerC2.setRole(UserRoleEnum.ROLE_BUSINESS_USER);
+		trackerC2.setActionOn(new Date());
+		trackerC2.setActor("Gupta Ji");
+		trackerC2.setAction(OrdarStatusEnum.DELIVERED.name());
+		trackerP.getTracker().add(trackerC2);
+		
+		
+		order.setOrderTracker(trackerP);
 		return ResponseEntity.ok(order);
 	}
 	
@@ -113,6 +143,34 @@ public class OrderAndPaymentController {
 		order1.setProducts(productList);
 		
 		
+		
+		OrderTrackerDTO trackerP=new OrderTrackerDTO();;
+		
+		OrderTrackerDTO trackerC = new OrderTrackerDTO();
+		trackerC.setRole(UserRoleEnum.ROLE_USER);
+		trackerC.setActionOn(new Date());
+		trackerC.setActor("USER 1");
+		trackerC.setAction(OrdarStatusEnum.IN_PROGRESS.name());
+		trackerP.getTracker().add(trackerC);
+		
+		OrderTrackerDTO trackerC1 = new OrderTrackerDTO();
+		trackerC1.setRole(UserRoleEnum.ROLE_USER);
+		trackerC1.setActionOn(new Date());
+		trackerC1.setActor("USER 1");
+		trackerC1.setAction(OrdarStatusEnum.ORDER_PLACED.name());
+		trackerP.getTracker().add(trackerC1);
+		
+		
+		OrderTrackerDTO trackerC2 = new OrderTrackerDTO();
+		trackerC2.setRole(UserRoleEnum.ROLE_BUSINESS_USER);
+		trackerC2.setActionOn(new Date());
+		trackerC2.setActor("Gupta Ji");
+		trackerC2.setAction(OrdarStatusEnum.DELIVERED.name());
+		trackerP.getTracker().add(trackerC2);
+		
+		order.setOrderTracker(trackerP);
+		order1.setOrderTracker(trackerP);
+		
 		orderList.add(order);
 		orderList.add(order1);
 		
@@ -132,7 +190,7 @@ public class OrderAndPaymentController {
 	}
 	
 	@PostMapping("/api/order/returnOrder")
-	public ResponseEntity<String> returnOrder(@RequestBody OrderStatusUpdateRequest returnOrderRequest) {
+	public ResponseEntity<String> returnOrder(@RequestBody OrderStatusUpdateRequest returnOrderRequest,@RequestPart("file") MultipartFile file) {
 	
 		return ResponseEntity.ok("return sucessfully ");
 	}

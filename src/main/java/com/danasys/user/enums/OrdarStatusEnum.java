@@ -1,0 +1,24 @@
+package com.danasys.user.enums;
+
+public enum OrdarStatusEnum {
+   IN_PROGRESS,
+   ORDER_PLACED,
+   DELIVERED,
+   PARTIAL_DELIVERED, // few item out of stock
+   CANCELLED,
+   PARTIAL_CANCELLED,
+   CANCELLATION_COMPLETED,
+   PARTIAL_CANCELLATION_COMPLETED,
+   DISCARDED,
+   PARTIAL_REPLACEMENT,
+   PARTIAL_REPLACEMENT_COMPLETED,
+   
+   PAYMENT_IN_PROCESS,
+   COMPLETED,
+   
+   
+   //product lavel status
+   OUT_OF_STOCK,
+   RETURN,
+   REPLACEMENT
+}

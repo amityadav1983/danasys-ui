@@ -2,6 +2,9 @@ package com.danasys.dto;
 
 import java.util.Date;
 import java.util.List;
+
+
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,5 +25,7 @@ public class OrderDetailsDTO {
 	private Double totalDiscount;
 	
 	private String deliveryAddress;
+	
+	private OrderTrackerDTO orderTracker;
 	
 }
