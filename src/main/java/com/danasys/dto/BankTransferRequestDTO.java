@@ -1,6 +1,9 @@
 package com.danasys.dto;
 
 
+import java.io.Serializable;
+import java.util.Date;
+
 import com.danasys.user.enums.AccountTransferStatusEnum;
 import com.danasys.user.enums.TransferRequestTypeEnum;
 
@@ -9,20 +12,26 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class BankTransferRequestDTO {
+public class BankTransferRequestDTO implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
   	
-  	private Long walletId;
+	private Double ammount;
   	
-  	private Long accountId;
+  	private String bankName;
   	
-  	private Long requestdUserProfileId;
-  	
-  	private String transactionId;
+	private String toUser;
+	
+	private Date reqDate;
+	
+	private String reqRaisedBy;
   	
   	private AccountTransferStatusEnum status;
   	
-  	private TransferRequestTypeEnum requestType;
-  	
-  	private String name;
+	private TransferRequestTypeEnum requestType;
 }

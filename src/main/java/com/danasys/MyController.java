@@ -788,7 +788,7 @@ public class MyController {
 	}
 	
 	
-	@GetMapping("/api/user/loadBusinessUserDashboard/{userProfileId}")
+	@GetMapping("/api/user/loadBusinessDashboard/{userProfileId}")
 	public ResponseEntity<?> loadBusinessUserDashboard(@PathVariable Long userProfileId) {
 		
 		UserBusinessDashboardDTO buDashboard = new UserBusinessDashboardDTO();

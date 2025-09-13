@@ -22,6 +22,7 @@ import com.danasys.dto.OrderStatusUpdateRequest;
 import com.danasys.dto.OrderTrackerDTO;
 import com.danasys.dto.PurchasedProductDTO;
 import com.danasys.dto.TransferMoneyDTO;
+import com.danasys.dto.UserAccountTransactionDTO;
 import com.danasys.user.enums.AccountTransferStatusEnum;
 import com.danasys.user.enums.TransferRequestTypeEnum;
 import com.danasys.user.enums.UserRoleEnum;
@@ -251,27 +252,175 @@ public class OrderAndPaymentController {
 	
 		@GetMapping("/api/payment/getWalletBalance/{userProfileId}")
 		@Operation(summary = "User wallet balance", description = "User wallet balance")
-		public ResponseEntity<Double> getWalletBalance(@PathVariable Long userProfileId) {
-	    	
-	    	return ResponseEntity.ok(100.00d);
+		public ResponseEntity<UserAccountTransactionDTO> getWalletBalance(@PathVariable Long userProfileId) {
+			UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
+			dto.setCurrentBalance(501d);
+			
+			List<BankTransferRequestDTO> transactionList = new ArrayList();
+			BankTransferRequestDTO t1 = new BankTransferRequestDTO();
+			t1.setAmmount(550d);
+			t1.setBankName("HDFC Bank Madhuban delhi");
+			t1.setReqDate(new Date());
+			t1.setReqRaisedBy("Gupta Ji");
+			t1.setRequestType(TransferRequestTypeEnum.WALLET_TO_BANK_DONE);
+			t1.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t1.setToUser("Gupta ji bank account");
+			
+			BankTransferRequestDTO t2 = new BankTransferRequestDTO();
+			t2.setAmmount(500d);
+			t2.setBankName("Axis Bank Noida");
+			t2.setReqDate(new Date());
+			t2.setReqRaisedBy("Admin");
+			t2.setRequestType(TransferRequestTypeEnum.WALLET_TO_BANK_DONE);
+			t2.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t2.setToUser("Gupta ji bank account");
+			
+			BankTransferRequestDTO t3 = new BankTransferRequestDTO();
+			t3.setAmmount(800d);
+			t3.setBankName("SBI Bank Gzb");
+			t3.setReqDate(new Date());
+			t3.setReqRaisedBy("Gupta Ji");
+			t3.setRequestType(TransferRequestTypeEnum.WALLET_TO_BANK_DONE);
+			t3.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t3.setToUser("Gupta ji bank account");
+			
+			transactionList.add(t3);
+			transactionList.add(t2);
+			transactionList.add(t1);
+			transactionList.add(t3);
+			transactionList.add(t2);
+			transactionList.add(t1);
+			transactionList.add(t3);
+			transactionList.add(t2);
+			transactionList.add(t1);
+			transactionList.add(t3);
+			transactionList.add(t2);
+			transactionList.add(t1);
+			dto.setTransferReqDTO(transactionList);
+	    	return ResponseEntity.ok(dto);
 	    }
 	    
 	   	@GetMapping("/api/payment/getUnclearedWalletBalance/{userProfileId}")
 	   	@Operation(summary = "User wallet uncleared balance", description = "\"User wallet uncleared balance")
-	   	public ResponseEntity<Double> getUnclearedWalletBalance(@PathVariable Long userProfileId) {
-	       	return ResponseEntity.ok(500d);
+	   	public ResponseEntity<UserAccountTransactionDTO> getUnclearedWalletBalance(@PathVariable Long userProfileId) {
+	   		UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
+			dto.setCurrentBalance(700d);
+			
+			List<BankTransferRequestDTO> transactionList = new ArrayList();
+			BankTransferRequestDTO t1 = new BankTransferRequestDTO();
+			t1.setAmmount(550d);
+			t1.setBankName("USER WALLET");
+			t1.setReqDate(new Date());
+			t1.setReqRaisedBy("Gupta Ji");
+			t1.setRequestType(TransferRequestTypeEnum.UNCLEARED_TO_WALLET_DONE);
+			t1.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t1.setToUser("WALLET");
+			
+			BankTransferRequestDTO t2 = new BankTransferRequestDTO();
+			t2.setAmmount(500d);
+			t2.setBankName("WALLET");
+			t2.setReqDate(new Date());
+			t2.setReqRaisedBy("Admin");
+			t2.setRequestType(TransferRequestTypeEnum.UNCLEARED_TO_WALLET_DONE);
+			t2.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t2.setToUser("WALLET");
+			
+			BankTransferRequestDTO t3 = new BankTransferRequestDTO();
+			t3.setAmmount(800d);
+			t3.setBankName("WALLET");
+			t3.setReqDate(new Date());
+			t3.setReqRaisedBy("Gupta Ji");
+			t3.setRequestType(TransferRequestTypeEnum.UNCLEARED_TO_WALLET_DONE);
+			t3.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t3.setToUser("WALLET");
+			
+			transactionList.add(t3);
+			transactionList.add(t2);
+			transactionList.add(t1);
+			dto.setTransferReqDTO(transactionList);
+	       	return ResponseEntity.ok(dto);
 	       }
 	    
 	   	@GetMapping("/api/payment/getUnclearedReferalPoint/{userProfileId}")
 	   	@Operation(summary = "User wallet uncleared referal point", description = "\"User wallet uncleared referal point")
-	   	public ResponseEntity<Double> getUnclearedReferalPoint(@PathVariable Long userProfileId) {
-	       	return ResponseEntity.ok(400d);
+	   	public ResponseEntity<UserAccountTransactionDTO> getUnclearedReferalPoint(@PathVariable Long userProfileId) {
+	   		UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
+			dto.setCurrentBalance(290d);
+			
+			List<BankTransferRequestDTO> transactionList = new ArrayList();
+			BankTransferRequestDTO t1 = new BankTransferRequestDTO();
+			t1.setAmmount(550d);
+			t1.setBankName("USER WALLET");
+			t1.setReqDate(new Date());
+			t1.setReqRaisedBy("Gupta Ji");
+			t1.setRequestType(TransferRequestTypeEnum.UNCLEAR_REFFERAL_TO_REFERAL_DONE);
+			t1.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t1.setToUser("WALLET");
+			
+			BankTransferRequestDTO t2 = new BankTransferRequestDTO();
+			t2.setAmmount(500d);
+			t2.setBankName("WALLET");
+			t2.setReqDate(new Date());
+			t2.setReqRaisedBy("Admin");
+			t2.setRequestType(TransferRequestTypeEnum.UNCLEAR_REFFERAL_TO_REFERAL_DONE);
+			t2.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t2.setToUser("WALLET");
+			
+			BankTransferRequestDTO t3 = new BankTransferRequestDTO();
+			t3.setAmmount(800d);
+			t3.setBankName("WALLET");
+			t3.setReqDate(new Date());
+			t3.setReqRaisedBy("Gupta Ji");
+			t3.setRequestType(TransferRequestTypeEnum.UNCLEAR_REFFERAL_TO_REFERAL_DONE);
+			t3.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t3.setToUser("WALLET");
+			
+			transactionList.add(t3);
+			transactionList.add(t2);
+			transactionList.add(t1);
+			dto.setTransferReqDTO(transactionList);
+	       	return ResponseEntity.ok(dto);
 	       }
 	    
 	   	@GetMapping("/api/payment/getClearedReferalPoint/{userProfileId}")
 	   	@Operation(summary = "User wallet cleared referal point", description = "\"User wallet cleared referal point")
-	   	public ResponseEntity<Double> getClearedReferalPoint(@PathVariable Long userProfileId) {
-	       	return ResponseEntity.ok(320d);
+	   	public ResponseEntity<UserAccountTransactionDTO> getClearedReferalPoint(@PathVariable Long userProfileId) {
+	   		UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
+			dto.setCurrentBalance(380d);
+			
+			List<BankTransferRequestDTO> transactionList = new ArrayList();
+			BankTransferRequestDTO t1 = new BankTransferRequestDTO();
+			t1.setAmmount(550d);
+			t1.setBankName("USER WALLET");
+			t1.setReqDate(new Date());
+			t1.setReqRaisedBy("Gupta Ji");
+			t1.setRequestType(TransferRequestTypeEnum.UNCLEARED_TO_WALLET_DONE);
+			t1.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t1.setToUser("WALLET");
+			
+			BankTransferRequestDTO t2 = new BankTransferRequestDTO();
+			t2.setAmmount(500d);
+			t2.setBankName("WALLET");
+			t2.setReqDate(new Date());
+			t2.setReqRaisedBy("Admin");
+			t2.setRequestType(TransferRequestTypeEnum.UNCLEARED_TO_WALLET_DONE);
+			t2.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t2.setToUser("WALLET");
+			
+			BankTransferRequestDTO t3 = new BankTransferRequestDTO();
+			t3.setAmmount(800d);
+			t3.setBankName("WALLET");
+			t3.setReqDate(new Date());
+			t3.setReqRaisedBy("Gupta Ji");
+			t3.setRequestType(TransferRequestTypeEnum.UNCLEARED_TO_WALLET_DONE);
+			t3.setStatus(AccountTransferStatusEnum.TRANSFER_DONE);
+			t3.setToUser("WALLET");
+			
+			transactionList.add(t3);
+			transactionList.add(t2);
+			transactionList.add(t1);
+			dto.setTransferReqDTO(transactionList);
+	       	return ResponseEntity.ok(dto);
 	       }
 	   	
 	   
@@ -307,26 +456,27 @@ public class OrderAndPaymentController {
 		   public ResponseEntity<List<BankTransferRequestDTO>> getAllPendingTransferRequest() {
 			    List<BankTransferRequestDTO> allPendingReq = new ArrayList<>();
 			    
-			    BankTransferRequestDTO dto1 = new BankTransferRequestDTO();
-			    dto1.setAccountId(1l);
-			    dto1.setId(1l);
-			    dto1.setRequestdUserProfileId(2l);
-			    dto1.setStatus(AccountTransferStatusEnum.TRANSFER_REQ_RECIEVED);
-			    dto1.setWalletId(2l);
-			    dto1.setRequestType(TransferRequestTypeEnum.BUSINESS_TRANSFER_MONEY);
-			    dto1.setName("Gupta general store");
+			    BankTransferRequestDTO t1 = new BankTransferRequestDTO();
+				t1.setAmmount(550d);
+				t1.setBankName("HDFC Bank Madhuban delhi");
+				t1.setReqDate(new Date());
+				t1.setReqRaisedBy("Gupta Ji");
+				t1.setRequestType(TransferRequestTypeEnum.WALLET_TO_BANK_REQ);
+				t1.setStatus(AccountTransferStatusEnum.TRANSFER_REQ_RAISED);
+				t1.setToUser("Gupta ji bank account");
 			    
-			    BankTransferRequestDTO dto2 = new BankTransferRequestDTO();
-			    dto2.setAccountId(2l);
-			    dto2.setId(5l);
-			    dto2.setRequestdUserProfileId(2l);
-			    dto2.setStatus(AccountTransferStatusEnum.TRANSFER_REQ_RECIEVED);
-			    dto2.setWalletId(5l);
-			    dto2.setRequestType(TransferRequestTypeEnum.BUSINESS_TRANSFER_MONEY);
-			    dto2.setName("Bansal general store");
+				 BankTransferRequestDTO t2 = new BankTransferRequestDTO();
+					t2.setAmmount(550d);
+					t2.setBankName("HDFC Bank Madhuban delhi");
+					t2.setReqDate(new Date());
+					t2.setReqRaisedBy("Gupta Ji");
+					t2.setRequestType(TransferRequestTypeEnum.WALLET_TO_BANK_REQ);
+					t2.setStatus(AccountTransferStatusEnum.TRANSFER_REQ_RAISED);
+					t2.setToUser("Gupta ji bank account");
+				    
 			    
-			    allPendingReq.add(dto2);
-			    allPendingReq.add(dto1);
+			    allPendingReq.add(t1);
+			    allPendingReq.add(t2);
 			    
 			    
 		       	return ResponseEntity.ok(allPendingReq);
