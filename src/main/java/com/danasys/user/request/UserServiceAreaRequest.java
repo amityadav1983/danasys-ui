@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class UserServiceAreaRequest {
+	private boolean isDefault;
 	private String addressLine1;
 	private AddressTypeEnum addressType;
 	private UserServiceAreaDeatils userServiceAreaDeatils;

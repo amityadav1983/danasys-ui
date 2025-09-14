@@ -158,11 +158,19 @@ public class MyController {
 	}
 
 	
-	@PutMapping("/api/user/setUserDefaultAddresses/{id}")
+	@PutMapping("/api/user/setUserDefaultAddress/{id}")
 	@Operation(summary = "Set selected address as user deafult address", description = "Set selected address as user deafult address.")
-	public ResponseEntity<?> setUserDefaultAddresses(@PathVariable Long id, Principal principal)
+	public ResponseEntity<?> setUserDefaultAddresses(@PathVariable Long id)
 			throws IOException {
 		return ResponseEntity.ok("User address status updated as default.");
+	}
+	
+
+	@PutMapping("/api/user/removeUserAddress/{id}")
+	@Operation(summary = "Remove selected address", description = "Remove selected address")
+	public ResponseEntity<?> removeUserAddress(@PathVariable Long id)
+			throws IOException {
+		return ResponseEntity.ok("User address removed.");
 	}
 
 	@PostMapping(value = "/api/user/updateUserPassword")
