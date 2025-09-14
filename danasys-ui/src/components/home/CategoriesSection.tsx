@@ -157,87 +157,78 @@ const CategoriesSection = () => {
   return (
     <section className="pt-8 relative">
       <div className="_container">
-        {/* ✅ Category Icons (scrollable on mobile, centered on desktop) */}
-        <div className="flex gap-2 sm:gap-8 mb-6 overflow-x-auto sm:overflow-visible sm:justify-center scrollbar-hide">
+        {/* ✅ Category Icons (Left aligned, better UI) */}
+        <div className="flex flex-wrap gap-6 mb-8 justify-start">
           {categories.map((category) => (
             <div
               key={category.id}
-              className="cursor-pointer relative flex-shrink-0 w-1/4 sm:w-auto"
+              className="cursor-pointer flex flex-col items-center w-20 group"
               onClick={() => handleCategoryClick(category.categoryName)}
             >
               <div
-                className={`w-12 h-12 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-500 ${
+                className={`w-16 h-16 flex items-center rounded-full justify-center transition-all duration-300 ${
                   selectedCategory === category.categoryName
-                    ? 'scale-110'
-                    : 'hover:scale-125'
+                    ? 'ring-2 ring-blue-500 rounded-full scale-110'
+                    : 'hover:scale-150'
                 }`}
               >
                 <img
                   src={category.image}
                   alt={category.categoryName}
-                  className="w-full h-full object-contain p-2"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    target.nextElementSibling?.classList.remove('hidden');
-                  }}
+                  className="w-10 h-10 object-contain"
                 />
-                <div className="hidden w-full h-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs">
-                  {category.categoryName.charAt(0)}
-                </div>
               </div>
-              {selectedCategory === category.categoryName && (
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-blue-500 rounded-full animate-pulse"></div>
-              )}
+              <div className="mt-2 text-xs font-medium text-gray-700 text-center whitespace-normal leading-tight">
+                {category.categoryName}
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Business Profile Icons */}
-        {selectedCategory && (
-          <div className="flex justify-center gap-6 mb-6">
-            {categories
-              .find(cat => cat.categoryName === selectedCategory)
-              ?.linkedBusinessProfile.map((businessProfile) => {
-                const isSelected = selectedBusinessProfile?.id === businessProfile.id;
+        {/* ✅ Business Profiles as Tiles (Left aligned grid) */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-6">
+          {categories
+            .find((cat) => cat.categoryName === selectedCategory)
+            ?.linkedBusinessProfile.map((businessProfile) => {
+              const isSelected = selectedBusinessProfile?.id === businessProfile.id;
 
-                return (
-                  <div
-                    key={businessProfile.id}
-                    className="cursor-pointer flex flex-col items-center"
-                    onClick={() =>
-                      handleBusinessProfileClick(businessProfile, selectedCategory)
-                    }
-                  >
-                    <div
-                      className={`w-12 h-12 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center transition-transform duration-300 hover:scale-125 ${
-                        isSelected ? 'ring-2 ring-blue-500 p-1' : ''
-                      }`}
-                    >
-                      <img
-                        src={businessProfile.businessLogoPath}
-                        alt={businessProfile.storeName}
-                        className="w-full h-full object-contain p-1"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          target.nextElementSibling?.classList.remove('hidden');
-                        }}
-                      />
-                      <div className="hidden w-full h-full bg-gray-300 flex items-center text-sm justify-center text-gray-600 text-xs">
-                        {businessProfile.storeName.charAt(0)}
-                      </div>
-                    </div>
-                    <div className="mt-2 text-xs text-gray-700 font-medium text-center whitespace-nowrap">
-                      {businessProfile.storeName}
+              return (
+                <div
+                  key={businessProfile.id}
+                  className={`cursor-pointer flex flex-col items-center p-4 rounded-xl border transition-all duration-300 ${
+                    isSelected
+                      ? 'ring-2 ring-blue-500 bg-blue-50 scale-105 shadow-md'
+                      : 'hover:scale-105 hover:shadow'
+                  }`}
+                  onClick={() =>
+                    handleBusinessProfileClick(businessProfile, selectedCategory)
+                  }
+                >
+                  <div className="w-16 h-20 flex items-center justify-center mb-3">
+                    <img
+                      src={businessProfile.businessLogoPath}
+                      alt={businessProfile.storeName}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                    <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center text-gray-600 text-sm">
+                      {businessProfile.storeName.charAt(0)}
                     </div>
                   </div>
-                );
-              })}
-          </div>
-        )}
+                  <div className="text-sm font-medium text-gray-800 text-center whitespace-normal leading-tight">
+                    {businessProfile.storeName}
+                  </div>
+                </div>
+              );
+            })}
+        </div>
 
-        {/* Search Bar */}
+        {/* 🚫 Search Bar Disabled */}
+        {/*
         <div className="max-w-md mx-auto">
           <div className="relative">
             <input
@@ -264,106 +255,13 @@ const CategoriesSection = () => {
             </div>
           </div>
 
-          {/* Search Results */}
           {searchQuery && (
             <div className="mt-3 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto">
-              {/* Categories */}
-              {filteredCategories.length > 0 && (
-                <div className="border-b border-gray-200">
-                  <div className="px-4 py-2 text-sm font-semibold text-gray-600">
-                    Categories
-                  </div>
-                  {filteredCategories.map((category) => (
-                    <div
-                      key={category.id}
-                      className="px-4 py-3 hover:bg-gray-50 cursor-pointer"
-                      onClick={() => {
-                        setSelectedCategory(category.categoryName);
-                        setSearchQuery('');
-                        handleCategoryClick(category.categoryName);
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-                          <img
-                            src={category.image}
-                            alt={category.categoryName}
-                            className="w-full h-full object-contain p-1"
-                          />
-                        </div>
-                        <span className="font-medium text-gray-800">
-                          {category.categoryName}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Products */}
-              {filteredProducts.length > 0 && (
-                <div>
-                  <div className="px-4 py-2 text-sm font-semibold text-gray-600">
-                    Products
-                  </div>
-                  {filteredProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
-                      onClick={() => {
-                        setSearchQuery('');
-                        setSelectedCategory(product.category);
-
-                        setTimeout(() => {
-                          const element = document.getElementById(
-                            `product-${product.id}`
-                          );
-                          if (element) {
-                            element.scrollIntoView({
-                              behavior: 'smooth',
-                              block: 'center',
-                            });
-                          }
-                        }, 200);
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100">
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-contain p-1"
-                          />
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-800">
-                            {product.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            ₹{product.offerPrice}
-                            {product.price > product.offerPrice && (
-                              <span className="line-through text-gray-400 ml-1">
-                                ₹{product.price}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* No Results */}
-              {filteredCategories.length === 0 &&
-                filteredProducts.length === 0 && (
-                  <div className="px-4 py-3 text-gray-500 text-center">
-                    No results found
-                  </div>
-                )}
+              ...
             </div>
           )}
         </div>
+        */}
       </div>
     </section>
   );

@@ -14,6 +14,8 @@ const BusinessProducts = React.lazy(() => import('./business/pages/BusinessProdu
 const ManageProduct = React.lazy(() => import('./business/pages/ManageProduct'));
 const BusinessOrders = React.lazy(() => import('./business/pages/BusinessOrders'));
 const BusinessPayments = React.lazy(() => import('./business/pages/BusinessPayments'));
+const BusinessHome = React.lazy(() => import('./business/pages/BusinessHome'));
+const UnderConstruction = React.lazy(() => import('./business/pages/UnderConstruction'));
 
 const AppWithRouting = () => {
   return (
@@ -100,6 +102,62 @@ const AppWithRouting = () => {
         element={
           <Suspense fallback={<Loader fullscreen />}>
             <BusinessLayout component={<BusinessPayments />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<BusinessHome />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/money-transfer"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<UnderConstruction />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/reports"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<UnderConstruction />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/company-profile"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<UnderConstruction />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/trends"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<UnderConstruction />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/annual-report"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<UnderConstruction />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/communication"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<UnderConstruction />} />
           </Suspense>
         }
       />

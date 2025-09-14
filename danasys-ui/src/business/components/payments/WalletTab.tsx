@@ -46,9 +46,14 @@ const WalletTab: React.FC = () => {
                   ₹{balance !== null ? balance.toFixed(2) : "0.00"}
                 </p>
               </div>
+              <div className="flex gap-4">
               <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition">
                 Add Money
               </button>
+              <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition">
+                Withdrwal
+              </button>
+              </div>
             </div>
 
             <hr className="my-4" />

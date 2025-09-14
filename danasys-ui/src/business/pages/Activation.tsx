@@ -104,7 +104,7 @@ const handleUpdate = async (id: number) => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Activation</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mt-20 mb-4">Activation</h1>
 
       {/* Tabs */}
       <div className="flex border-b mb-6">

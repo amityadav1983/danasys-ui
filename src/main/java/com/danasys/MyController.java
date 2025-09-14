@@ -49,6 +49,7 @@ import com.danasys.dto.UserBusinessProfileDTO;
 import com.danasys.dto.UserConnection;
 import com.danasys.dto.UserDetailsDTO;
 import com.danasys.dto.UserProfileDTO;
+import com.danasys.user.enums.OrdarStatusEnum;
 import com.danasys.user.enums.UserRoleEnum;
 import com.danasys.user.request.BusinessProfileRequest;
 import com.danasys.user.request.DelegationRequest;
@@ -795,7 +796,7 @@ public class MyController {
 	}
 	
 	
-	@GetMapping("/loadBusinessUserDashboard/{userProfileId}")
+	@GetMapping("/api/user/loadBusinessDashboard/{userProfileId}")
 	public ResponseEntity<?> loadBusinessUserDashboard(@PathVariable Long userProfileId) {
 		
 		UserBusinessDashboardDTO buDashboard = new UserBusinessDashboardDTO();
@@ -914,6 +915,17 @@ public class MyController {
 		roles.add(UserRoleEnum.ROLE_BUSINESS_USER);
 		roles.add(UserRoleEnum.ROLE_USER);
 		buDashboard.setRoles(roles);
+		
+		buDashboard.setColorTheam("#228B22");
+		
+		Set<com.danasys.user.enums.OrdarStatusEnum> orderStatus = new HashSet<>();
+		orderStatus.add(OrdarStatusEnum.DELIVERED);
+		orderStatus.add(OrdarStatusEnum.OUT_OF_STOCK);
+		orderStatus.add(OrdarStatusEnum.CANCELLED);
+		orderStatus.add(OrdarStatusEnum.REPLACEMENT);
+		buDashboard.setOrderStatus(orderStatus);
+		
+		
 		return ResponseEntity.ok(buDashboard);
 
 	}
