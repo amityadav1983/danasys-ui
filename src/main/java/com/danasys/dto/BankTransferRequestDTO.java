@@ -21,7 +21,7 @@ public class BankTransferRequestDTO implements Serializable{
 
 	private Long id;
   	
-	private Double ammount;
+	private String amount;
   	
   	private String bankName;
   	

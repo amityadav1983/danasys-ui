@@ -931,7 +931,7 @@ public class MyController {
 	}
 	
 	
-	@GetMapping("/myConnections/{userProfileId}")
+	@GetMapping("/api/user/myConnections/{userProfileId}")
 	@Operation(summary = "User connections", description = "User connections")
 	public ResponseEntity<?> myConnections(@PathVariable Long userProfileId) {
 		UserConnection connection = new UserConnection();

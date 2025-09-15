@@ -20,5 +20,7 @@ public class UserAccountTransactionDTO implements Serializable{
 	
 	private Double currentBalance;
 	private List<BankTransferRequestDTO> transferReqDTO = new ArrayList<>();
+	
+	private List<TransactionDTO> transactionDTO  = new ArrayList<>();
 
 }
