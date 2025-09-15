@@ -30,6 +30,17 @@ export interface AuthResponse {
   };
 }
 
+export interface BusinessDashboardItem {
+  buIconPath: string;
+  name: string;
+}
+
+export interface BusinessDashboardResponse {
+  menuItems: BusinessDashboardItem[];
+  roles: string[];
+  colorTheam: string;
+}
+
 export const authService = {
   // Email/Password Login
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
@@ -70,6 +81,12 @@ export const authService = {
   // Get User Details
   getUserDetails: async (): Promise<AuthResponse['user']> => {
     const response = await api.get('/api/user/getUserDetails');
+    return response.data;
+  },
+
+  // Load Business Dashboard
+  loadBusinessDashboard: async (userProfileId: string): Promise<BusinessDashboardResponse> => {
+    const response = await api.get(`/api/user/loadBusinessDashboard/${userProfileId}`);
     return response.data;
   },
 

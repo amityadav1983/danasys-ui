@@ -8,25 +8,31 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 
 const BusinessHeader = () => {
   const [userDetails, setUserDetails] = useState<any>(null);
+  const [color, setColor] = useState("#228B22");
   const currentMode = useAppSelector((state) => state.mode.currentMode);
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const fetchData = async () => {
       try {
         const userDetailsData = await authService.getUserDetails();
         setUserDetails(userDetailsData);
+        const dashboard = await authService.loadBusinessDashboard(userDetailsData.id);
+        setColor(dashboard.colorTheam);
       } catch (err) {
-        console.error("Error fetching user details:", err);
+        console.error("Error fetching data:", err);
       }
     };
 
-    fetchUserDetails();
+    fetchData();
   }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex h-20">
       {/* 🔹 Sidebar Background Extension */}
-      <div className="w-64 bg-gradient-to-b from-blue-400 to-blue-400 flex items-center justify-center">
+      <div
+        className="w-64 flex items-center justify-center"
+        style={{ background: `linear-gradient(to bottom, ${color}, ${color})` }}
+      >
         <Link to="/">
           <img
             src={newLogo}
