@@ -239,6 +239,9 @@ public class OrderAndPaymentController {
 
 		return ResponseEntity.ok(orderList);
 	}
+	
+	
+	
 
 	@GetMapping("/api/payment/getWalletBalance/{userProfileId}")
 	@Operation(summary = "User wallet balance", description = "User wallet balance")
@@ -400,25 +403,8 @@ public class OrderAndPaymentController {
 		return ResponseEntity.ok(dto);
 	}
 
-	@PostMapping("/api/order/transferWalletToBankAccount")
-	public ResponseEntity<String> transferWalletToBankAccount(@RequestBody TransferMoneyDTO transferMoneyDTO) {
-
-		return ResponseEntity.ok("Point Redeemed ! ");
-
-	}
-
-	@PostMapping("/api/order/transferWalletToBankAccountRequest")
-	public ResponseEntity<String> transferWalletToBankAccountRequest(@RequestBody TransferMoneyDTO transferMoneyDTO) {
-
-		return ResponseEntity.ok("Point Redeemed ! ");
-
-	}
-
-	@PostMapping("/api/order/redeemReferalPoint")
-	public ResponseEntity<String> redeemReferalPoint(Long userProfileId) {
-		return ResponseEntity.ok("Point Redeemed ! ");
-
-	}
+	
+	
 
 	
 	@GetMapping("/api/payment/getAllPendingTransferRequest")
@@ -483,6 +469,28 @@ public class OrderAndPaymentController {
 		
 
 		return ResponseEntity.ok(allPendingReq);
+	}
+	
+	
+
+	@PostMapping("/api/order/transferWalletToBankAccount")
+	public ResponseEntity<String> transferWalletToBankAccount(@RequestBody TransferMoneyDTO transferMoneyDTO) {
+
+		return ResponseEntity.ok("Point Redeemed ! ");
+
+	}
+
+	@PostMapping("/api/order/transferWalletToBankAccountRequest")
+	public ResponseEntity<String> transferWalletToBankAccountRequest(@RequestBody TransferMoneyDTO transferMoneyDTO) {
+
+		return ResponseEntity.ok("Point Redeemed ! ");
+
+	}
+
+	@PostMapping("/api/order/redeemReferalPoint")
+	public ResponseEntity<String> redeemReferalPoint(Long userProfileId) {
+		return ResponseEntity.ok("Point Redeemed ! ");
+
 	}
 
 }

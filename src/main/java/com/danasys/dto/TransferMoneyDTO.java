@@ -13,9 +13,9 @@ public class TransferMoneyDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private List<Long> orderId;
-	
-	private Long businessUserProfileId;
+	private Long bankTransferRequestId;
 	
 	private String bankTransactionID;
+	
+	private String comments;
 }
