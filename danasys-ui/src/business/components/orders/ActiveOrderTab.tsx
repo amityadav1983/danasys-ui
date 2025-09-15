@@ -64,8 +64,11 @@ const ActiveOrderTab: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
+        // Get userProfileId from localStorage, fallback to selectedProfileId if not found
+        const userProfileId = localStorage.getItem('userProfileId') || selectedProfileId.toString();
+
         const res = await api.get(
-          `/api/order/fetchActiveOrder/${selectedProfileId}`
+          `/api/order/fetchActiveOrder/${userProfileId}`
         );
         setOrders(res.data);
       } catch (err: any) {
@@ -95,7 +98,7 @@ const ActiveOrderTab: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Active Orders</h2>
+      {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Active Orders</h2> */}
 
       {/* 🔹 ROLE_USER → Direct Dropdown */}
       {role === "ROLE_USER" && businessProfiles.length > 0 && (

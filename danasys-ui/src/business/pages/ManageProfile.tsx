@@ -38,7 +38,7 @@ const ManageProfile = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Manage Profile</h2>
+      {/* <h2 className="text-xl font-semibold mb-4">Manage Profile</h2> */}
 
       {/* Results */}
       {loading && <p>Loading...</p>}

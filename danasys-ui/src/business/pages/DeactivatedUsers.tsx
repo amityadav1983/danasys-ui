@@ -36,9 +36,9 @@ const DeactivatedUsers = () => {
 
   return (
     <div className="w-full">
-      <h2 className="text-xl font-semibold text-gray-700 mb-4">
+      {/* <h2 className="text-xl font-semibold text-gray-700 mb-4">
         Deactivated Users
-      </h2>
+      </h2> */}
 
       {loading && (
         <div className="bg-white p-6 rounded-lg shadow-md">

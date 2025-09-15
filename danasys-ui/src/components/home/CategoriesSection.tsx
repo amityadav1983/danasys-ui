@@ -123,13 +123,13 @@ const CategoriesSection = () => {
     const query = searchQuery.toLowerCase();
 
     const filteredCategories = categories.filter((category) =>
-      category.categoryName.toLowerCase().includes(query)
+      category.categoryName && category.categoryName.toLowerCase().includes(query)
     );
 
     const filteredProducts = (products || []).filter(
       (product) =>
-        (product.name.toLowerCase().includes(query) ||
-          product.description.toLowerCase().includes(query)) &&
+        ((product.name && product.name.toLowerCase().includes(query)) ||
+          (product.description && product.description.toLowerCase().includes(query))) &&
         (!selectedCategory || product.category === selectedCategory)
     );
 

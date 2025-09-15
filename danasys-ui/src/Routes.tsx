@@ -16,6 +16,8 @@ const BusinessOrders = React.lazy(() => import('./business/pages/BusinessOrders'
 const BusinessPayments = React.lazy(() => import('./business/pages/BusinessPayments'));
 const BusinessHome = React.lazy(() => import('./business/pages/BusinessHome'));
 const UnderConstruction = React.lazy(() => import('./business/pages/UnderConstruction'));
+const BusinessConnections = React.lazy(() => import('./business/pages/BusinessConnections'));
+const BusinessMoneyTransfer = React.lazy(() => import('./business/pages/BusinessMoneyTransfer'));
 
 const AppWithRouting = () => {
   return (
@@ -117,7 +119,7 @@ const AppWithRouting = () => {
         path="/business/money-transfer"
         element={
           <Suspense fallback={<Loader fullscreen />}>
-            <BusinessLayout component={<UnderConstruction />} />
+            <BusinessLayout component={<BusinessMoneyTransfer />} />
           </Suspense>
         }
       />
@@ -158,6 +160,14 @@ const AppWithRouting = () => {
         element={
           <Suspense fallback={<Loader fullscreen />}>
             <BusinessLayout component={<UnderConstruction />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/business/connections"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <BusinessLayout component={<BusinessConnections />} />
           </Suspense>
         }
       />

@@ -1,8 +1,4 @@
-- [x] Add addProduct and updateProduct functions to src/services/product.ts
-- [x] Update BusinessProductForm.tsx to use productService instead of fetch in handleSubmit
-- Test the API call functionality
-- [x] Add bulk update states to ManageProduct.tsx: selectedProducts, editedProducts
-- [x] Add handleInlineChange function to ManageProduct.tsx
-- [x] Add handleBulkUpdate function to ManageProduct.tsx
-- [x] Import BusinessProductList in ManageProduct.tsx
-- [x] Replace product list rendering with BusinessProductList component in ManageProduct.tsx
+# TODO: Fix Switch to User Button Visibility in Business Mode
+
+## Tasks
+- [x] Update UserProfile.tsx to render "Switch to User" button only when user profile dropdown is visible in business mode

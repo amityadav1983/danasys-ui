@@ -44,7 +44,7 @@ const TrackOrderTab: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Track Orders</h2>
+      {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Track Orders</h2> */}
 
       {/* 🔹 Search Bar */}
       <div className="mb-6 flex gap-2">

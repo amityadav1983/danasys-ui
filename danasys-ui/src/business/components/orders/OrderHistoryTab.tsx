@@ -36,7 +36,10 @@ const OrderHistoryTab: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await api.get("/api/order/orderHistory/1");
+        // Get userProfileId from localStorage, fallback to '1' if not found
+        const userProfileId = localStorage.getItem('userProfileId') || '1';
+
+        const res = await api.get(`/api/order/orderHistory/${userProfileId}`);
         setOrders(res.data);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
@@ -77,7 +80,7 @@ const OrderHistoryTab: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Order History</h2>
+      {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Order History</h2> */}
 
       {loading && <p className="text-gray-600">Loading order history...</p>}
       {error && <p className="text-red-500">{error}</p>}
