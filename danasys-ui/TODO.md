@@ -1,3 +1,8 @@
-- [x] Modify Header.tsx to fix the header in user mode with a solid white background and shadow, preventing any changes on scroll.
-- [ ] Test the header behavior in user mode to ensure it remains fixed with white background and shadow.
-- [ ] Test the header behavior in business mode to ensure the scroll effect remains active.
+- [x] Add addProduct and updateProduct functions to src/services/product.ts
+- [x] Update BusinessProductForm.tsx to use productService instead of fetch in handleSubmit
+- Test the API call functionality
+- [x] Add bulk update states to ManageProduct.tsx: selectedProducts, editedProducts
+- [x] Add handleInlineChange function to ManageProduct.tsx
+- [x] Add handleBulkUpdate function to ManageProduct.tsx
+- [x] Import BusinessProductList in ManageProduct.tsx
+- [x] Replace product list rendering with BusinessProductList component in ManageProduct.tsx

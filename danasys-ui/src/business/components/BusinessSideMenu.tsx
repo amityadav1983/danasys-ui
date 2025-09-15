@@ -12,6 +12,7 @@ import {
   FaUsers,
   FaExchangeAlt,
   FaHome,
+  FaNetworkWired, // ✅ New icon for My Connections
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
@@ -29,7 +30,8 @@ const BusinessSideMenu = () => {
     { icon: FaBoxOpen, label: "Products", to: "/business/products" },
     { icon: FaShoppingCart, label: "Orders", to: "/business/orders" },
     { icon: FaMoneyBillWave, label: "Payments", to: "/business/payments" },
-        { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
+    { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
+        { icon: FaNetworkWired, label: "My Connections", to: "/business/connections" },
     { icon: FaChartBar, label: "Reports", to: "/business/reports" },
     { icon: FaBuilding, label: "Company Profile", to: "/business/company-profile" },
     { icon: FaChartLine, label: "Trends", to: "/business/trends" },
@@ -38,7 +40,7 @@ const BusinessSideMenu = () => {
   ];
 
   const handleOverviewClick = () => {
-    dispatch(setMode('business'));
+    dispatch(setMode("business"));
   };
 
   return (
@@ -49,26 +51,33 @@ const BusinessSideMenu = () => {
           {menuItems.map((item, index) => {
             let isActive = false;
             if (item.label === "Overview") {
-              isActive = location.pathname === "/business" || location.pathname === "/business/";
+              isActive =
+                location.pathname === "/business" ||
+                location.pathname === "/business/";
+            } else if (item.label === "Products") {
+              isActive =
+                location.pathname === item.to ||
+                location.pathname === "/business/manage-products";
             } else {
               isActive = location.pathname === item.to;
             }
             return (
               <li key={index}>
                 {item.label === "Overview" ? (
-                 <Link
-  to={item.to}
-  onClick={item.label === "Overview" ? handleOverviewClick : undefined}
-  className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 ${
-    isActive
-      ? "bg-white text-blue-700 font-semibold shadow rounded-r-full"
-      : "text-blue-100 hover:bg-blue-700/40 rounded-r-full"
-  }`}
->
-  <item.icon className="text-lg" />
-  <span className="text-base">{item.label}</span>
-</Link>
-
+                  <Link
+                    to={item.to}
+                    onClick={
+                      item.label === "Overview" ? handleOverviewClick : undefined
+                    }
+                    className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 ${
+                      isActive
+                        ? "bg-white text-blue-700 font-semibold shadow rounded-r-full"
+                        : "text-blue-100 hover:bg-blue-700/40 rounded-r-full"
+                    }`}
+                  >
+                    <item.icon className="text-lg" />
+                    <span className="text-base">{item.label}</span>
+                  </Link>
                 ) : (
                   <Link
                     to={item.to}
@@ -87,7 +96,6 @@ const BusinessSideMenu = () => {
           })}
         </ul>
       </nav>
-
     </aside>
   );
 };

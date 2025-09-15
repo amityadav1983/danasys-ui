@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import BusinessProductForm from "../components/BusinessProductForm";
+import BusinessProductList from "../components/BusinessProductList";
 
 interface BusinessProfile {
   id: number;
@@ -12,9 +14,17 @@ interface BusinessProfile {
 interface Product {
   id: number;
   name: string;
+  price: number;
   offerPrice: number;
   category: string;
   image: string;
+  quantity: number;
+  description?: string;
+  moreAbout?: string;
+  status?: string;
+  version?: number;
+  starRating?: number;
+  userBusinessProfileId?: number;
 }
 
 const ManageProduct = () => {
@@ -34,6 +44,16 @@ const ManageProduct = () => {
 
   // 🔎 Search State
   const [searchQuery, setSearchQuery] = useState("");
+
+  // ✅ Add/Update form states
+  const [showForm, setShowForm] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // ✅ Bulk selection states
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [editedProducts, setEditedProducts] = useState<Record<number, Product>>(
+    {}
+  );
 
   // Fetch Managed Profiles
   useEffect(() => {
@@ -96,6 +116,92 @@ const ManageProduct = () => {
       p.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Handlers for Add, Update, Delete
+  const handleAddProduct = () => {
+    setSelectedProduct(null);
+    setShowForm(true);
+  };
+
+  const handleUpdateProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setShowForm(true);
+  };
+
+  const handleDeleteProduct = async (productId: number) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+    try {
+      const res = await fetch(`/api/product/removeProduct/${productId}`, {
+        method: "DELETE",
+        headers: { Accept: "*/*" },
+      });
+
+      const responseText = await res.text();
+      alert(responseText);
+
+      if (res.ok) {
+        setProducts((prev) => prev.filter((p) => p.id !== productId));
+      }
+    } catch (err: any) {
+      alert(err.message || "Error deleting product");
+    }
+  };
+
+  // ✅ Handle Inline Edit
+  const handleInlineChange = (
+    productId: number,
+    field: keyof Product,
+    value: string | number
+  ) => {
+    setEditedProducts((prev) => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        [field]: value,
+      },
+    }));
+  };
+
+  // ✅ Bulk Update API
+  const handleBulkUpdate = async () => {
+    if (!selectedProfile || selectedProducts.length < 2) return;
+    try {
+      const body = selectedProducts.map((id) => editedProducts[id]);
+      const res = await fetch(
+        `/api/product/bulkUpdateProducts/${selectedProfile}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }
+      );
+
+      const text = await res.text();
+
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
+
+      if (!res.ok) throw new Error(typeof data === "string" ? data : "Bulk update failed");
+
+      alert(typeof data === "string" ? data : "Bulk update successful");
+
+      setProducts((prev) =>
+        prev.map((p) =>
+          selectedProducts.includes(p.id) ? editedProducts[p.id] : p
+        )
+      );
+
+      setSelectedProducts([]);
+      setEditedProducts({});
+    } catch (err: any) {
+      alert(err.message || "Bulk update failed");
+    }
+  };
+
   return (
     <div className="p-6 pt-20 bg-white">
       <h1 className="text-2xl font-bold mb-6">Products</h1>
@@ -124,132 +230,82 @@ const ManageProduct = () => {
         </button>
       </div>
 
-      {/* Tab Content */}
-      {isManageProductActive && (
-        <div className="space-y-6">
-          {/* Dropdown */}
-          <div className="w-full max-w-md">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Business Profile
-            </label>
+      {showForm ? (
+        <BusinessProductForm
+            onClose={() => {
+              setShowForm(false);
+              setSelectedProduct(null);
+            }}
+            product={selectedProduct}
+            profileId={selectedProfile}
+            onSuccess={() => {
+              setShowForm(false);
+              setSelectedProduct(null);
+              if (selectedProfile) {
+                // reload products
+                fetch(`/api/product/userBusinessProductList/${selectedProfile}`)
+                  .then((res) => res.json())
+                  .then((data) => setProducts(data));
+              }
+            }}
+          />
+      ) : (
+        <>
+          {/* Tab Content */}
+          {isManageProductActive && (
+            <div className="space-y-6">
+              {/* Dropdown */}
+              <div className="w-full max-w-md">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Business Profile
+                </label>
 
-            {loadingProfiles && (
-              <p className="text-gray-500">Loading profiles...</p>
-            )}
-            {error && <p className="text-red-500">{error}</p>}
+                {loadingProfiles && (
+                  <p className="text-gray-500">Loading profiles...</p>
+                )}
+                {error && <p className="text-red-500">{error}</p>}
 
-            {!loadingProfiles && profiles.length > 0 ? (
-              <select
-                value={selectedProfile ?? ""}
-                onChange={(e) => setSelectedProfile(Number(e.target.value))}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="" disabled>
-                  -- Choose a business profile --
-                </option>
-                {profiles.map((profile) => (
-                  <option key={profile.id} value={profile.id}>
-                    {profile.storeName || profile.ownerName}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              !loadingProfiles && <p>No profiles found.</p>
-            )}
-          </div>
-
-          {/* Product List */}
-          {selectedProfile && (
-            <div>
-              {/* Search Bar */}
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex gap-2 w-full max-w-md">
-                  <input
-                    type="text"
-                    placeholder="Search by name or category..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <button
-                    className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition"
+                {!loadingProfiles && profiles.length > 0 ? (
+                  <select
+                    value={selectedProfile ?? ""}
+                    onChange={(e) => setSelectedProfile(Number(e.target.value))}
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    Search
-                  </button>
-                </div>
+                    <option value="" disabled>
+                      -- Choose a business profile --
+                    </option>
+                    {profiles.map((profile) => (
+                      <option key={profile.id} value={profile.id}>
+                        {profile.storeName || profile.ownerName}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  !loadingProfiles && <p>No profiles found.</p>
+                )}
               </div>
 
-              {/* Products */}
-              {!loadingProducts && filteredProducts.length > 0 ? (
-                <div className="w-full">
-                  {/* Table Header */}
-                  <div className="grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
-                    <div className="text-left">Image / Name</div>
-                    <div className="text-left">Offer Price</div>
-                    <div className="text-center">Category</div>
-                    <div className="text-right">Actions</div>
-                  </div>
-
-                  {/* Table Body */}
-                  <div className="space-y-3 group">
-                    {filteredProducts.map((product) => (
-                      <div
-                        key={product.id}
-                        className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                          group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.02] hover:shadow-md"
-                      >
-                        {/* Image + Name */}
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={product.image}
-                            alt="Product"
-                            className="h-10 w-10 rounded-full border object-cover"
-                          />
-                          <span className="font-medium text-gray-800">
-                            {product.name.replace(/\.[^/.]+$/, "")}
-                          </span>
-                        </div>
-
-                        {/* Offer Price */}
-                        <div className="text-gray-800 font-bold">
-                          ₹{product.offerPrice}
-                        </div>
-
-                        {/* Category */}
-                        <div className="text-center">
-                          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
-                            {product.category || "—"}
-                          </span>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex justify-end gap-2">
-                          <button
-                            className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition"
-                          >
-                            <FaPlus /> Add
-                          </button>
-                          <button
-                            className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 hover:bg-yellow-200 rounded-full transition"
-                          >
-                            <FaEdit /> Update
-                          </button>
-                          <button
-                            className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-full transition"
-                          >
-                            <FaTrash /> Delete
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                !loadingProducts && <p>No products found.</p>
+              {/* Product List */}
+              {selectedProfile && (
+                <BusinessProductList
+                  filteredProducts={filteredProducts}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                  handleAddProduct={handleAddProduct}
+                  selectedProducts={selectedProducts}
+                  setSelectedProducts={setSelectedProducts}
+                  editedProducts={editedProducts}
+                  setEditedProducts={setEditedProducts}
+                  handleInlineChange={handleInlineChange}
+                  handleBulkUpdate={handleBulkUpdate}
+                  handleUpdateProduct={handleUpdateProduct}
+                  handleDeleteProduct={handleDeleteProduct}
+                  loadingProducts={loadingProducts}
+                />
               )}
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );
