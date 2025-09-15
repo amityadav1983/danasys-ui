@@ -42,6 +42,8 @@ public class UserDetailsDTO {
 	private String myQRCode;
 	
 	private String companyLogo;
+	
+	private Long userProfileId;
 
 
 }
