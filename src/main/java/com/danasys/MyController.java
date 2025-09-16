@@ -1212,7 +1212,7 @@ public class MyController {
 	}
 	
 	
-	@GetMapping("/loadUserBusinessProfileById/{userProfileId}")
+	@GetMapping("/api/user/loadUserBusinessProfileById/{userProfileId}")
 	public ResponseEntity<?> loadUserBusinessProfileById(@RequestParam("userProfileId") Long userProfileId) throws IOException {
 		
 		List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
