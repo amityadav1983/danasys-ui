@@ -409,7 +409,10 @@ public class MyController {
 		userDetailsDTO.setServiceAreaId(5l);
 		userDetailsDTO.setHouseNo("House no-102");
 		userDetailsDTO.setFullAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
-		userDetailsDTO.setRole(UserRoleEnum.ROLE_USER);
+		List<UserRoleEnum> roles = new ArrayList<>();
+		roles.add(UserRoleEnum.ROLE_USER);
+		
+		userDetailsDTO.setRoles(roles);
 		userDetailsDTO.setUserProfileId(1l);
 
 		String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("user.png")

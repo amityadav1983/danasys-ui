@@ -1,5 +1,6 @@
 package com.danasys.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.danasys.user.enums.UserRoleEnum;
@@ -37,7 +38,7 @@ public class UserDetailsDTO {
 	
 	private String userWalletImage;
 	
-	private UserRoleEnum role;
+	private List<UserRoleEnum> roles = new ArrayList<>();
 
 	private String myQRCode;
 	
