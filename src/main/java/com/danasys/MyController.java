@@ -1107,6 +1107,11 @@ public class MyController {
 		return ResponseEntity.ok("service area removed successfully");
 	}
 	
+	@PutMapping("/deActivateServiceArea/{id}/deactivate")
+	public ResponseEntity<?> deActivateServiceArea(@PathVariable Long id) {
+		return ResponseEntity.ok("service area deactivate successfully");
+	}
+	
 	@GetMapping("/api/admin/allRegisteredServiceAreas")
 	@Operation(summary = "Load all service Areas", description = "API for admin to view all register service areas.")
 	public ResponseEntity<List<ServiceAreaDTO>> getAllRegisteredServiceArea() {
@@ -1153,6 +1158,11 @@ public class MyController {
 	@PutMapping("/api/admin/removeCategory/{id}/remove")
 	public ResponseEntity<?> removeCategory(@PathVariable Long id) {
 		return ResponseEntity.ok("Product category removed successfully");
+	}
+	
+	@PutMapping("/deactivateCategory/{id}/deactivate")
+	public ResponseEntity<?> deactivateCategory(@PathVariable Long id) {
+		return ResponseEntity.ok("Product category deactivated successfully");
 	}
 		
 	@GetMapping("/api/admin/allRegisteredProductCategory")
