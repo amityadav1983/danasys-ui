@@ -34,7 +34,7 @@ public class ProductController {
 	@Value("${file.access-url}")
 	private String accessUrl;
 
-	@GetMapping("/api/product/userBusinessProductList/{userBusinessProfileId}")
+	@GetMapping("/api/product/userBusinessProductList")
 	public List<ProductDTO> vanderProductList(@PathVariable Long userBusinessProfileId) throws IOException {
 		List<ProductDTO> products = new ArrayList();
 		Long id = 100000l;
@@ -72,7 +72,7 @@ public class ProductController {
 		return ResponseEntity.ok().body(" successful");
 	}
 	
-	@GetMapping("/api/product/viewProductDetails/{id}")
+	@GetMapping("/api/product/viewProductDetails")
 	public ResponseEntity<ProductDTO> viewProductDetails(@PathVariable Long id)
 			throws IOException {
 		

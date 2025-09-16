@@ -213,7 +213,7 @@ public class MyController {
 
 	}
 	
-	@GetMapping("/api/user/loadUserBusinessProfile/{userName}")
+	@GetMapping("/api/user/loadUserBusinessProfile")
 	@Operation(summary = "load all user addresses", description = "load all user addresses.")
 	public ResponseEntity<?> loadUserBusinessProfile(@RequestParam("userName") String userName) throws IOException {
 		List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
@@ -1226,7 +1226,7 @@ public class MyController {
 	}
 	
 	
-	@GetMapping("/api/user/loadUserBusinessProfileById/{userProfileId}")
+	@GetMapping("/api/user/loadUserBusinessProfileById")
 	public ResponseEntity<?> loadUserBusinessProfileById(@RequestParam("userProfileId") Long userProfileId) throws IOException {
 		
 		List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
