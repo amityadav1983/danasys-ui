@@ -508,7 +508,7 @@ public class MyController {
 
 	}
 	
-	@GetMapping("/api/user/loginTheem")
+	@GetMapping("/public/loginTheem")
 	@Operation(summary = "Login theem", description = "Login theem APIr")
 	public LoginTheemDTO loginTheem() throws IOException {
 
@@ -1022,7 +1022,7 @@ public class MyController {
 		roles.add(UserRoleEnum.ROLE_USER);
 		buDashboard.setRoles(roles);
 		
-		buDashboard.setColorTheam("#228B22");
+		buDashboard.setColorTheam("#87CEEB");
 		
 		Set<com.danasys.user.enums.OrdarStatusEnum> orderStatus = new HashSet<>();
 		orderStatus.add(OrdarStatusEnum.DELIVERED);
