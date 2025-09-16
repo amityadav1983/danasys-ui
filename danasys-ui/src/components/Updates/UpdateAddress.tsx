@@ -28,7 +28,6 @@ const UpdateAddress: React.FC<Props> = ({ onClose }) => {
   const [houseFlatNo, setHouseFlatNo] = useState<string>("");
   const [fullAddress, setFullAddress] = useState<string>("");
   const [pinCode, setPinCode] = useState<number>(0);
-  // const [status, setStatus] = useState<string>("");
   const [district, setDistrict] = useState<string>("");
   const [state, setState] = useState<string>("");
   const [serviceAreas, setServiceAreas] = useState<ServiceArea[]>([]);
@@ -62,54 +61,103 @@ const UpdateAddress: React.FC<Props> = ({ onClose }) => {
     fetchServiceAreas();
   }, []);
 
-  const handleSubmit = () => {
-    if (selectedArea === "Other") {
-      if (!fullAddress.trim()) {
-        alert("Please enter your full address.");
-        return;
-      }
-      if (!pinCode) {
-        alert("Please enter your pin code.");
-        return;
-      }
-      // if (!status.trim()) {
-      //   alert("Please enter your status.");
-      //   return;
-      // }
-      if (!district.trim()) {
-        alert("Please enter your district.");
-        return;
-      }
-      if (!state.trim()) {
-        alert("Please enter your state.");
+  const handleSubmit = async () => {
+    try {
+      let payload: any = {
+        addressLine1: "",
+        addressType: "HOME",
+        userServiceAreaDeatils: {
+          id: 0,
+          fullAddress: "",
+          district: "",
+          state: "",
+          pinCode: 0,
+        },
+        default: true,
+      };
+
+      if (selectedArea === "Other") {
+        if (!fullAddress.trim()) {
+          alert("Please enter your full address.");
+          return;
+        }
+        if (!pinCode) {
+          alert("Please enter your pin code.");
+          return;
+        }
+        if (!district.trim()) {
+          alert("Please enter your district.");
+          return;
+        }
+        if (!state.trim()) {
+          alert("Please enter your state.");
+          return;
+        }
+
+        payload = {
+          addressLine1: fullAddress,
+          addressType: "HOME",
+          userServiceAreaDeatils: {
+            id: 0,
+            fullAddress,
+            district,
+            state,
+            pinCode,
+          },
+          default: true,
+        };
+      } else if (selectedArea) {
+        if (!houseFlatNo.trim()) {
+          alert("Please enter your House/Flat No.");
+          return;
+        }
+
+        const area = serviceAreas.find((a) => a.name === selectedArea);
+        if (!area) {
+          alert("Selected service area not found.");
+          return;
+        }
+
+        payload = {
+          addressLine1: houseFlatNo,
+          addressType: "HOME",
+          userServiceAreaDeatils: {
+            id: area.id,
+            fullAddress: area.name,
+            district: district || "",
+            state: state || "",
+            pinCode: area.pinCode,
+          },
+          default: true,
+        };
+      } else {
+        alert("Please select an address option.");
         return;
       }
 
-      console.log("Other Address Details:", {
-        fullAddress,
-        pinCode,
-        status,
-        district,
-        state,
-      });
-    } else if (selectedArea) {
-      if (!houseFlatNo.trim()) {
-        alert("Please enter your House/Flat No.");
-        return;
-      }
+      const response = await axios.post(
+        "/api/user/linkServiceArea",
+        payload,
+        {
+          headers: {
+            accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      console.log("Selected Service Area:", selectedArea);
-      console.log("House/Flat No:", houseFlatNo);
-    } else {
-      alert("Please select an address option.");
-      return;
+      console.log("API Response:", response.data);
+      alert("Address saved successfully!");
+      onClose();
+    } catch (err) {
+      console.error("Error saving address:", err);
+      alert("Failed to save address. Please try again.");
     }
-
-    onClose();
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg overflow-y-auto border border-gray-100 no-scrollbar"
+    <div
+      className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg overflow-y-auto border border-gray-100 no-scrollbar"
       style={{ maxHeight: "85vh" }}
     >
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
@@ -117,7 +165,9 @@ const UpdateAddress: React.FC<Props> = ({ onClose }) => {
       </h2>
 
       {loading && (
-        <p className="text-gray-500 text-center py-4">Loading service areas...</p>
+        <p className="text-gray-500 text-center py-4">
+          Loading service areas...
+        </p>
       )}
       {error && <p className="text-red-500 text-center py-4">{error}</p>}
 
@@ -219,18 +269,6 @@ const UpdateAddress: React.FC<Props> = ({ onClose }) => {
                     onChange={(e) => setPinCode(Number(e.target.value))}
                   />
                 </div>
-                {/* <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Status
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter status"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                  />
-                </div> */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
