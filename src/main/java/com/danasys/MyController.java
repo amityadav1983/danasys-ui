@@ -175,16 +175,17 @@ public class MyController {
 
 	@PostMapping(value = "/api/user/updateUserPassword")
 	@Operation(summary = "Change user password", description = "Change user password.")
-	public ResponseEntity<?> updateUserPassword(@RequestBody UserPasswordRequest userPasswordRequest,
-			Principal principal) {
+	public ResponseEntity<?> updateUserPassword(@RequestBody UserPasswordRequest userPasswordRequest) {
 			return ResponseEntity.ok("SUCCESS: Password changed successfully");
 	}
 
 
-	@PostMapping(value = "/api/user/updateUserProfile")
+	@PostMapping(value = "/api/user/updateUserProfile", consumes = "multipart/form-data")
 	@Operation(summary = "update user profile", description = "Update user prfofile.")
-	public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest,
-			Principal principal) {
+	
+	public ResponseEntity<?> updateUserProfile(
+	        @RequestPart("user") UserProfileUpdateRequest user,   // JSON blob part
+	        @RequestPart(value = "file", required = false) MultipartFile file) {
 		return ResponseEntity.ok("SUCCESS: User profile updated and service area is valid");
 	}
 
@@ -1106,6 +1107,11 @@ public class MyController {
 		return ResponseEntity.ok("service area removed successfully");
 	}
 	
+	@PutMapping("/deActivateServiceArea/{id}/deactivate")
+	public ResponseEntity<?> deActivateServiceArea(@PathVariable Long id) {
+		return ResponseEntity.ok("service area deactivate successfully");
+	}
+	
 	@GetMapping("/api/admin/allRegisteredServiceAreas")
 	@Operation(summary = "Load all service Areas", description = "API for admin to view all register service areas.")
 	public ResponseEntity<List<ServiceAreaDTO>> getAllRegisteredServiceArea() {
@@ -1152,6 +1158,11 @@ public class MyController {
 	@PutMapping("/api/admin/removeCategory/{id}/remove")
 	public ResponseEntity<?> removeCategory(@PathVariable Long id) {
 		return ResponseEntity.ok("Product category removed successfully");
+	}
+	
+	@PutMapping("/deactivateCategory/{id}/deactivate")
+	public ResponseEntity<?> deactivateCategory(@PathVariable Long id) {
+		return ResponseEntity.ok("Product category deactivated successfully");
 	}
 		
 	@GetMapping("/api/admin/allRegisteredProductCategory")
