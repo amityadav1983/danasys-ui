@@ -212,7 +212,7 @@ public class MyController {
 
 	}
 	
-	@GetMapping("/api/user/loadUserBusinessProfile")
+	@GetMapping("/api/user/loadUserBusinessProfile/{userName}")
 	@Operation(summary = "load all user addresses", description = "load all user addresses.")
 	public ResponseEntity<?> loadUserBusinessProfile(@RequestParam("userName") String userName) throws IOException {
 		List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
