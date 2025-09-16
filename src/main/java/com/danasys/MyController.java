@@ -175,16 +175,17 @@ public class MyController {
 
 	@PostMapping(value = "/api/user/updateUserPassword")
 	@Operation(summary = "Change user password", description = "Change user password.")
-	public ResponseEntity<?> updateUserPassword(@RequestBody UserPasswordRequest userPasswordRequest,
-			Principal principal) {
+	public ResponseEntity<?> updateUserPassword(@RequestBody UserPasswordRequest userPasswordRequest) {
 			return ResponseEntity.ok("SUCCESS: Password changed successfully");
 	}
 
 
-	@PostMapping(value = "/api/user/updateUserProfile")
+	@PostMapping(value = "/api/user/updateUserProfile", consumes = "multipart/form-data")
 	@Operation(summary = "update user profile", description = "Update user prfofile.")
-	public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest,
-			Principal principal) {
+	
+	public ResponseEntity<?> updateUserProfile(
+	        @RequestPart("user") UserProfileUpdateRequest user,   // JSON blob part
+	        @RequestPart(value = "file", required = false) MultipartFile file) {
 		return ResponseEntity.ok("SUCCESS: User profile updated and service area is valid");
 	}
 
