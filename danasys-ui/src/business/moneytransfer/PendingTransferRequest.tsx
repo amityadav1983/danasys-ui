@@ -66,6 +66,7 @@ const PendingTransferRequest: React.FC = () => {
                     group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
                 >
                   {/* Amount */}
+                  {/* Amount */}
                   <div className="text-gray-800 font-medium">
                     {request.amount}
                   </div>

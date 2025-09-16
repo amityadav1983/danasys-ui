@@ -52,28 +52,61 @@ const BusinessProducts: React.FC = () => {
     {}
   );
 
+  // User role and search
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userName, setUserName] = useState("");
+
   const isMyProductActive = location.pathname === "/business/products";
   const isManageProductActive =
     location.pathname === "/business/manage-products";
 
-  // Fetch Profiles
+  // Fetch Profiles for My Products
   useEffect(() => {
-    const fetchProfiles = async () => {
+    const fetchUserAndProfiles = async () => {
       setLoadingProfiles(true);
       setError(null);
       try {
-        const res = await fetch(`/api/user/loadUserBusinessProfile?userName=`);
-        if (!res.ok) throw new Error("Failed to fetch business profiles");
-        const data = await res.json();
-        setProfiles(data);
+        const userRes = await fetch('/api/user/getUserDetails');
+        if (!userRes.ok) throw new Error('Failed to fetch user details');
+        const userData = await userRes.json();
+        setUserRole(userData.role);
+
+        if (userData.role === 'ROLE_USER') {
+          const userProfileId = userData.userProfileId;
+          const res = await fetch(`/api/user/loadUserBusinessProfileById/${userProfileId}?userProfileId=${userProfileId}`);
+          if (!res.ok) throw new Error("Failed to fetch business profiles");
+          const data = await res.json();
+          setProfiles(data);
+        }
       } catch (err: any) {
         setError(err.message || "Something went wrong");
       } finally {
         setLoadingProfiles(false);
       }
     };
-    fetchProfiles();
+    fetchUserAndProfiles();
   }, []);
+
+  // Fetch Profiles for non-ROLE_USER on userName change
+  useEffect(() => {
+    if (userRole !== 'ROLE_USER' && userName.trim()) {
+      const fetchProfiles = async () => {
+        setLoadingProfiles(true);
+        setError(null);
+        try {
+          const res = await fetch(`/api/user/loadUserBusinessProfile/${userName}?userName=${userName}`);
+          if (!res.ok) throw new Error("Failed to fetch business profiles");
+          const data = await res.json();
+          setProfiles(data);
+        } catch (err: any) {
+          setError(err.message || "Something went wrong");
+        } finally {
+          setLoadingProfiles(false);
+        }
+      };
+      fetchProfiles();
+    }
+  }, [userName, userRole]);
 
   // Fetch Products
   useEffect(() => {
@@ -244,6 +277,18 @@ const BusinessProducts: React.FC = () => {
         <>
           {(isMyProductActive || isManageProductActive) && (
             <div className="space-y-6">
+              {userRole !== 'ROLE_USER' && (
+                <div className="flex items-center gap-4 mb-6">
+                  <label className="font-medium">Search with Username</label>
+                  <input
+                    type="text"
+                    placeholder="Enter Username"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
               <BusinessProfileSelector
                 profiles={profiles}
                 selectedProfile={selectedProfile}

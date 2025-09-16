@@ -19,6 +19,7 @@ const LocationPicker = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [responseMsg, setResponseMsg] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,7 +65,12 @@ const LocationPicker = () => {
 
   const toggleDropdown = () => setShowDropdown((prev) => !prev);
 
-  const handleMakeDefault = (id: number) => {
+ // ✅ Make Default API call
+const handleMakeDefault = async (id: number) => {
+  try {
+    const res = await api.put(`/api/user/setUserDefaultAddress/${id}`);
+    alert(res.data); // 👈 API ka response direct alert box me dikhayega
+
     const selectedAddr = addresses.find((addr) => addr.id === id);
     if (selectedAddr) {
       setLocation({ id: selectedAddr.id, address: selectedAddr.address });
@@ -75,16 +81,30 @@ const LocationPicker = () => {
         }))
       );
     }
-    setShowDropdown(false); // ✅ close dropdown on select
-  };
+  } catch (err: any) {
+    console.error("Error setting default:", err);
+    alert(err.response?.data || "Failed to set default address");
+  } finally {
+    setShowDropdown(false);
+  }
+};
 
-  const handleDelete = (id: number) => {
+// ✅ Delete API call
+const handleDelete = async (id: number) => {
+  try {
+    const res = await api.put(`/api/user/removeUserAddress/${id}`);
+    alert(res.data);
+
     if (location?.id === id) {
-      // agar selected address delete kiya
       setLocation({});
     }
     setAddresses((prev) => prev.filter((addr) => addr.id !== id));
-  };
+  } catch (err: any) {
+    console.error("Error deleting address:", err);
+    alert(err.response?.data || "Failed to delete address");
+  }
+};
+
 
   // 👇 Sirf first part of address (comma se pehle)
   const shortAddress = location.address
@@ -177,12 +197,6 @@ const LocationPicker = () => {
                       <p className="text-sm text-gray-600 leading-relaxed">
                         {addr.address}
                       </p>
-                      {/* <p className="text-xs text-gray-500 mt-2">
-                        Delivery in 10 minutes
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Address ID: {addr.id}
-                      </p> */}
                     </div>
                   </div>
 
@@ -209,6 +223,15 @@ const LocationPicker = () => {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ✅ Response Message (API se aaya hua) */}
+      {responseMsg && (
+        <div className="absolute -bottom-8 left-0 bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg">
+          {typeof responseMsg === "string"
+            ? responseMsg
+            : JSON.stringify(responseMsg)}
         </div>
       )}
     </div>
