@@ -59,7 +59,6 @@ import com.danasys.user.request.UpdateUserRolesRequest;
 import com.danasys.user.request.UserPasswordRequest;
 import com.danasys.user.request.UserProfileUpdateRequest;
 import com.danasys.user.request.UserServiceAreaRequest;
-import com.danasys.user.response.ManagerDto;
 import com.danasys.user.response.UserAddresses;
 import com.danasys.user.response.UserServiceArea;
 
@@ -1212,6 +1211,89 @@ public class MyController {
 		
 	}
 	
+	
+	@GetMapping("/loadUserBusinessProfileById/{userProfileId}")
+	public ResponseEntity<?> loadUserBusinessProfileById(@RequestParam("userProfileId") Long userProfileId) throws IOException {
+		
+		List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
+		UserBusinessProfileDTO userBusinessProfile = new UserBusinessProfileDTO();
+		userBusinessProfile.setId(1l);
+		userBusinessProfile.setOwnerName("Sri Ram");
+		userBusinessProfile.setStoreName("Sri Ram Store");
+		userBusinessProfile.setBusinessLogoPath(
+				ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("logo.png")
+						.toUriString());
+		ProductCategoryDTO productCategory = new ProductCategoryDTO();
+		productCategory.setId(1l);
+		productCategory.setCategoryName(ProductCategoryEnum.Grocery);
+		
+		userBusinessProfile.setCategory(productCategory);
+		List<AddressDTO> userAddressList = new ArrayList();
+		AddressDTO address1 = new AddressDTO();
+		address1.setId(11l);
+		address1.setFullAddress("E2 702");
+		ServiceAreaDTO serviceArea = new ServiceAreaDTO();
+		serviceArea.setId(1l);
+		serviceArea.setFullAddress("Paramount Golfforeste, UPSIDC, Greater Noida, UP - 201309");
+		serviceArea.setDistrict("Greater Noida");
+		serviceArea.setState("UP");
+		serviceArea.setPinCode(201309);
+		
+		address1.setServiceArea(serviceArea);
+		BankAccountDTO bankAccount = new BankAccountDTO();
+		bankAccount.setId(1l);
+		bankAccount.setAccountHolderName("Sri Ram");
+		bankAccount.setAccountNumber(123456789012l);
+		bankAccount.setBankIfscCode("SBIN0001234");
+		bankAccount.setBankName("State Bank of India");
+		bankAccount.setBranch("Noida Sec-62");
+		address1.setBankAccounts(bankAccount);
+		address1.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
+		userAddressList.add(address1);
+		userBusinessProfile.setAddresses(userAddressList);
+		//BP2
+		UserBusinessProfileDTO userBusinessProfile2 = new UserBusinessProfileDTO();
+		userBusinessProfile2.setId(2l);
+		userBusinessProfile2.setOwnerName("Sri Gupta");
+		userBusinessProfile2.setStoreName("Sri Gupta Store");
+		userBusinessProfile2.setBusinessLogoPath(
+				ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("logo.png")
+						.toUriString());
+		ProductCategoryDTO productCategory2 = new ProductCategoryDTO();
+		productCategory2.setId(1l);
+		productCategory2.setCategoryName(ProductCategoryEnum.Grocery);
+		
+		userBusinessProfile.setCategory(productCategory2);
+		List<AddressDTO> userAddressList2 = new ArrayList();
+		AddressDTO address2 = new AddressDTO();
+		address2.setId(21l);
+		address2.setFullAddress("G 402");
+		ServiceAreaDTO serviceArea2 = new ServiceAreaDTO();
+		serviceArea2.setId(2l);
+		serviceArea2.setFullAddress("Paramount Golfforeste2, UPSIDC, Greater Noida, UP - 201309");
+		serviceArea2.setDistrict("Greater Noida");
+		serviceArea2.setState("UP");
+		serviceArea2.setPinCode(201309);
+		
+		address1.setServiceArea(serviceArea2);
+		BankAccountDTO bankAccount2 = new BankAccountDTO();
+		bankAccount2.setId(2l);
+		bankAccount2.setAccountHolderName("Sri Gupta");
+		bankAccount2.setAccountNumber(123456782222l);
+		bankAccount2.setBankIfscCode("HDFC0001234");
+		bankAccount2.setBankName("HDFC Bank");
+		bankAccount2.setBranch("Noida Sec-63");
+		address2.setBankAccounts(bankAccount);
+		address2.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
+		userAddressList2.add(address2);
+		userBusinessProfile2.setAddresses(userAddressList2);
+		
+		userBusinessProfiles.add(userBusinessProfile);
+		userBusinessProfiles.add(userBusinessProfile2);
+		
+		return ResponseEntity.ok(userBusinessProfiles);
+
+	}
 
 	
 }
