@@ -360,9 +360,9 @@ public class MyController {
 
 	}
 
-	@GetMapping("/api/user/getManagedUserBusinessProfiles")
+	@GetMapping("/api/user/getManagedUserBusinessProfiles/{userProfileId}")
 	@Operation(summary = "load usersBusiness Profile managed by user", description = "load usersBusiness Profile managed by user")
-	public ResponseEntity<?> getManagedUserBusinessProfiles(Principal principal) {
+	public ResponseEntity<?> getManagedUserBusinessProfiles(@RequestParam("userProfileId") Long userProfileIdl) {
 		List<UserBusinessProfileDTO> managedUsers = new ArrayList<>();
 		UserBusinessProfileDTO userbp1 = new UserBusinessProfileDTO();
 		userbp1.setId(1L);
