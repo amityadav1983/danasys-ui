@@ -213,7 +213,7 @@ public class MyController {
 
 	}
 	
-	@GetMapping("/api/user/loadUserBusinessProfile")
+	@GetMapping("/api/user/loadUserBusinessProfile/{userName}")
 	@Operation(summary = "load all user addresses", description = "load all user addresses.")
 	public ResponseEntity<?> loadUserBusinessProfile(@RequestParam("userName") String userName) throws IOException {
 		List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
@@ -447,7 +447,7 @@ public class MyController {
 		
 		userDetailsDTO.setMyQRCode(qrCode);
 		
-		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("COST2COST_Red.png")
+		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("c2cbag.png")
 		.toUriString();
 		userDetailsDTO.setCompanyLogo(logo);
 		return userDetailsDTO;
@@ -516,11 +516,11 @@ public class MyController {
 		String backGroundImage = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("background.jpg")
 				.toUriString();
 		
-		String compenyLogo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("logo.png")
+		String companyLogo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("c2cbag.png")
 				.toUriString();
 		
 		theem.setBackGroundImageURL(backGroundImage);
-		theem.setCompenyLogo(compenyLogo);
+		theem.setCompanyLogo(companyLogo);
 
 		return theem;
 

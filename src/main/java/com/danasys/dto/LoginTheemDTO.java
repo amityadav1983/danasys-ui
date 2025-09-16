@@ -12,5 +12,5 @@ public class LoginTheemDTO implements Serializable {
 	
 	private String backGroundImageURL;
 	
-	private String compenyLogo;
+	private String companyLogo;
 }
