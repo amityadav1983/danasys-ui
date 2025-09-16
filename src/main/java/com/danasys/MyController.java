@@ -446,7 +446,7 @@ public class MyController {
 		
 		userDetailsDTO.setMyQRCode(qrCode);
 		
-		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("COST2COST_Red.png")
+		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("c2cbag.png")
 		.toUriString();
 		userDetailsDTO.setCompanyLogo(logo);
 		return userDetailsDTO;
@@ -515,11 +515,11 @@ public class MyController {
 		String backGroundImage = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("background.jpg")
 				.toUriString();
 		
-		String compenyLogo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("logo.png")
+		String companyLogo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/").path("c2cbag.png")
 				.toUriString();
 		
 		theem.setBackGroundImageURL(backGroundImage);
-		theem.setCompenyLogo(compenyLogo);
+		theem.setCompanyLogo(companyLogo);
 
 		return theem;
 
