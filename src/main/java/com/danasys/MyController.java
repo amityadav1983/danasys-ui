@@ -1024,6 +1024,11 @@ public class MyController {
 		roles.add(UserRoleEnum.ROLE_BUSINESS_USER);
 		roles.add(UserRoleEnum.ROLE_USER);
 		buDashboard.setRoles(roles);
+		Set <StatusEnum> statusList = new HashSet<>();
+		statusList.add(StatusEnum.ACTIVE);
+		statusList.add(StatusEnum.OBSOLETE);
+		statusList.add(StatusEnum.UNDER_REVIEW);
+		buDashboard.setStatus(statusList);
 		
 		buDashboard.setColorTheam("#87CEEB");
 		
@@ -1110,7 +1115,7 @@ public class MyController {
 		return ResponseEntity.ok("service area removed successfully");
 	}
 	
-	@PutMapping("/deActivateServiceArea/{id}/deactivate")
+	@PutMapping("/api/admin/deActivateServiceArea/{id}/deactivate")
 	public ResponseEntity<?> deActivateServiceArea(@PathVariable Long id) {
 		return ResponseEntity.ok("service area deactivate successfully");
 	}
@@ -1163,7 +1168,7 @@ public class MyController {
 		return ResponseEntity.ok("Product category removed successfully");
 	}
 	
-	@PutMapping("/deactivateCategory/{id}/deactivate")
+	@PutMapping("/api/admin/deactivateCategory/{id}/deactivate")
 	public ResponseEntity<?> deactivateCategory(@PathVariable Long id) {
 		return ResponseEntity.ok("Product category deactivated successfully");
 	}
