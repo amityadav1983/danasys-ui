@@ -1,0 +1,245 @@
+import React, { useEffect, useState } from "react";
+import BusinessProfileSelector from "../components/BusinessProfileSelector";
+import BusinessProductList from "../components/BusinessProductList";
+import BusinessProductForm from "../components/BusinessProductForm";
+
+interface BusinessProfile {
+  id: number;
+  ownerName: string;
+  storeName: string;
+  businessLogoPath?: string;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  offerPrice: number;
+  category: string;
+  image: string;
+  quantity: number;
+  description?: string;
+  moreAbout?: string;
+  status?: string;
+  version?: number;
+  starRating?: number;
+  userBusinessProfileId?: number;
+}
+
+const ManageProducts: React.FC = () => {
+  const [profiles, setProfiles] = useState<BusinessProfile[]>([]);
+  const [selectedProfile, setSelectedProfile] = useState<number | null>(null);
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadingProfiles, setLoadingProfiles] = useState(false);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // ✅ Add/Update form states
+  const [showForm, setShowForm] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Search
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // ✅ Bulk selection states
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [editedProducts, setEditedProducts] = useState<Record<number, Product>>(
+    {}
+  );
+
+  // Fetch Profiles for Manage Products
+  useEffect(() => {
+    const fetchManagedProfiles = async () => {
+      setLoadingProfiles(true);
+      setError(null);
+      try {
+        const userRes = await fetch('/api/user/getUserDetails');
+        if (!userRes.ok) throw new Error('Failed to fetch user details');
+        const userData = await userRes.json();
+        const userProfileId = userData.userProfileId;
+        const res = await fetch(`/api/user/getManagedUserBusinessProfiles/${userProfileId}?userProfileId=${userProfileId}`);
+        if (!res.ok) throw new Error("Failed to fetch business profiles");
+        const data = await res.json();
+        setProfiles(data);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoadingProfiles(false);
+      }
+    };
+    fetchManagedProfiles();
+  }, []);
+
+  // Fetch Products
+  useEffect(() => {
+    if (!selectedProfile) return;
+    const fetchProducts = async () => {
+      setLoadingProducts(true);
+      setError(null);
+      try {
+        const res = await fetch(
+          `/api/product/userBusinessProductList/${selectedProfile}`
+        );
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+    fetchProducts();
+  }, [selectedProfile]);
+
+  // Delete Product
+  const handleDeleteProduct = async (productId: number) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+    try {
+      const res = await fetch(`/api/product/removeProduct/${productId}`, {
+        method: "DELETE",
+        headers: { Accept: "*/*" },
+      });
+
+      const responseText = await res.text();
+      alert(responseText);
+
+      if (res.ok) {
+        setProducts((prev) => prev.filter((p) => p.id !== productId));
+      }
+    } catch (err: any) {
+      alert(err.message || "Error deleting product");
+    }
+  };
+
+  // Update Product (Single)
+  const handleUpdateProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setShowForm(true);
+  };
+
+  // Add Product
+  const handleAddProduct = () => {
+    setSelectedProduct(null);
+    setShowForm(true);
+  };
+
+  // ✅ Handle Inline Edit
+  const handleInlineChange = (
+    productId: number,
+    field: keyof Product,
+    value: string | number
+  ) => {
+    setEditedProducts((prev) => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        [field]: value,
+      },
+    }));
+  };
+
+  // ✅ Bulk Update API
+  const handleBulkUpdate = async () => {
+    if (!selectedProfile || selectedProducts.length < 2) return;
+    try {
+      const body = selectedProducts.map((id) => editedProducts[id]);
+      const res = await fetch(
+        `/api/product/bulkUpdateProducts/${selectedProfile}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }
+      );
+
+      const text = await res.text();
+
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
+
+      if (!res.ok) throw new Error(typeof data === "string" ? data : "Bulk update failed");
+
+      alert(typeof data === "string" ? data : "Bulk update successful");
+
+      setProducts((prev) =>
+        prev.map((p) =>
+          selectedProducts.includes(p.id) ? editedProducts[p.id] : p
+        )
+      );
+
+      setSelectedProducts([]);
+      setEditedProducts({});
+    } catch (err: any) {
+      alert(err.message || "Bulk update failed");
+    }
+  };
+
+  // Filter products
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-6">
+      <BusinessProfileSelector
+        profiles={profiles}
+        selectedProfile={selectedProfile}
+        setSelectedProfile={setSelectedProfile}
+        loadingProfiles={loadingProfiles}
+        error={error}
+      />
+
+      {/* Product List */}
+      {selectedProfile && (
+        <BusinessProductList
+          filteredProducts={filteredProducts}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleAddProduct={handleAddProduct}
+          selectedProducts={selectedProducts}
+          setSelectedProducts={setSelectedProducts}
+          editedProducts={editedProducts}
+          setEditedProducts={setEditedProducts}
+          handleInlineChange={handleInlineChange}
+          handleBulkUpdate={handleBulkUpdate}
+          handleUpdateProduct={handleUpdateProduct}
+          handleDeleteProduct={handleDeleteProduct}
+          loadingProducts={loadingProducts}
+        />
+      )}
+
+      {/* ✅ Show Form if open */}
+      {showForm && (
+        <BusinessProductForm
+          onClose={() => {
+            setShowForm(false);
+            setSelectedProduct(null);
+          }}
+          product={selectedProduct}
+          profileId={selectedProfile}
+          onSuccess={() => {
+            setShowForm(false);
+            setSelectedProduct(null);
+            if (selectedProfile) {
+              // reload products
+              fetch(
+                `/api/product/userBusinessProductList/${selectedProfile}`
+              ).then((res) => res.json()).then((data) => setProducts(data));
+            }
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ManageProducts;

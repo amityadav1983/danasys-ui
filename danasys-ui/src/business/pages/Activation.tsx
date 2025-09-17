@@ -22,6 +22,59 @@ const Activation: React.FC = () => {
   const [selectedArea, setSelectedArea] = useState<ServiceArea | null>(null);
   const [formData, setFormData] = useState<ServiceArea | null>(null);
 
+  // Status dropdown states
+  const [statusOptions, setStatusOptions] = useState<string[]>([]);
+  const [userProfileId, setUserProfileId] = useState<number | null>(null);
+
+  // Fetch user details to get userProfileId
+  const fetchUserDetails = async () => {
+    try {
+      const res = await fetch("/api/user/getUserDetails", {
+        method: "GET",
+        headers: { accept: "*/*" },
+      });
+      if (!res.ok) throw new Error("Failed to fetch user details");
+      const data = await res.json();
+      if (data.userProfileId) {
+        setUserProfileId(data.userProfileId);
+        return data.userProfileId;
+      }
+      throw new Error("userProfileId not found in response");
+    } catch (err: any) {
+      console.error("Error fetching user details:", err.message);
+      return null;
+    }
+  };
+
+  // Fetch business dashboard to get status array
+  const fetchBusinessDashboard = async (profileId: number) => {
+    try {
+      const res = await fetch(`/api/user/loadBusinessDashboard/${profileId}`, {
+        method: "GET",
+        headers: { accept: "*/*" },
+      });
+      if (!res.ok) throw new Error("Failed to fetch business dashboard");
+      const data = await res.json();
+      if (data.status && Array.isArray(data.status)) {
+        setStatusOptions(data.status);
+      } else {
+        console.warn("Status array not found in business dashboard response");
+      }
+    } catch (err: any) {
+      console.error("Error fetching business dashboard:", err.message);
+    }
+  };
+
+  // On component mount, fetch userProfileId and then fetch status options
+  React.useEffect(() => {
+    (async () => {
+      const profileId = await fetchUserDetails();
+      if (profileId) {
+        await fetchBusinessDashboard(profileId);
+      }
+    })();
+  }, []);
+
   // Fetch Service Areas
   const fetchServiceAreas = async () => {
     setLoading(true);
@@ -269,8 +322,11 @@ const Activation: React.FC = () => {
                 onChange={handleChange}
                 className="w-full border px-3 py-2 rounded"
               >
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="INACTIVE">INACTIVE</option>
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
               </select>
             </div>
 

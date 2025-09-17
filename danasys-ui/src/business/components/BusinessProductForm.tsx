@@ -35,11 +35,9 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
     name: "",
     price: "",
     offerPrice: "",
-    category: "",
     quantity: "",
     description: "",
     moreAbout: "",
-    starRating: "",
   });
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -50,11 +48,9 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
         name: product.name || "",
         price: product.price?.toString() || "",
         offerPrice: product.offerPrice?.toString() || "",
-        category: product.category || "",
         quantity: product.quantity?.toString() || "",
         description: product.description || "",
         moreAbout: product.moreAbout || "",
-        starRating: product.starRating?.toString() || "",
       });
       setFile(null);
     } else {
@@ -62,11 +58,9 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
         name: "",
         price: "",
         offerPrice: "",
-        category: "",
         quantity: "",
         description: "",
         moreAbout: "",
-        starRating: "",
       });
       setFile(null);
     }
@@ -90,13 +84,13 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
   }
   setSubmitting(true);
   try {
+    console.log("Sending userBusinessProfileId:", profileId);
     // Backend API ke hisaab se query params bana rahe hain
     const queryParams = new URLSearchParams({
       id: isUpdateMode && product ? String(product.id) : "0",
       name: formData.name,
       price: formData.price || "0",
       offerPrice: formData.offerPrice || "0",
-      category: formData.category,
       quantity: formData.quantity || "0",
       description: formData.description,
       image: file ? file.name : product?.image || "",
@@ -104,7 +98,6 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
       userBusinessProfileId: String(profileId),
       status: product?.status || "ACTIVE",
       version: String(product?.version || 0),
-      starRating: formData.starRating || "0",
     });
 
     const formDataObj = new FormData();
@@ -187,20 +180,6 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
                   value={formData.quantity}
                   onChange={handleChange}
                   required
-                />
-                <InputField
-                  label="Category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                />
-                <InputField
-                  label="Star Rating"
-                  name="starRating"
-                  type="number"
-                  value={formData.starRating}
-                  onChange={handleChange}
                 />
               </div>
             </div>

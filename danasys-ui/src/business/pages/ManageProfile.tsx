@@ -2,17 +2,26 @@ import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const ManageProfile = () => {
+  const [userProfileId, setUserProfileId] = useState<number | null>(null);
   const [profiles, setProfiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch Managed User Business Profiles
+  // ✅ Fetch UserProfileId and then Managed Profiles
   const fetchManagedProfiles = async () => {
     setLoading(true);
     setError(null);
     try {
+      // Step 1: get userProfileId
+      const userRes = await fetch("/api/user/getUserDetails");
+      if (!userRes.ok) throw new Error("Failed to fetch user details");
+      const userData = await userRes.json();
+      const userProfileIdFromApi = userData.userProfileId;
+      setUserProfileId(userProfileIdFromApi);
+
+      // Step 2: fetch managed profiles with userProfileId
       const response = await fetch(
-        `/api/user/getManagedUserBusinessProfiles`,
+        `/api/user/getManagedUserBusinessProfiles/${userProfileIdFromApi}?userProfileId=${userProfileIdFromApi}`,
         {
           method: "GET",
           headers: {
@@ -38,9 +47,6 @@ const ManageProfile = () => {
 
   return (
     <div className="p-6">
-      {/* <h2 className="text-xl font-semibold mb-4">Manage Profile</h2> */}
-
-      {/* Results */}
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
@@ -72,9 +78,7 @@ const ManageProfile = () => {
                 </div>
 
                 {/* Owner Name */}
-                <div className="text-gray-800">
-                  {profile.ownerName}
-                </div>
+                <div className="text-gray-800">{profile.ownerName}</div>
 
                 {/* Store Name */}
                 <div className="text-gray-600 text-sm">

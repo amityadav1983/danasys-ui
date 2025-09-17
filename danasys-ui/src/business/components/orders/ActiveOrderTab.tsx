@@ -46,7 +46,7 @@ const ActiveOrderTab: React.FC = () => {
         // agar user h to profiles bhi fetch karo
         if (res.data.role === "ROLE_USER") {
           const profileRes = await api.get(
-            `/api/user/loadUserBusinessProfile?userName=`
+            `/api/user/loadUserBusinessProfile/{userName}?userName=`
           );
           setBusinessProfiles(profileRes.data);
         }

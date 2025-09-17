@@ -1,6 +1,5 @@
-# TODO: Implement API call in ManageProduct.tsx
-
-- [x] Import authService in ManageProduct.tsx
-- [x] Modify fetchManagedProfiles function to fetch userProfileId from getUserDetails API and use it in the getManagedUserBusinessProfiles API call
-- [x] Handle loading and error states for user details fetch (existing error handling updated)
-- [x] Test the API call and verify profiles load correctly (API returns 400 Bad Request, backend may need implementation)
+- [x] Remove category and starRating from formData state in BusinessProductForm.tsx
+- [x] Update useEffect to not populate category and starRating
+- [x] Remove InputField components for Category and Star Rating from JSX
+- [x] Remove category and starRating from queryParams in handleSubmit
+- [x] Add console.log to verify userBusinessProfileId is being sent

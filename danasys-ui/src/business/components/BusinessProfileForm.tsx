@@ -7,9 +7,9 @@ const initialFormState = {
   storeName: "",
   category: {
     id: 0,
-    categoryName: "Grocery",
+    categoryName: "",
     description: "",
-    status: "ACTIVE",
+    status: "",
     image: "",
     theemColorCode: "",
   },
@@ -56,13 +56,16 @@ const BusinessProfileForm = ({
   const [addedAddresses, setAddedAddresses] = useState<any[]>([]);
   const [shopAddressForSelected, setShopAddressForSelected] = useState("");
 
+  // ✅ Categories
+  const [categories, setCategories] = useState<any[]>([]);
+
   // ✅ Pre-fill when editing
   useEffect(() => {
     if (profile) {
       setFormData({
         ...initialFormState,
         ...profile,
-        businessLogo: null, // logo file ko dobara select karna padega
+        businessLogo: null,
       });
       setAddedAddresses(profile.addresses || []);
     }
@@ -82,30 +85,71 @@ const BusinessProfileForm = ({
     fetchServiceAreas();
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
+  // ✅ Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(
+          "/api/admin/allRegisteredProductCategory"
+        );
+        const data = await res.json();
+        setCategories(data || []);
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
-    if (name.includes(".")) {
-      const keys = name.split(".");
-      setFormData((prev) => {
-        const updated = { ...prev };
-        let current: any = updated;
-        for (let i = 0; i < keys.length - 1; i++) {
-          current = current[keys[i]];
-        }
-        const lastKey = keys[keys.length - 1];
-        current[lastKey] = isNaN(Number(value)) ? value : Number(value);
-        return updated;
-      });
+ // inside handleChange
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value } = e.target;
+
+  if (name === "category") {
+    const selectedCat = categories.find((c) => c.categoryName === value);
+    if (selectedCat) {
+      setFormData((prev) => ({
+        ...prev,
+        category: selectedCat, // ✅ store full object
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: isNaN(Number(value)) ? value : Number(value),
+        category: {
+          id: 0,
+          categoryName: "",
+          description: "",
+          status: "",
+          image: "",
+          theemColorCode: "",
+        },
       }));
     }
-  };
+    return;
+  }
+
+  if (name.includes(".")) {
+    const keys = name.split(".");
+    setFormData((prev) => {
+      const updated = { ...prev };
+      let current: any = updated;
+      for (let i = 0; i < keys.length - 1; i++) {
+        current = current[keys[i]];
+      }
+      const lastKey = keys[keys.length - 1];
+      current[lastKey] = isNaN(Number(value)) ? value : Number(value);
+      return updated;
+    });
+  } else {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: isNaN(Number(value)) ? value : Number(value),
+    }));
+  }
+};
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -160,6 +204,7 @@ const BusinessProfileForm = ({
   };
 
   // ✅ Save / Update handler
+  // ✅ Save / Update handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -167,47 +212,40 @@ const BusinessProfileForm = ({
     setSuccess(false);
 
     try {
+      // 🟢 yahan ham JSON prepare karenge jo backend expect kar raha hai
+      const businessProfilePayload = {
+        id: formData.id,
+        ownerName: formData.ownerName,
+        storeName: formData.storeName,
+        category: formData.category,
+        businessAddresses: addedAddresses.map((area) => ({
+          id: area.id || 0,
+          active: true,
+          userServiceAreaDeatils: {
+            id: area.id || 0,
+            fullAddress: area.fullAddress,
+            district: area.district,
+            state: area.state,
+            pinCode: area.pinCode,
+          },
+          addressType: area.type === "custom" ? "HOME" : "EXISTING",
+          default: true,
+        })),
+        bankAccount: formData.businessAddresses.bankAccount,
+      };
+
+      // 🟢 FormData banao
       const payload = new FormData();
-      payload.append("ownerName", formData.ownerName);
-      payload.append("storeName", formData.storeName);
-      payload.append("category.categoryName", formData.category.categoryName);
       payload.append(
-        "businessAddresses.shopAddress",
-        formData.businessAddresses.shopAddress
+        "userBusinessProfile",
+        JSON.stringify(businessProfilePayload)
       );
 
-      addedAddresses.forEach((area, index) => {
-        if (area.type === "custom") {
-          payload.append(
-            `userServiceAreaDeatils[${index}].fullAddress`,
-            area.fullAddress
-          );
-          payload.append(
-            `userServiceAreaDeatils[${index}].district`,
-            area.district
-          );
-          payload.append(`userServiceAreaDeatils[${index}].state`, area.state);
-          payload.append(
-            `userServiceAreaDeatils[${index}].pinCode`,
-            area.pinCode
-          );
-          payload.append(
-            `userServiceAreaDeatils[${index}].shopAddress`,
-            area.shopAddress
-          );
-        } else {
-          payload.append(`userServiceAreaDeatils[${index}].id`, area.id);
-          payload.append(
-            `userServiceAreaDeatils[${index}].shopAddress`,
-            area.shopAddress
-          );
-        }
-      });
-
       if (formData.businessLogo) {
-        payload.append("businessLogo", formData.businessLogo);
+        payload.append("file", formData.businessLogo);
       }
 
+      // 🟢 API call
       let url = "/api/user/createUserBusinessProfile";
       let method = "POST";
 
@@ -235,6 +273,7 @@ const BusinessProfileForm = ({
     }
   };
 
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <form
@@ -249,9 +288,76 @@ const BusinessProfileForm = ({
           {/* Left Column - Business Info */}
           <div className="space-y-6">
             <div className="p-4 bg-gray-50 rounded-xl shadow-sm">
-              <h3 className="font-semibold text-lg mb-4 text-gray-700">
-                Business Details
-              </h3>
+              <div className="flex items-center mb-4">
+                <h3 className="font-semibold text-lg text-gray-700 flex-1">
+                  Business Details
+                </h3>
+                <div className="relative w-20 h-20">
+                  <label
+                    htmlFor="businessLogo"
+                    className="cursor-pointer block w-20 h-20 rounded-full overflow-hidden bg-white shadow-md border border-gray-200"
+                    title="Upload Business Logo"
+                  >
+                    {formData.businessLogo ? (
+                      <img
+                        src={URL.createObjectURL(formData.businessLogo)}
+                        alt="Business Logo"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-white">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-10 w-10 text-gray-400"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3h-1.586a1 1 0 00-.707.293l-1.414 1.414a1 1 0 01-.707.293H8a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15 10a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="businessLogo"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                    <div className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-1 shadow-lg">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3h-1.586a1 1 0 00-.707.293l-1.414 1.414a1 1 0 01-.707.293H8a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15 10a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    </div>
+                  </label>
+                </div>
+              </div>
               <div className="space-y-4">
                 <InputField
                   label="Owner Name"
@@ -267,6 +373,24 @@ const BusinessProfileForm = ({
                   onChange={handleChange}
                   required
                 />
+
+                {/* ✅ Category Dropdown */}
+<label className="block text-sm">
+  <span className="text-gray-600 font-medium">Category</span>
+  <select
+    name="category"
+    value={formData.category?.categoryName || ""}
+    onChange={handleChange}
+    className="w-full border rounded px-3 py-2 mt-1"
+  >
+    <option value="">-- Select Category --</option>
+    {categories.map((cat) => (
+      <option key={cat.categoryName} value={cat.categoryName}>
+        {cat.categoryName}
+      </option>
+    ))}
+  </select>
+</label>
 
                 {/* Service Area Selection */}
                 <label className="block text-sm">
@@ -467,11 +591,7 @@ const BusinessProfileForm = ({
             disabled={loading}
             className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50"
           >
-            {loading
-              ? "Saving..."
-              : profile
-              ? "Update"
-              : "Save"}
+            {loading ? "Saving..." : profile ? "Update" : "Save"}
           </button>
         </div>
 
