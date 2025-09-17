@@ -34,7 +34,7 @@ public class ProductController {
 	@Value("${file.access-url}")
 	private String accessUrl;
 
-	@GetMapping("/api/product/userBusinessProductList")
+	@GetMapping("/api/product/userBusinessProductList/{userBusinessProfileId}")
 	public List<ProductDTO> vanderProductList(@PathVariable Long userBusinessProfileId) throws IOException {
 		List<ProductDTO> products = new ArrayList();
 		Long id = 100000l;
