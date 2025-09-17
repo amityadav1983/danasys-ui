@@ -1107,7 +1107,7 @@ public class MyController {
 		return ResponseEntity.ok("service area removed successfully");
 	}
 	
-	@PutMapping("/deActivateServiceArea/{id}/deactivate")
+	@PutMapping("/api/admin/deActivateServiceArea/{id}/deactivate")
 	public ResponseEntity<?> deActivateServiceArea(@PathVariable Long id) {
 		return ResponseEntity.ok("service area deactivate successfully");
 	}
@@ -1160,7 +1160,7 @@ public class MyController {
 		return ResponseEntity.ok("Product category removed successfully");
 	}
 	
-	@PutMapping("/deactivateCategory/{id}/deactivate")
+	@PutMapping("/api/admin/deactivateCategory/{id}/deactivate")
 	public ResponseEntity<?> deactivateCategory(@PathVariable Long id) {
 		return ResponseEntity.ok("Product category deactivated successfully");
 	}
