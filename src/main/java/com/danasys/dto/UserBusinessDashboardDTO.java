@@ -23,6 +23,8 @@ public class UserBusinessDashboardDTO  implements Serializable {
 	
 	private Set<UserRoleEnum> roles;
 	
+	private Set<StatusEnum> status;
+	
 	private String colorTheam;
 	
 	private Set<OrdarStatusEnum> orderStatus;
