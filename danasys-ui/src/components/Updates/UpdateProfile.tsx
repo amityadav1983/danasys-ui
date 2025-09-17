@@ -33,32 +33,25 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ onClose }) => {
     setMessage(null);
 
     try {
+      // JSON payload banaya
+      const payload = {
+        email: formData.email,
+        fullName: formData.fullname,
+        referralCode: formData.referralCode,
+        contactNumber: formData.contactInfo,
+      };
 
-		const fd = new FormData();
-
-		// send all fields together under key "user"
-		fd.append(
-		  "user",
-		  new Blob([JSON.stringify({
-		    email: formData.email,
-		    fullName: formData.fullname,
-		    referralCode: formData.referralCode,
-		    contactNumber: formData.contactInfo,
-		  })], { type: "application/json" })
-		);
-		
-		// send file under key "file"
-		if (formData.profilePic) {
-		  fd.append("file", formData.profilePic);
-		}
-
-      const response = 		await axios.post("/api/user/updateUserProfile", fd, {
-		  headers: { "Content-Type": "multipart/form-data" },
-		});
+      const response = await axios.post(
+        "http://localhost:8080/api/user/updateUserProfile",
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
 
       if (response.status === 200) {
         setMessage("✅ Profile updated successfully!");
-        setTimeout(() => onClose(), 1000);
+        setTimeout(() => {
+          onClose(); // popup close
+        }, 1000);
       }
     } catch (error) {
       console.error("Error updating profile:", error);

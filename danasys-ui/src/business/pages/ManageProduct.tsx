@@ -35,6 +35,7 @@ const ManageProduct = () => {
   const isMyProductActive = location.pathname === "/business/products";
   const isManageProductActive = location.pathname === "/business/manage-products";
 
+  const [userProfileId, setUserProfileId] = useState<number | null>(null);
   const [profiles, setProfiles] = useState<BusinessProfile[]>([]);
   const [selectedProfile, setSelectedProfile] = useState<number | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -55,14 +56,22 @@ const ManageProduct = () => {
     {}
   );
 
-  // Fetch Managed Profiles
+  // Fetch userProfileId and then Managed Profiles
   useEffect(() => {
-    const fetchManagedProfiles = async () => {
+    const fetchUserProfileIdAndManagedProfiles = async () => {
       setLoadingProfiles(true);
       setError(null);
       try {
+        // Fetch user details to get userProfileId
+        const userRes = await fetch('/api/user/getUserDetails');
+        if (!userRes.ok) throw new Error('Failed to fetch user details');
+        const userData = await userRes.json();
+        const userProfileIdFromApi = userData.userProfileId;
+        setUserProfileId(userProfileIdFromApi);
+
+        // Fetch managed profiles using userProfileId
         const response = await fetch(
-          `/api/user/getManagedUserBusinessProfiles`,
+          `/api/user/getManagedUserBusinessProfiles/${userProfileIdFromApi}?userProfileId=${userProfileIdFromApi}`,
           {
             method: "GET",
             headers: {
@@ -82,7 +91,7 @@ const ManageProduct = () => {
       }
     };
     if (isManageProductActive) {
-      fetchManagedProfiles();
+      fetchUserProfileIdAndManagedProfiles();
     }
   }, [isManageProductActive]);
 
