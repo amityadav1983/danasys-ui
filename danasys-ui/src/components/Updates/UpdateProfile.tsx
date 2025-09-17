@@ -12,7 +12,7 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ onClose }) => {
     contactInfo: "",
     email: "",
     referralCode: "",
-    profilePic: null as File | null, // UI ke liye rakha hai (API me use nahi hoga)
+    profilePic: null as File | null, // File object
   });
 
   const [loading, setLoading] = useState(false);
@@ -33,18 +33,31 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ onClose }) => {
     setMessage(null);
 
     try {
-      // JSON payload banaya
-      const payload = {
+      // multipart FormData banaya
+      const formDataToSend = new FormData();
+
+      // JSON ko string bana ke "user" key me append kiya
+      const userPayload = {
         email: formData.email,
         fullName: formData.fullname,
         referralCode: formData.referralCode,
         contactNumber: formData.contactInfo,
       };
+      formDataToSend.append("user", new Blob([JSON.stringify(userPayload)], { type: "application/json" }));
+
+      // File add karo agar select ki gayi hai
+      if (formData.profilePic) {
+        formDataToSend.append("file", formData.profilePic);
+      }
 
       const response = await axios.post(
-        "http://localhost:8080/api/user/updateUserProfile",
-        payload,
-        { headers: { "Content-Type": "application/json" } }
+        "/api/user/updateUserProfile",
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       if (response.status === 200) {
