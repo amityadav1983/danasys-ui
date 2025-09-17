@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiCamera } from "react-icons/fi";
 
@@ -13,11 +13,40 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ onClose }) => {
     email: "",
     referralCode: "",
     profilePic: null as File | null, // File object
+    profilePicUrl: "", // existing profile picture URL from backend
   });
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  // ✅ Prefill values from backend
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await axios.get("/api/user/getUserDetails", {
+          headers: { accept: "*/*" },
+        });
+
+        if (res.status === 200) {
+          const data = res.data;
+          setFormData((prev) => ({
+            ...prev,
+            fullname: data.fullname || "",
+            contactInfo: data.contactInfo || "",
+            email: data.email || "",
+            referralCode: data.referralCode || "", // agar backend se na aaye toh empty
+            profilePicUrl: data.userProfilePicture || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Error fetching user details:", err);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+  // ✅ Input change handler
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
     if (files && files.length > 0) {
@@ -27,25 +56,27 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ onClose }) => {
     }
   };
 
+  // ✅ Submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
 
     try {
-      // multipart FormData banaya
       const formDataToSend = new FormData();
 
-      // JSON ko string bana ke "user" key me append kiya
       const userPayload = {
         email: formData.email,
         fullName: formData.fullname,
         referralCode: formData.referralCode,
         contactNumber: formData.contactInfo,
       };
-      formDataToSend.append("user", new Blob([JSON.stringify(userPayload)], { type: "application/json" }));
 
-      // File add karo agar select ki gayi hai
+      formDataToSend.append(
+        "user",
+        new Blob([JSON.stringify(userPayload)], { type: "application/json" })
+      );
+
       if (formData.profilePic) {
         formDataToSend.append("file", formData.profilePic);
       }
@@ -63,7 +94,7 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ onClose }) => {
       if (response.status === 200) {
         setMessage("✅ Profile updated successfully!");
         setTimeout(() => {
-          onClose(); // popup close
+          onClose();
         }, 1000);
       }
     } catch (error) {
@@ -75,13 +106,19 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="h-[450px] w-[400px] bg-gray-50 flex flex-col items-center justify-center mx-auto my-10 rounded-xl shadow">
-      {/* Profile Pic Upload (UI only) */}
+    <div className="h-[420px] w-[400px] bg-gray-50 flex flex-col items-center justify-center mx-auto my-10 rounded-xl shadow">
+      {/* Profile Pic Upload */}
       <div className="relative mb-5 pt-6">
-        <div className="w-28 h-28 rounded-full overflow-hidden border shadow">
+        <div className="w-20 h-20 rounded-full overflow-hidden border shadow">
           {formData.profilePic ? (
             <img
               src={URL.createObjectURL(formData.profilePic)}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          ) : formData.profilePicUrl ? (
+            <img
+              src={formData.profilePicUrl}
               alt="Profile"
               className="w-full h-full object-cover"
             />

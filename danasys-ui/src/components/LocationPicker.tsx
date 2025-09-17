@@ -19,35 +19,45 @@ const LocationPicker = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [responseMsg, setResponseMsg] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const res = await api.get<UserAddress[]>(
-          "/api/user/loadUserAddresses"
-        );
-        const data = res.data;
+  // ✅ Fetch addresses function (baar-baar reuse hoga)
+  const fetchAddresses = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get<UserAddress[]>("/api/user/loadUserAddresses");
+      const data = res.data;
 
-        if (Array.isArray(data) && data.length > 0) {
-          setAddresses(data);
-          const defaultAddress = data.find((addr) => addr.default) || data[0];
-          setLocation({
-            id: defaultAddress.id,
-            address: defaultAddress.address,
-          });
-        }
-      } catch (err: any) {
-        console.error("Error fetching user addresses:", err);
-        setError(err.message || "Failed to fetch addresses");
-      } finally {
-        setLoading(false);
+      if (Array.isArray(data) && data.length > 0) {
+        setAddresses(data);
+        const defaultAddress = data.find((addr) => addr.default) || data[0];
+        setLocation({
+          id: defaultAddress.id,
+          address: defaultAddress.address,
+        });
+      } else {
+        setAddresses([]);
+        setLocation({});
       }
-    };
+    } catch (err: any) {
+      console.error("Error fetching user addresses:", err);
+      setError(err.message || "Failed to fetch addresses");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchAddresses();
+  useEffect(() => {
+    fetchAddresses(); // 🔹 First load
   }, []);
+
+  // ✅ Dropdown toggle + refresh addresses
+  const toggleDropdown = async () => {
+    if (!showDropdown) {
+      await fetchAddresses(); // 🔹 Jab open hoga tab latest list le aao
+    }
+    setShowDropdown((prev) => !prev);
+  };
 
   // ✅ Close dropdown on outside click
   useEffect(() => {
@@ -63,55 +73,39 @@ const LocationPicker = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const toggleDropdown = () => setShowDropdown((prev) => !prev);
+  // ✅ Make Default API call
+  const handleMakeDefault = async (id: number) => {
+    try {
+      const res = await api.put(`/api/user/setUserDefaultAddress/${id}`);
+      alert(res.data);
 
- // ✅ Make Default API call
-const handleMakeDefault = async (id: number) => {
-  try {
-    const res = await api.put(`/api/user/setUserDefaultAddress/${id}`);
-    alert(res.data); // 👈 API ka response direct alert box me dikhayega
-
-    const selectedAddr = addresses.find((addr) => addr.id === id);
-    if (selectedAddr) {
-      setLocation({ id: selectedAddr.id, address: selectedAddr.address });
-      setAddresses((prev) =>
-        prev.map((addr) => ({
-          ...addr,
-          default: addr.id === id,
-        }))
-      );
+      await fetchAddresses(); // 🔹 Update list immediately
+    } catch (err: any) {
+      console.error("Error setting default:", err);
+      alert(err.response?.data || "Failed to set default address");
+    } finally {
+      setShowDropdown(false);
     }
-  } catch (err: any) {
-    console.error("Error setting default:", err);
-    alert(err.response?.data || "Failed to set default address");
-  } finally {
-    setShowDropdown(false);
-  }
-};
+  };
 
-// ✅ Delete API call
-const handleDelete = async (id: number) => {
-  try {
-    const res = await api.put(`/api/user/removeUserAddress/${id}`);
-    alert(res.data);
+  // ✅ Delete API call
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await api.put(`/api/user/removeUserAddress/${id}`);
+      alert(res.data);
 
-    if (location?.id === id) {
-      setLocation({});
+      await fetchAddresses(); // 🔹 Delete ke baad fresh list reload
+    } catch (err: any) {
+      console.error("Error deleting address:", err);
+      alert(err.response?.data || "Failed to delete address");
     }
-    setAddresses((prev) => prev.filter((addr) => addr.id !== id));
-  } catch (err: any) {
-    console.error("Error deleting address:", err);
-    alert(err.response?.data || "Failed to delete address");
-  }
-};
+  };
 
-
-  // 👇 Sirf first part of address (comma se pehle)
   const shortAddress = location.address
     ? location.address.split(",")[0] + ""
     : "";
 
-  if (loading) {
+  if (loading && !showDropdown) {
     return (
       <div className="flex items-center gap-2">
         <MdLocationPin className="text-blue-500 text-xl" />
@@ -161,19 +155,7 @@ const handleDelete = async (id: number) => {
 
           {/* Dropdown */}
           {showDropdown && (
-            <div
-              className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-3 min-w-[320px] max-h-[300px] overflow-y-auto"
-              style={{ scrollbarWidth: "none" }}
-            >
-              <style>
-                {`
-                  /* ✅ Chrome, Safari scrollbar hide */
-                  div::-webkit-scrollbar {
-                    display: none;
-                  }
-                `}
-              </style>
-
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-3 min-w-[320px] max-h-[300px] overflow-y-auto">
               {addresses.map((addr) => (
                 <div
                   key={addr.id}
@@ -186,7 +168,7 @@ const handleDelete = async (id: number) => {
                   <div className="flex items-start gap-2">
                     <MdLocationPin className="text-blue-500 text-xl mt-1 flex-shrink-0" />
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800  mb-1">
+                      <h4 className="font-semibold text-gray-800 mb-1">
                         Address{" "}
                         {location?.id === addr.id && (
                           <span className="ml-2 text-xs text-green-600 font-medium">
@@ -223,15 +205,6 @@ const handleDelete = async (id: number) => {
               ))}
             </div>
           )}
-        </div>
-      )}
-
-      {/* ✅ Response Message (API se aaya hua) */}
-      {responseMsg && (
-        <div className="absolute -bottom-8 left-0 bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg">
-          {typeof responseMsg === "string"
-            ? responseMsg
-            : JSON.stringify(responseMsg)}
         </div>
       )}
     </div>

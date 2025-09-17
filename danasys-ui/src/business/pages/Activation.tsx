@@ -2,11 +2,25 @@ import React, { useEffect, useState } from "react";
 import { FaCheckCircle, FaTimesCircle, FaEdit } from "react-icons/fa";
 import CategoryActivation from "./CategoryActivation";
 
+interface ServiceArea {
+  id: number;
+  fullAddress: string;
+  pinCode: number;
+  district: string;
+  state: string;
+  status: string;
+}
+
 const Activation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"service" | "category">("service");
-  const [areas, setAreas] = useState<any[]>([]);
+  const [areas, setAreas] = useState<ServiceArea[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Modal states
+  const [showModal, setShowModal] = useState(false);
+  const [selectedArea, setSelectedArea] = useState<ServiceArea | null>(null);
+  const [formData, setFormData] = useState<ServiceArea | null>(null);
 
   // Fetch Service Areas
   const fetchServiceAreas = async () => {
@@ -33,74 +47,84 @@ const Activation: React.FC = () => {
     }
   }, [activeTab]);
 
-// Activate Area
-const handleActivate = async (id: number) => {
-  try {
-    const res = await fetch(`/api/admin/approveServiceArea/${id}/approve`, {
-      method: "PUT",
-      headers: { accept: "*/*" },
-    });
+  // Activate Area
+  const handleActivate = async (id: number) => {
+    try {
+      const res = await fetch(`/api/admin/approveServiceArea/${id}/approve`, {
+        method: "PUT",
+        headers: { accept: "*/*" },
+      });
 
-    const data = await res.json(); // ✅ response ko parse karna
-    if (!res.ok) throw new Error(data.message || "Failed to activate area");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to activate area");
 
-    console.log("Activate Response:", data);
-    alert(JSON.stringify(data, null, 2)); // ✅ pura response alert me
-    fetchServiceAreas();
-  } catch (err: any) {
-    alert(err.message || "Error activating area");
-  }
-};
+      alert("Activated Successfully!");
+      fetchServiceAreas();
+    } catch (err: any) {
+      alert(err.message || "Error activating area");
+    }
+  };
 
-// Deactivate Area
-// Deactivate Area
-const handleDeactivate = async (id: number) => {
-  try {
-    const res = await fetch(`/api/admin/removeServiceArea/${id}/remove`, {
-      method: "PUT",
-      headers: { accept: "*/*" },
-    });
+  // Deactivate Area
+  const handleDeactivate = async (id: number) => {
+    try {
+      const res = await fetch(`/api/admin/removeServiceArea/${id}/remove`, {
+        method: "PUT",
+        headers: { accept: "*/*" },
+      });
 
-    const data = await res.text(); // ✅ plain text response
-    if (!res.ok) throw new Error(data);
+      const data = await res.text();
+      if (!res.ok) throw new Error(data);
 
-    console.log("Deactivate Response:", data);
-    alert(data); // ✅ text alert
-    fetchServiceAreas();
-  } catch (err: any) {
-    alert(err.message || "Error deactivating area");
-  }
-};
+      alert("Deactivated Successfully!");
+      fetchServiceAreas();
+    } catch (err: any) {
+      alert(err.message || "Error deactivating area");
+    }
+  };
 
-// Update Area
-const handleUpdate = async (id: number) => {
-  try {
-    const res = await fetch(`/api/admin/updateServiceArea`, {
-      method: "POST", // ✅ backend expects POST, not PUT
-      headers: {
-        "Content-Type": "application/json",
-        accept: "*/*",
-      },
-      body: JSON.stringify({
-        id: id,
-        fullAddress: "Updated Address", 
-        pinCode: 123456, // backend expects number, not string
-        district: "Updated District",
-        state: "Updated State", // backend requires state
-        status: "ACTIVE",
-        productCategories: [], // backend requires array, even if empty
-      }),
-    });
+  // Open Update Modal
+  const openUpdateModal = (area: ServiceArea) => {
+    setSelectedArea(area);
+    setFormData({ ...area }); // prefill with existing values
+    setShowModal(true);
+  };
 
-    if (!res.ok) throw new Error("Failed to update area");
-    alert("Service area updated!");
-    fetchServiceAreas();
-  } catch (err: any) {
-    alert(err.message || "Error updating area");
-  }
-};
+  // Handle form change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    if (formData) {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
+  };
 
+  // Save Update
+  const handleSaveUpdate = async () => {
+    if (!formData) return;
 
+    try {
+      const res = await fetch(`/api/admin/updateServiceArea`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*",
+        },
+        body: JSON.stringify({
+          ...formData,
+          pinCode: Number(formData.pinCode), // ensure number
+          productCategories: [], // required by backend
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update area");
+
+      alert("Service area updated!");
+      setShowModal(false);
+      setSelectedArea(null);
+      fetchServiceAreas();
+    } catch (err: any) {
+      alert(err.message || "Error updating area");
+    }
+  };
 
   return (
     <div className="p-6">
@@ -167,7 +191,7 @@ const handleUpdate = async (id: number) => {
                     </div>
                     <div className="flex justify-end gap-2">
                       <button
-                        onClick={() => handleUpdate(a.id)}
+                        onClick={() => openUpdateModal(a)}
                         className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 hover:bg-yellow-200 rounded-full transition"
                       >
                         <FaEdit /> Update
@@ -199,6 +223,74 @@ const handleUpdate = async (id: number) => {
 
       {/* Category Activation Tab */}
       {activeTab === "category" && <CategoryActivation />}
+
+      {/* Update Modal */}
+      {showModal && formData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-[400px]">
+            <h2 className="text-lg font-semibold mb-4">Update Service Area</h2>
+
+            <div className="space-y-3">
+              <input
+                type="text"
+                name="fullAddress"
+                value={formData.fullAddress}
+                onChange={handleChange}
+                placeholder="Full Address"
+                className="w-full border px-3 py-2 rounded"
+              />
+              <input
+                type="number"
+                name="pinCode"
+                value={formData.pinCode}
+                onChange={handleChange}
+                placeholder="Pin Code"
+                className="w-full border px-3 py-2 rounded"
+              />
+              <input
+                type="text"
+                name="district"
+                value={formData.district}
+                onChange={handleChange}
+                placeholder="District"
+                className="w-full border px-3 py-2 rounded"
+              />
+              <input
+                type="text"
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+                placeholder="State"
+                className="w-full border px-3 py-2 rounded"
+              />
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded"
+              >
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-5">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveUpdate}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
