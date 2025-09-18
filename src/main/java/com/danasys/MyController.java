@@ -1101,8 +1101,13 @@ public class MyController {
 
 	//Service Area Operations
 	@PutMapping("/api/admin/approveServiceArea/{id}/approve")
-	public ResponseEntity<?> approveServiceArea(@PathVariable Long id, @PathVariable boolean isApprove) {
-		return ResponseEntity.ok("service area approved successfully");
+	public ResponseEntity<?> approveServiceArea(@PathVariable Long id,  @RequestParam boolean isApprove) {
+		if(isApprove) {
+			return ResponseEntity.ok("service area Activated successfully");
+		}else {
+			return ResponseEntity.ok("service area Deactivated successfully");
+		}
+		
 	}
 	
 	@PostMapping("/api/admin/updateServiceArea")
@@ -1114,11 +1119,7 @@ public class MyController {
 	public ResponseEntity<?> removeServiceArea(@PathVariable Long id) {
 		return ResponseEntity.ok("service area removed successfully");
 	}
-	
-	@PutMapping("/api/admin/deActivateServiceArea/{id}/deactivate")
-	public ResponseEntity<?> deActivateServiceArea(@PathVariable Long id) {
-		return ResponseEntity.ok("service area deactivate successfully");
-	}
+
 	
 	@GetMapping("/api/admin/allRegisteredServiceAreas")
 	@Operation(summary = "Load all service Areas", description = "API for admin to view all register service areas.")
@@ -1154,8 +1155,13 @@ public class MyController {
 	
 // Product Category Operations
 	@PutMapping("/api/admin/approveCategory/{id}/approve")
-	public ResponseEntity<?> approveNewCategory(@PathVariable Long id, @PathVariable boolean isApprove) {
-		return ResponseEntity.ok("Product category approved successfully");
+	public ResponseEntity<?> approveNewCategory(@PathVariable Long id,  @RequestParam boolean isApprove) {
+		if(isApprove) {
+			return ResponseEntity.ok("Product category Activated successfully");
+		}else {
+			return ResponseEntity.ok("Product category Deactivated successfully");
+		}
+		
 	}
 	
 	@PostMapping("/api/admin/updateCategory")
@@ -1168,10 +1174,6 @@ public class MyController {
 		return ResponseEntity.ok("Product category removed successfully");
 	}
 	
-	@PutMapping("/api/admin/deactivateCategory/{id}/deactivate")
-	public ResponseEntity<?> deactivateCategory(@PathVariable Long id) {
-		return ResponseEntity.ok("Product category deactivated successfully");
-	}
 		
 	@GetMapping("/api/admin/allRegisteredProductCategory")
 	@Operation(summary = "Load all Product Categories", description = "API for admin to view all product categories.")
