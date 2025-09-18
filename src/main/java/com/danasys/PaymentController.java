@@ -53,7 +53,7 @@ public class PaymentController {
     }
 	
     @PostMapping("/api/order/payment-callback")
-    public String paymentCallback(
+    public  ResponseEntity<String>  paymentCallback(
             @RequestParam("razorpay_order_id") String razorpayOrderId,
             @RequestParam("razorpay_payment_id") String razorpayPaymentId,
             @RequestParam("razorpay_signature") String razorpaySignature) throws RazorpayException {
@@ -62,13 +62,8 @@ public class PaymentController {
             String signature = razorpayOrderId + "|" + razorpayPaymentId;
             boolean isValid = Utils.verifySignature(signature, razorpaySignature, KEY_SECRET);
 
-            if (isValid) {
-                // Payment successful
-                return "redirect:/user/placeOrder?orderId="+razorpayOrderId;
-            } else {
-                // Payment failed
-            	 return "redirect:/user/cartSummary";
-            }
+           System.out.println("CALL BACK URL HIT ................................"); 
+           
         } catch (RazorpayException e) {
             System.err.println("Razorpay Exception during callback: " + e.getMessage());
             throw e;
@@ -76,6 +71,8 @@ public class PaymentController {
             System.err.println("General Exception during callback: " + e.getMessage());
             throw new RazorpayException("General exception during callback");
         }
+        
+        return ResponseEntity.ok().body("Login successful");
     }
     
     @PostMapping("/api/order/verify")
