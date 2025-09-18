@@ -40,7 +40,7 @@ public class PaymentController {
 	@Value("${payment.gateway.publishableKey}")
 	private String KEY_ID;
 
-	@PostMapping(value = "/create-order")
+	@PostMapping(value = "/api/order/create-order")
 	@ResponseBody
     public String createOrder(@RequestParam("amount") int amount) throws RazorpayException {
         RazorpayClient razorpay = new RazorpayClient(KEY_ID, KEY_SECRET);
@@ -52,7 +52,7 @@ public class PaymentController {
         return order.toString();
     }
 	
-    @PostMapping("/payment-callback")
+    @PostMapping("/api/order/payment-callback")
     public String paymentCallback(
             @RequestParam("razorpay_order_id") String razorpayOrderId,
             @RequestParam("razorpay_payment_id") String razorpayPaymentId,
@@ -78,7 +78,7 @@ public class PaymentController {
         }
     }
     
-    @PostMapping("/verify")
+    @PostMapping("/api/order/verify")
     public ResponseEntity<String> verifyPayment(@RequestBody Map<String, String> data) {
         try {
             String orderId = data.get("razorpay_order_id");
@@ -98,7 +98,7 @@ public class PaymentController {
         }
     }
 
-    @PostMapping("/get-key")
+    @PostMapping("/api/order/get-key")
     public String getKey() {
         return KEY_ID;
     }
