@@ -686,13 +686,13 @@ public class MyController {
 				cat6.setCategoryName(ProductCategoryEnum.Beauty);
 				String imageUrl6 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("beauty.png")
 						.toUriString();
-				cat5.setImage(imageUrl6);
-				cat5.setTheemColorCode("#228B22");
+				cat6.setImage(imageUrl6);
+				cat6.setTheemColorCode("#228B22");
 				
 				//CAT 7
 				ProductCategorySADetailsDTO cat7 = new ProductCategorySADetailsDTO();
 				cat7.setId(7l);
-				cat7.setCategoryName(ProductCategoryEnum.RonyRocket);
+				cat7.setCategoryName(ProductCategoryEnum.Appointment);
 				String imageUrl7 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("appointment.png")
 						.toUriString();
 				cat7.setImage(imageUrl7);
@@ -765,7 +765,7 @@ public class MyController {
 				//CAT 15
 				ProductCategorySADetailsDTO cat15= new ProductCategorySADetailsDTO();
 				cat15.setId(15l);
-				cat14.setCategoryName(ProductCategoryEnum.Restorent);
+				cat15.setCategoryName(ProductCategoryEnum.Restorent);
 				String imageUrl15 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/category/").path("restaurant.png")
 						.toUriString();
 				cat15.setImage(imageUrl15);
