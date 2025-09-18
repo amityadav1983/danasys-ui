@@ -1101,7 +1101,7 @@ public class MyController {
 
 	//Service Area Operations
 	@PutMapping("/api/admin/approveServiceArea/{id}/approve")
-	public ResponseEntity<?> approveServiceArea(@PathVariable Long id, @PathVariable boolean isApprove) {
+	public ResponseEntity<?> approveServiceArea(@PathVariable Long id,  @RequestParam boolean isApprove) {
 		if(isApprove) {
 			return ResponseEntity.ok("service area Activated successfully");
 		}else {
@@ -1155,7 +1155,7 @@ public class MyController {
 	
 // Product Category Operations
 	@PutMapping("/api/admin/approveCategory/{id}/approve")
-	public ResponseEntity<?> approveNewCategory(@PathVariable Long id, @PathVariable boolean isApprove) {
+	public ResponseEntity<?> approveNewCategory(@PathVariable Long id,  @RequestParam boolean isApprove) {
 		if(isApprove) {
 			return ResponseEntity.ok("Product category Activated successfully");
 		}else {
