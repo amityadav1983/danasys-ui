@@ -58,6 +58,15 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+		
+		<!--Payment-->
+			<dependency>
+				<groupId>com.razorpay</groupId>
+				<artifactId>razorpay-java</artifactId>
+				<version>1.4.8</version> <!-- Use the latest version -->
+			</dependency>
+			
+			
 	</dependencies>
 
 	<build>

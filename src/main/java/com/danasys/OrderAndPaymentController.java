@@ -19,7 +19,9 @@ import com.danasys.dto.BankTransferRequestDTO;
 import com.danasys.dto.OrdarStatusEnum;
 import com.danasys.dto.OrderDetailsDTO;
 import com.danasys.dto.OrderStatusUpdateRequest;
+import com.danasys.dto.OrderSummaryDTO;
 import com.danasys.dto.OrderTrackerDTO;
+import com.danasys.dto.PlaceOrderRequest;
 import com.danasys.dto.PurchasedProductDTO;
 import com.danasys.dto.TransactionDTO;
 import com.danasys.dto.TransactionTypeEnum;
@@ -491,6 +493,29 @@ public class OrderAndPaymentController {
 	public ResponseEntity<String> redeemReferalPoint(Long userProfileId) {
 		return ResponseEntity.ok("Point Redeemed ! ");
 
+	}
+	
+	@PostMapping("/api/order/holdOrder")
+	@Operation(summary = "Place order", description = "API to place order")
+	public ResponseEntity<OrderSummaryDTO> holdOrder(@RequestBody PlaceOrderRequest placeOrderRequest) {
+		OrderSummaryDTO summary = new OrderSummaryDTO();
+		summary.setDateOfDelivery(new Date());
+		summary.setOrderId(1l);
+		summary.setTotalDiscount(20d);
+		summary.setTotalPrice(200d);
+		
+		return ResponseEntity.ok(summary);
+	}
+	
+	@PostMapping("/api/order/placeOrder")
+	@Operation(summary = "Place order", description = "API to place order")
+	public ResponseEntity<OrderSummaryDTO> placeOrder(@RequestBody PlaceOrderRequest placeOrderRequest) {
+		OrderSummaryDTO summary = new OrderSummaryDTO();
+		summary.setDateOfDelivery(new Date());
+		summary.setOrderId(1l);
+		summary.setTotalDiscount(20d);
+		summary.setTotalPrice(200d);
+		return ResponseEntity.ok(summary);
 	}
 
 }
