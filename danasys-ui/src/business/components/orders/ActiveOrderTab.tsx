@@ -123,8 +123,8 @@ const ActiveOrderTab: React.FC = () => {
 
       {/* 🔹 Other Roles → Search + Button → Dropdown */}
       {role !== "ROLE_USER" && (
-        <div className="mb-6">
-          <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+        <div className="mb-4">
+          <div className="flex flex-col md:flex-row items-center gap-4 p-4 rounded-xl ">
             {/* Search Input + Button */}
             <div className="flex w-full md:w-2/3 gap-2">
               <input

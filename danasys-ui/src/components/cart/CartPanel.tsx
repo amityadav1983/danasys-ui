@@ -71,46 +71,95 @@ const CartPanel = () => {
   );
   const topProducts = shuffleItems(otherProducts).slice(0, 10);
 
-  const handlePlaceOrder = () => {
-    if (cartItems.length === 0 || isPlacingOrder) return;
-    
-    setIsPlacingOrder(true);
+const handlePlaceOrder = async () => {
+  if (cartItems.length === 0 || isPlacingOrder) return;
 
-    const orderItems = cartItems.map((item) => ({
-      product: item.product,
-      quantity: item.quantity,
-      price: item.billPrice,
-    }));
+  setIsPlacingOrder(true);
 
-    const orderId = generateOrderId();
-    const newOrder: OrderHistory = {
-      orderId,
-      date: formatDate(new Date()),
-      items: orderItems,
-      totalAmount: billAmount,
-      status: 'processing',
-      deliveryAddress: 'Your delivery address will be set during checkout',
-      estimatedDelivery: formatDate(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)), // 2 days from now
+  try {
+    // 1. Prepare request body for holdOrder API
+    const holdOrderPayload = {
+      orderId: 0,
+      customerUserProfileId: 1, // TODO: replace with actual logged-in userProfileId
+      businessUserProfileId: 101, // TODO: replace with actual businessProfileId
+      items: cartItems.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        available: true,
+      })),
+      platformFees: 0,
+      paymentSource: "USER_ACCOUNT",
     };
 
-    // Simulate order processing delay
-    setTimeout(() => {
-      dispatch(addOrder(newOrder));
-      dispatch(clearCart());
-      dispatch(hideCart());
-      
-      // Show success modal
-      dispatch(showModal({
-        type: 'orderSuccess',
-        data: {
-          orderId,
-          totalAmount: billAmount
-        }
-      }));
-      
-      setIsPlacingOrder(false);
-    }, 1000);
-  };
+    // 2. Call holdOrder API
+    const holdRes = await fetch("/api/order/holdOrder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "*/*",
+      },
+      body: JSON.stringify(holdOrderPayload),
+    });
+
+    if (!holdRes.ok) throw new Error("Failed to hold order");
+
+    const holdData = await holdRes.json();
+    console.log("Hold Order Response:", holdData);
+
+    // 3. Call create-order API with final billAmount
+    const createRes = await fetch(
+      `/api/order/create-order?amount=${billAmount}`,
+      {
+        method: "POST",
+        headers: { accept: "*/*" },
+      }
+    );
+
+    if (!createRes.ok) throw new Error("Failed to create Razorpay order");
+
+    const orderData = await createRes.json();
+    console.log("Razorpay Order Response:", orderData);
+
+    // 4. Open Razorpay Checkout
+    const options: any = {
+      key: "rzp_test_9djW8eAXNxoCGF", // 🔑 Replace with your Razorpay key
+      amount: orderData.amount,
+      currency: orderData.currency,
+      name: "Your Company",
+      description: "Payment for your order",
+      order_id: orderData.id,
+      handler: function (response: any) {
+        console.log("Payment Success:", response);
+        // Dispatch after payment success
+        dispatch(clearCart());
+        dispatch(hideCart());
+        dispatch(
+          showModal({
+            type: "orderSuccess",
+            data: {
+              orderId: holdData.orderId,
+              totalAmount: holdData.totalPrice,
+              deliveryDate: holdData.dateOfDelivery,
+            },
+          })
+        );
+      },
+      prefill: {
+        name: "User Name",
+        email: "user@example.com",
+      },
+      theme: { color: "#0c30fe" },
+    };
+
+    const rzp1 = new (window as any).Razorpay(options);
+    rzp1.open();
+  } catch (error) {
+    console.error("Error placing order:", error);
+  } finally {
+    setIsPlacingOrder(false);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 h-screen w-screen z-50 overflow-hidden p-4">
@@ -221,7 +270,7 @@ const CartPanel = () => {
                   <del className="text-sm ml-1">₹{totalAmount}</del>
                 </div>
                 <div className="ml-auto flex items-center font-bold">
-                  {isPlacingOrder ? 'Placing Order...' : 'Place Order'} <FiChevronRight size={18} className="ml-2" />
+                  {isPlacingOrder ? 'Placing Order...' : 'Place Orders'} <FiChevronRight size={18} className="ml-2" />
                 </div>
               </div>
             </div>

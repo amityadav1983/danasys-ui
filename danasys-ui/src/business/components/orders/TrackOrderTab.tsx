@@ -47,7 +47,7 @@ const TrackOrderTab: React.FC = () => {
       {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Track Orders</h2> */}
 
       {/* 🔹 Search Bar */}
-      <div className="mb-6 flex gap-2">
+      <div className="mb-6 flex w-full md:w-2/3 gap-2">
         <input
           type="text"
           placeholder="Enter Order ID"
@@ -134,7 +134,7 @@ const TrackOrderTab: React.FC = () => {
         </div>
       ) : (
         !loading && (
-          <div className="bg-white p-6 rounded-xl shadow text-center text-gray-600">
+          <div className=" p-6 rounded-xl  text-center text-gray-600">
             No order to track at the moment.
           </div>
         )
