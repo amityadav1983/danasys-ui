@@ -42,6 +42,8 @@ public class OrderAndPaymentController {
 
 	@GetMapping("/api/order/orderTracker/{orderId}")
 	public ResponseEntity<OrderDetailsDTO> orderTracker(@PathVariable Long orderId) {
+		
+		if(orderId>0) {
 		OrderDetailsDTO order = new OrderDetailsDTO();
 		order.setId(1l);
 		order.setDeliveryAddress("Dummy Address");
@@ -97,10 +99,14 @@ public class OrderAndPaymentController {
 
 		order.setOrderTracker(trackerP);
 		return ResponseEntity.ok(order);
+		}
+		return null;
 	}
 
 	@GetMapping("/api/order/orderHistory/{userProfileId}")
 	public ResponseEntity<List<OrderDetailsDTO>> orderHistory(@PathVariable Long userProfileId) {
+		
+		if(userProfileId>0) {
 		List<OrderDetailsDTO> orderList = new ArrayList<>();
 
 		OrderDetailsDTO order = new OrderDetailsDTO();
@@ -173,6 +179,9 @@ public class OrderAndPaymentController {
 		orderList.add(order1);
 
 		return ResponseEntity.ok(orderList);
+		}
+		
+		return ResponseEntity.badRequest().body(null);
 	}
 
 	@PostMapping("/api/order/updateOrderStatusByBU")
@@ -195,6 +204,10 @@ public class OrderAndPaymentController {
 
 	@GetMapping("/api/order/fetchActiveOrder/{userProfileId}")
 	public ResponseEntity<List<OrderDetailsDTO>> fetchActiveOrder(@PathVariable Long userProfileId) {
+		
+		if(userProfileId>0) {
+			
+		
 		List<OrderDetailsDTO> orderList = new ArrayList<>();
 
 		OrderDetailsDTO order = new OrderDetailsDTO();
@@ -240,6 +253,8 @@ public class OrderAndPaymentController {
 		orderList.add(order1);
 
 		return ResponseEntity.ok(orderList);
+		}
+		return ResponseEntity.badRequest().body(null);
 	}
 	
 	
@@ -248,6 +263,8 @@ public class OrderAndPaymentController {
 	@GetMapping("/api/payment/getWalletBalance/{userProfileId}")
 	@Operation(summary = "User wallet balance", description = "User wallet balance")
 	public ResponseEntity<UserAccountTransactionDTO> getWalletBalance(@PathVariable Long userProfileId) {
+		
+		if(userProfileId>0) {
 		UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
 		dto.setCurrentBalance(501d);
 
@@ -312,12 +329,15 @@ public class OrderAndPaymentController {
 		transactionList.add(t1);
 		dto.setTransferReqDTO(transactionList);
 		return ResponseEntity.ok(dto);
+		}
+		return null;
 	}
 
 	@GetMapping("/api/payment/getUnclearedWalletBalance/{userProfileId}")
 	@Operation(summary = "User wallet uncleared balance", description = "\"User wallet uncleared balance")
 	public ResponseEntity<UserAccountTransactionDTO> getUnclearedWalletBalance(@PathVariable Long userProfileId) {
 
+		if(userProfileId>0) {
 		UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
 		dto.setCurrentBalance(790d);
 
@@ -345,12 +365,15 @@ public class OrderAndPaymentController {
 		transactionList.add(t1);
 		dto.setTransactionDTO(transactionList);
 		return ResponseEntity.ok(dto);
+		}
+		return null;
 	}
 
 	@GetMapping("/api/payment/getUnclearedReferalPoint/{userProfileId}")
 	@Operation(summary = "User wallet uncleared referal point", description = "\"User wallet uncleared referal point")
 	public ResponseEntity<UserAccountTransactionDTO> getUnclearedReferalPoint(@PathVariable Long userProfileId) {
 
+		if(userProfileId>0) {
 		UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
 		dto.setCurrentBalance(490d);
 
@@ -378,11 +401,15 @@ public class OrderAndPaymentController {
 		transactionList.add(t1);
 		dto.setTransactionDTO(transactionList);
 		return ResponseEntity.ok(dto);
+		}
+		return null;
 	}
 
 	@GetMapping("/api/payment/getClearedReferalPoint/{userProfileId}")
 	@Operation(summary = "User wallet cleared referal point", description = "\"User wallet cleared referal point")
 	public ResponseEntity<UserAccountTransactionDTO> getClearedReferalPoint(@PathVariable Long userProfileId) {
+		
+		if(userProfileId>0) {
 		UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
 		dto.setCurrentBalance(490d);
 
@@ -403,6 +430,8 @@ public class OrderAndPaymentController {
 		transactionList.add(t1);
 		dto.setTransactionDTO(transactionList);
 		return ResponseEntity.ok(dto);
+		}
+		return null;
 	}
 
 	
@@ -445,7 +474,7 @@ public class OrderAndPaymentController {
 	@GetMapping("/api/payment/getTransferRequestHistory/{userProfileId}")
 	public ResponseEntity<List<BankTransferRequestDTO>> getTransferRequestHistory(@PathVariable Long userProfileId) {
 
-		
+		if(userProfileId>0) {
 		List<BankTransferRequestDTO> allPendingReq = new ArrayList<>();
 
 		BankTransferRequestDTO t1 = new BankTransferRequestDTO();
@@ -471,6 +500,8 @@ public class OrderAndPaymentController {
 		
 
 		return ResponseEntity.ok(allPendingReq);
+		}
+		return null;
 	}
 	
 	
