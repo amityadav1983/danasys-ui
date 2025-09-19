@@ -988,7 +988,9 @@ public class MyController {
 			Set<UserRoleEnum> roles = new HashSet<>();
 			roles.add(UserRoleEnum.ROLE_BUSINESS_USER);
 			roles.add(UserRoleEnum.ROLE_USER);
+			roles.add(UserRoleEnum.ROLE_SUPERADMIN);
 			buDashboard.setRoles(roles);
+			
 			Set<StatusEnum> statusList = new HashSet<>();
 			statusList.add(StatusEnum.ACTIVE);
 			statusList.add(StatusEnum.OBSOLETE);
