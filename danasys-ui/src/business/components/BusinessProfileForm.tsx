@@ -203,75 +203,94 @@ const handleChange = (
     setAddedAddresses((prev) => prev.filter((addr) => addr.id !== id));
   };
 
-  // ✅ Save / Update handler
-  // ✅ Save / Update handler
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
+// ✅ Save / Update handler
+// ... imports same rahenge
 
-    try {
-      // 🟢 yahan ham JSON prepare karenge jo backend expect kar raha hai
-      const businessProfilePayload = {
-        id: formData.id,
-        ownerName: formData.ownerName,
-        storeName: formData.storeName,
-        category: formData.category,
-        businessAddresses: addedAddresses.map((area) => ({
+// inside handleSubmit
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
+  setSuccess(false);
+
+  try {
+    // 🟢 JSON prepare
+    const businessProfilePayload = {
+      id: formData.id,
+      ownerName: formData.ownerName,
+      storeName: formData.storeName,
+      category: formData.category, // full object bhejna hai
+      businessAddresses: addedAddresses.map((area) => ({
+        id: area.id || 0,
+        active: true,
+        shopAddress: area.shopAddress || "",
+        userServiceAreaDeatils: {
           id: area.id || 0,
-          active: true,
-          userServiceAreaDeatils: {
-            id: area.id || 0,
-            fullAddress: area.fullAddress,
-            district: area.district,
-            state: area.state,
-            pinCode: area.pinCode,
-          },
-          addressType: area.type === "custom" ? "HOME" : "EXISTING",
-          default: true,
-        })),
-        bankAccount: formData.businessAddresses.bankAccount,
-      };
+          fullAddress: area.fullAddress,
+          district: area.district,
+          state: area.state,
+          pinCode: area.pinCode,
+        },
+        default: true,
+      })),
+      bankAccount: formData.businessAddresses.bankAccount,
+    };
 
-      // 🟢 FormData banao
-      const payload = new FormData();
-      payload.append(
-        "userBusinessProfile",
-        JSON.stringify(businessProfilePayload)
-      );
+    // 🟢 Debugging
+    console.log(
+      "🚀 Sending businessProfilePayload:",
+      JSON.stringify(businessProfilePayload, null, 2)
+    );
 
-      if (formData.businessLogo) {
-        payload.append("file", formData.businessLogo);
-      }
+    // 🟢 FormData banao
+    const payload = new FormData();
+    payload.append(
+      "userBusinessProfile",
+      new Blob([JSON.stringify(businessProfilePayload)], {
+        type: "application/json",
+      })
+    );
 
-      // 🟢 API call
-      let url = "/api/user/createUserBusinessProfile";
-      let method = "POST";
-
-      if (profile && profile.id) {
-        url = `/api/user/updateUserBusinessProfile/${profile.id}`;
-        method = "PUT";
-      }
-
-      const response = await fetch(url, {
-        method,
-        body: payload,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      setSuccess(true);
-      if (onSuccess) onSuccess();
-      onClose();
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
-    } finally {
-      setLoading(false);
+    if (formData.businessLogo) {
+      payload.append("file", formData.businessLogo);
     }
-  };
+
+    // 🟢 API call
+    let url = "/api/user/createUserBusinessProfile";
+    let method = "POST";
+
+    if (profile && profile.id) {
+      url = `/api/user/updateUserBusinessProfile/${profile.id}`;
+      method = "PUT";
+    }
+
+    const response = await fetch(url, {
+      method,
+      body: payload,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Error ${response.status}: ${errText}`);
+    }
+
+    setSuccess(true);
+    if (onSuccess) onSuccess();
+    onClose();
+  } catch (err: any) {
+    console.error("❌ Error submitting business profile:", err);
+    setError(err.message || "Unknown error");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+
 
 
   return (

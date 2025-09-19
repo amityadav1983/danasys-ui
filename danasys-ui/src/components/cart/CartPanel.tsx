@@ -5,14 +5,19 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { hideCart } from '../../store/ui';
 import { clearCart } from '../../store/cart';
-import { addOrder } from '../../store/orders';
 import { show as showModal } from '../../store/modal';
-import { CartItem, ProductItem, OrderHistory } from '../../utils/types';
+import { CartItem, ProductItem } from '../../utils/types';
 import AddToCartButton from '../shared/AddToCartButton';
 import Misc from '../../lib/data/layout.json';
 import SuggestedItems from './SuggestedItems';
-import { shuffleItems, generateOrderId, formatDate } from '../../utils/helper';
+import { shuffleItems } from '../../utils/helper';
 import { useNavigate } from 'react-router-dom';
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 const CartPanelItem = (props: CartItem) => {
   const { image, title, subTitle, price, mrp } = props.product;
@@ -56,6 +61,7 @@ const CartPanel = () => {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const { totalAmount, totalQuantity, cartItems, billAmount, discount } =
     useAppSelector((state) => state.cart);
+
   const productItems: any[] = Misc.filter((item) => item.type === 77).map(
     (el) => el.objects
   );
@@ -71,95 +77,96 @@ const CartPanel = () => {
   );
   const topProducts = shuffleItems(otherProducts).slice(0, 10);
 
-const handlePlaceOrder = async () => {
-  if (cartItems.length === 0 || isPlacingOrder) return;
+  const handlePlaceOrder = async () => {
+    if (cartItems.length === 0 || isPlacingOrder) return;
+    setIsPlacingOrder(true);
 
-  setIsPlacingOrder(true);
+    try {
+      // 1. Prepare request body for holdOrder API
+      const holdOrderPayload = {
+        orderId: 0,
+        customerUserProfileId: 1, // TODO: replace with actual logged-in userProfileId
+        businessUserProfileId: 101, // TODO: replace with actual businessProfileId
+        items: cartItems.map((item) => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          available: true,
+        })),
+        platformFees: 0,
+        paymentSource: 'USER_ACCOUNT',
+      };
 
-  try {
-    // 1. Prepare request body for holdOrder API
-    const holdOrderPayload = {
-      orderId: 0,
-      customerUserProfileId: 1, // TODO: replace with actual logged-in userProfileId
-      businessUserProfileId: 101, // TODO: replace with actual businessProfileId
-      items: cartItems.map((item) => ({
-        productId: item.product.id,
-        quantity: item.quantity,
-        available: true,
-      })),
-      platformFees: 0,
-      paymentSource: "USER_ACCOUNT",
-    };
+      // 2. Call holdOrder API
+      const holdRes = await fetch('/api/order/holdOrder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          accept: '*/*',
+        },
+        body: JSON.stringify(holdOrderPayload),
+      });
 
-    // 2. Call holdOrder API
-    const holdRes = await fetch("/api/order/holdOrder", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        accept: "*/*",
-      },
-      body: JSON.stringify(holdOrderPayload),
-    });
+      if (!holdRes.ok) throw new Error('Failed to hold order');
+      const holdData = await holdRes.json();
+      console.log('Hold Order Response:', holdData);
 
-    if (!holdRes.ok) throw new Error("Failed to hold order");
+      // 3. Call create-order API with final billAmount
+      const createRes = await fetch(
+        `/api/order/create-order?amount=${billAmount}`,
+        {
+          method: 'POST',
+          headers: { accept: '*/*' },
+        }
+      );
 
-    const holdData = await holdRes.json();
-    console.log("Hold Order Response:", holdData);
+      if (!createRes.ok) throw new Error('Failed to create Razorpay order');
+      const orderData = await createRes.json();
+      console.log('Razorpay Order Response:', orderData);
 
-    // 3. Call create-order API with final billAmount
-    const createRes = await fetch(
-      `/api/order/create-order?amount=${billAmount}`,
-      {
-        method: "POST",
-        headers: { accept: "*/*" },
-      }
-    );
-
-    if (!createRes.ok) throw new Error("Failed to create Razorpay order");
-
-    const orderData = await createRes.json();
-    console.log("Razorpay Order Response:", orderData);
-
-    // 4. Open Razorpay Checkout
-    const options: any = {
-      key: "rzp_test_9djW8eAXNxoCGF", // 🔑 Replace with your Razorpay key
-      amount: orderData.amount,
-      currency: orderData.currency,
-      name: "Your Company",
-      description: "Payment for your order",
-      order_id: orderData.id,
-      handler: function (response: any) {
-        console.log("Payment Success:", response);
-        // Dispatch after payment success
-        dispatch(clearCart());
-        dispatch(hideCart());
-        dispatch(
-          showModal({
-            type: "orderSuccess",
+      // 4. Open Razorpay Checkout
+      const options: any = {
+        key: 'rzp_test_9djW8eAXNxoCGF', // Replace with your Razorpay key
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'Your Company',
+        description: 'Payment for your order',
+        order_id: orderData.id,
+        handler: function (response: any) {
+          // Handle successful payment on frontend
+          console.log('Payment successful:', response);
+          // Close the cart panel
+          dispatch(hideCart());
+          // Redirect to home page
+          navigate('/');
+          // Open OrderSuccessModal
+          dispatch(showModal({
+            type: 'orderSuccess',
             data: {
-              orderId: holdData.orderId,
-              totalAmount: holdData.totalPrice,
-              deliveryDate: holdData.dateOfDelivery,
-            },
-          })
-        );
-      },
-      prefill: {
-        name: "User Name",
-        email: "user@example.com",
-      },
-      theme: { color: "#0c30fe" },
-    };
+              orderId: orderData.id,
+              totalAmount: billAmount
+            }
+          }));
+        },
+        prefill: {
+          name: 'User Name',
+          email: 'user@example.com',
+        },
+        theme: { color: '#0c30fe' },
+      };
 
-    const rzp1 = new (window as any).Razorpay(options);
-    rzp1.open();
-  } catch (error) {
-    console.error("Error placing order:", error);
-  } finally {
-    setIsPlacingOrder(false);
-  }
-};
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
 
+      // Optional: handle failure
+      rzp1.on('payment.failed', (response: any) => {
+        console.error('Payment Failed:', response.error);
+      });
+    } catch (error) {
+      console.error('Error placing order:', error);
+    } finally {
+      setIsPlacingOrder(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 h-screen w-screen z-50 overflow-hidden p-4">
@@ -176,6 +183,7 @@ const handlePlaceOrder = async () => {
             onClick={() => dispatch(hideCart())}
           />
         </div>
+
         {totalQuantity === 0 ? (
           <div className="flex-1 bg-white p-6">
             <div className="flex flex-col gap-3 justify-center items-center text-center">
@@ -215,6 +223,7 @@ const handlePlaceOrder = async () => {
                     ))}
                   </div>
                 </div>
+
                 <div className="bg-white">
                   <div className="font-bold text-xl text-black pt-5 px-4">
                     Before you checkout
@@ -223,6 +232,7 @@ const handlePlaceOrder = async () => {
                     <SuggestedItems topItems={topProducts} />
                   </div>
                 </div>
+
                 <div className="bg-white">
                   <div className="font-bold text-xl text-black pt-5 px-4">
                     Bill Details
@@ -244,7 +254,7 @@ const handlePlaceOrder = async () => {
                         </span>
                       </p>
                       <span>
-                        ₹15 <span className="text-[#0c30fe]">free</span>{' '}
+                        ₹15 <span className="text-[#0c30fe]">free</span>
                       </span>
                     </div>
                     <div className="flex items-start justify-between text-[14px] text-black font-bold py-2">
@@ -258,9 +268,14 @@ const handlePlaceOrder = async () => {
                 </div>
               </div>
             </div>
+
             <div className="sticky bottom-0 bg-white px-4 pt-2 pb-4 min-h-[68px] _shadow_sticky">
-              <div 
-                className={`${isPlacingOrder ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0c30fe] cursor-pointer'} text-white flex items-center px-3 py-3 rounded-[4px] font-medium text-[14px]`}
+              <div
+                className={`${
+                  isPlacingOrder
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-[#0c30fe] cursor-pointer'
+                } text-white flex items-center px-3 py-3 rounded-[4px] font-medium text-[14px]`}
                 onClick={handlePlaceOrder}
               >
                 <div className="font-bold">{totalQuantity} Items</div>
@@ -270,7 +285,8 @@ const handlePlaceOrder = async () => {
                   <del className="text-sm ml-1">₹{totalAmount}</del>
                 </div>
                 <div className="ml-auto flex items-center font-bold">
-                  {isPlacingOrder ? 'Placing Order...' : 'Place Orders'} <FiChevronRight size={18} className="ml-2" />
+                  {isPlacingOrder ? 'Placing Order...' : 'Place Orders'}{' '}
+                  <FiChevronRight size={18} className="ml-2" />
                 </div>
               </div>
             </div>

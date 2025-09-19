@@ -1,8 +1,7 @@
 import React from 'react';
-import { FaCheckCircle, FaShoppingCart } from 'react-icons/fa';
+import { FaCheckCircle, FaShoppingBag } from 'react-icons/fa';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { hide as hideModal } from '../store/modal';
-import { showCart } from '../store/ui';
 import { useNavigate } from 'react-router-dom';
 
 interface OrderSuccessData {
@@ -18,9 +17,9 @@ const OrderSuccessModal = ({ data }: { data: OrderSuccessData }) => {
     dispatch(hideModal());
   };
 
-  const handleViewCart = () => {
+  const handleViewOrders = () => {
     dispatch(hideModal());
-    dispatch(showCart());
+    navigate('/orders');
   };
 
   return (
@@ -53,10 +52,10 @@ const OrderSuccessModal = ({ data }: { data: OrderSuccessData }) => {
             Continue Shopping
           </button>
           <button
-            onClick={handleViewCart}
+            onClick={handleViewOrders}
             className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 flex items-center justify-center"
           >
-            <FaShoppingCart className="mr-2" size={14} />
+            <FaShoppingBag className="mr-2" size={14} />
             View My Cart
           </button>
         </div>
@@ -65,4 +64,4 @@ const OrderSuccessModal = ({ data }: { data: OrderSuccessData }) => {
   );
 };
 
-export default OrderSuccessModal;
+export default OrderSuccessModal; 

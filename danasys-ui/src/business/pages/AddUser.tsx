@@ -15,8 +15,8 @@ const AddUser = () => {
 
   // 🔍 Search User
   const searchUser = async () => {
-    if (!email.trim() || !mobile.trim()) {
-      setError("Both email and mobile number are required");
+    if (!email.trim() && !mobile.trim()) {
+      setError("Please enter either email or mobile number");
       setUser(null);
       return;
     }
@@ -24,15 +24,14 @@ const AddUser = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(
-        `/api/user/searchUser?userEmail=${encodeURIComponent(
-          email
-        )}&contactNumber=${encodeURIComponent(mobile)}`,
-        {
-          method: "GET",
-          headers: { accept: "*/*" },
-        }
-      );
+      const params = new URLSearchParams();
+      if (email.trim()) params.append("userEmail", email.trim());
+      if (mobile.trim()) params.append("contactNumber", mobile.trim());
+
+      const response = await fetch(`/api/user/searchUser?${params.toString()}`, {
+        method: "GET",
+        headers: { accept: "*/*" },
+      });
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -77,7 +76,7 @@ const AddUser = () => {
   };
 
   return (
-    <div className=" p-6">
+    <div className="p-6">
       <h1 className="text-2xl font-bold mb-6 mt-20">User</h1>
 
       {/* Tabs */}
@@ -108,50 +107,55 @@ const AddUser = () => {
       {activeTab === "user" && (
         <>
           {/* Search Section */}
-        <div className="mb-6">
-  <div className="flex flex-col md:flex-row gap-4 items-center">
-    <input
-      type="email"
-      placeholder="Enter user email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      className="border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
-    />
-    <input
-      type="tel"
-      placeholder="Enter mobile number"
-      value={mobile}
-      onChange={(e) => setMobile(e.target.value)}
-      className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
-    />
-    <button
-      onClick={searchUser}
-      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-    >
-      Search
-    </button>
-  </div>
-</div>
-
+          <div className="mb-6">
+            <div className="flex flex-col md:flex-row gap-4 items-center">
+              <input
+                type="email"
+                placeholder="Enter user email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={!!mobile}
+                className={`border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 ${
+                  mobile ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
+              />
+              <input
+                type="tel"
+                placeholder="Enter mobile number"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+                disabled={!!email}
+                className={`border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 ${
+                  email ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
+              />
+              <button
+                onClick={searchUser}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Search
+              </button>
+            </div>
+          </div>
 
           {/* Loader */}
-          {loading && (
+          {loading && (email || mobile) && (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <p className="text-center text-gray-600">Searching...</p>
             </div>
           )}
 
           {/* Error */}
-          {error && (
+          {error && (email || mobile) && (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <p className="text-center text-red-600">{error}</p>
             </div>
           )}
 
           {/* Results Table */}
-          {!loading && user && (
+          {!loading && user && (email || mobile) && (
             <div className="w-full">
-              {/* Table Header */} 
+              {/* Table Header */}
               <div className="grid grid-cols-3 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
                 <div className="text-left">User</div>
                 <div className="text-left">Email / Contact</div>
@@ -178,61 +182,66 @@ const AddUser = () => {
 
                   {/* Email / Contact */}
                   <div className="text-gray-600 text-sm">
-                    {user.email || "No email"} | {user.contactInfo || "No contact"}
+                    {user.email || "No email"} |{" "}
+                    {user.contactInfo || "No contact"}
                   </div>
 
-{/* Actions */}
-<div className="flex justify-end gap-2">
- 
+                  {/* Actions */}
+                  <div className="flex justify-end gap-2">
+                    {/* Assign Role */}
+                    <button
+                      onClick={handleRoleAssign}
+                      className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition"
+                    >
+                      <FaUserShield /> Assign Role
+                    </button>
 
-  {/* Assign Role */}
-  <button
-    onClick={handleRoleAssign}
-    className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition"
-  >
-    <FaUserShield /> Assign Role
-  </button>
+                    {/* Activate */}
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await fetch(
+                            `/api/admin/user/${user.id}/activateUser`,
+                            {
+                              method: "PUT",
+                              headers: { accept: "*/*" },
+                            }
+                          );
+                          if (!res.ok) throw new Error("Failed to activate user");
+                          const result = await res.text();
+                          alert(result);
+                        } catch (err: any) {
+                          alert(err.message || "Error activating user");
+                        }
+                      }}
+                      className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-full transition"
+                    >
+                      <FaCheckCircle className="text-blue-600" /> Activate
+                    </button>
 
-   {/* Activate */}
-  <button
-    onClick={async () => {
-      try {
-        const res = await fetch(`/api/admin/user/${user.id}/activateUser`, {
-          method: "PUT",
-          headers: { accept: "*/*" },
-        });
-        if (!res.ok) throw new Error("Failed to activate user");
-        const result = await res.text();
-        alert(result);
-      } catch (err: any) {
-        alert(err.message || "Error activating user");
-      }
-    }}
-    className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-full transition"
-  >
-    <FaCheckCircle className="text-blue-600" /> Activate
-  </button>
-
-  {/* Deactivate */}
-  <button
-    onClick={async () => {
-      try {
-        const res = await fetch(`/api/admin/user/${user.id}/deActivateUser`, {
-          method: "PUT",
-          headers: { accept: "*/*" },
-        });
-        if (!res.ok) throw new Error("Failed to deactivate user");
-        const result = await res.text();
-        alert(result);
-      } catch (err: any) {
-        alert(err.message || "Error deactivating user");
-      }
-    }}
-    className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-full transition"
-  >
-    <FaTimesCircle className="text-red-600" /> Deactivate
-  </button>
-</div>
+                    {/* Deactivate */}
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await fetch(
+                            `/api/admin/user/${user.id}/deActivateUser`,
+                            {
+                              method: "PUT",
+                              headers: { accept: "*/*" },
+                            }
+                          );
+                          if (!res.ok) throw new Error("Failed to deactivate user");
+                          const result = await res.text();
+                          alert(result);
+                        } catch (err: any) {
+                          alert(err.message || "Error deactivating user");
+                        }
+                      }}
+                      className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-full transition"
+                    >
+                      <FaTimesCircle className="text-red-600" /> Deactivate
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -248,9 +257,7 @@ const AddUser = () => {
       )}
 
       {/* Activate / Deactivate Tab */}
-      {activeTab === "status" && (
-        <DeactivatedUsers />
-      )}
+      {activeTab === "status" && <DeactivatedUsers />}
     </div>
   );
 };
