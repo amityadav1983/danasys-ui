@@ -31,21 +31,23 @@ const BusinessSideMenu: React.FC = () => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [color, setColor] = useState("#228B22");
+  const [color, setColor] = useState("");
   const [loading, setLoading] = useState(true);
 
   const menuMap: Record<string, { icon: any; label: string; to: string }> = {
-    "Product": { icon: FaBoxOpen, label: "Products", to: "/business/products" },
     "Business User": { icon: FaUserTie, label: "Business Profile", to: "/business/profile" },
+    "Users": { icon: FaUsers, label: "Users", to: "/business/add-user" },
+      "Activation": { icon: FaCheckCircle, label: "Activation", to: "/business/activation" },
+    "Product": { icon: FaBoxOpen, label: "Products", to: "/business/products" },
     "Orders": { icon: FaShoppingCart, label: "Orders", to: "/business/orders" },
     "Payments": { icon: FaMoneyBillWave, label: "Payments", to: "/business/payments" },
+     "Money Transfer": { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
+     "Connections": { icon: FaNetworkWired, label: "My Connections", to: "/business/connections" },
     "Reports": { icon: FaChartBar, label: "Reports", to: "/business/reports" },
     "Compemy Profile": { icon: FaBuilding, label: "Company Profile", to: "/business/company-profile" },
     "Trend": { icon: FaChartLine, label: "Trends", to: "/business/trends" },
     "Anual report": { icon: FaFileAlt, label: "Annual Report", to: "/business/annual-report" },
-    "Activation": { icon: FaCheckCircle, label: "Activation", to: "/business/activation" },
     "Communication": { icon: FaComments, label: "Communication", to: "/business/communication" },
-    "Users": { icon: FaUsers, label: "Users", to: "/business/add-user" },
   };
 
   const hardcodedItems: MenuItem[] = [
@@ -57,8 +59,9 @@ const BusinessSideMenu: React.FC = () => {
     const fetchData = async () => {
       try {
         const user = await authService.getUserDetails();
-        const dashboard = await authService.loadBusinessDashboard(user.id);
-        const dynamicItems = dashboard.menuItems
+        const dashboard = await authService.loadBusinessDashboard(user.userProfileId);
+        console.log("Dashboard response:", dashboard);
+        const dynamicItems = dashboard.buIconDetails
           .map((item) => {
             const config = menuMap[item.name];
             if (config) {
@@ -67,8 +70,29 @@ const BusinessSideMenu: React.FC = () => {
             return null;
           })
           .filter(Boolean) as MenuItem[];
-        setMenuItems([...dynamicItems, ...hardcodedItems]);
+        console.log("Dynamic menu items:", dynamicItems);
+        const order = [
+          "Business Profile",
+          "Users",
+          "Activation",
+          "Products",
+          "Orders",
+          "Payments",
+          "Money Transfer",
+          "My Connections",
+          "Reports",
+          "Company Profile",
+          "Trends",
+          "Annual Report",
+          "Communication",
+        ];
+        const combinedItems = [...dynamicItems, ...hardcodedItems];
+        combinedItems.sort((a, b) => {
+          return order.indexOf(a.label) - order.indexOf(b.label);
+        });
+        setMenuItems(combinedItems);
         setColor(dashboard.colorTheam);
+        console.log("Set color:", dashboard.colorTheam);
       } catch (error) {
         console.error("Error fetching dashboard:", error);
         // Fallback to hardcoded
@@ -87,7 +111,6 @@ const BusinessSideMenu: React.FC = () => {
           { icon: FaFileAlt, label: "Annual Report", to: "/business/annual-report" },
           { icon: FaComments, label: "Communication", to: "/business/communication" },
         ]);
-        setColor("#228B22");
       } finally {
         setLoading(false);
       }
@@ -144,9 +167,9 @@ const BusinessSideMenu: React.FC = () => {
                     style={isActive ? { color } : {}}
                   >
                     {item.buIconPath ? (
-                      <img src={item.buIconPath} alt={item.label} className="w-4 h-4" />
+                      <img src={item.buIconPath} alt={item.label} className="w-8 h-8" />
                     ) : (
-                      <item.icon className="text-lg" />
+                      <item.icon className="text-2xl text-white" />
                     )}
                     <span className="text-base">{item.label}</span>
                   </Link>
@@ -161,9 +184,9 @@ const BusinessSideMenu: React.FC = () => {
                     style={isActive ? { color } : {}}
                   >
                     {item.buIconPath ? (
-                      <img src={item.buIconPath} alt={item.label} className="w-4 h-4" />
+                      <img src={item.buIconPath} alt={item.label} className="w-6 h-6" />
                     ) : (
-                      <item.icon className="text-lg" />
+                      <item.icon className="text-2xl text-white" />
                     )}
                     <span className="text-base">{item.label}</span>
                   </Link>

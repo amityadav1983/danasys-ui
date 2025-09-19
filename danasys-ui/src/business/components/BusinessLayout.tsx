@@ -31,7 +31,7 @@ const BusinessLayout = ({ component }: Props) => {
       <BusinessSideMenu />
       <div className="flex-1 flex flex-col ml-64">
         <BusinessHeader />
-        <main className="flex-1 p-6 overflow-y-auto">{component}</main>
+        <main className="flex-1 p-6">{component}</main>
       </div>
     </div>
   );

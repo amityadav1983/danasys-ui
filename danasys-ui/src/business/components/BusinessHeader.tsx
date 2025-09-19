@@ -8,7 +8,7 @@ import { useAppSelector } from "../../hooks/useAppSelector";
 
 const BusinessHeader = () => {
   const [userDetails, setUserDetails] = useState<any>(null);
-  const [color, setColor] = useState("#228B22");
+  const [color, setColor] = useState("#2596be");
   const currentMode = useAppSelector((state) => state.mode.currentMode);
 
   useEffect(() => {
@@ -16,7 +16,8 @@ const BusinessHeader = () => {
       try {
         const userDetailsData = await authService.getUserDetails();
         setUserDetails(userDetailsData);
-        const dashboard = await authService.loadBusinessDashboard(userDetailsData.id);
+        const dashboard = await authService.loadBusinessDashboard(userDetailsData.userProfileId);
+        console.log("BusinessHeader dashboard.colorTheam:", dashboard.colorTheam);
         setColor(dashboard.colorTheam);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -31,7 +32,7 @@ const BusinessHeader = () => {
       {/* 🔹 Sidebar Background Extension */}
       <div
         className="w-64 flex items-center justify-center"
-        style={{ background: `linear-gradient(to bottom, ${color}, ${color})` }}
+        style={{ backgroundColor: color }}
       >
         <Link to="/">
           <img

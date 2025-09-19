@@ -22,12 +22,22 @@ export interface OTPData {
 export interface AuthResponse {
   token: string;
   user: {
-    id: string;
+    userProfileId: number;
     email: string;
     fullname: string;
     contactInfo?: string;
     serviceAreaId?: number;
   };
+}
+
+// New UserDetails interface matching backend response including userProfileId
+export interface UserDetails {
+  id: string;
+  userProfileId: number;
+  email: string;
+  fullname: string;
+  contactInfo?: string;
+  serviceAreaId?: number;
 }
 
 export interface BusinessDashboardItem {
@@ -36,7 +46,8 @@ export interface BusinessDashboardItem {
 }
 
 export interface BusinessDashboardResponse {
-  menuItems: BusinessDashboardItem[];
+  userBusinessProfileDTOList: any[];
+  buIconDetails: BusinessDashboardItem[];
   roles: string[];
   colorTheam: string;
 }
@@ -78,14 +89,14 @@ export const authService = {
     return response.data;
   },
 
-  // Get User Details
-  getUserDetails: async (): Promise<AuthResponse['user']> => {
+  // Get User Details - updated to return UserDetails interface
+  getUserDetails: async (): Promise<UserDetails> => {
     const response = await api.get('/api/user/getUserDetails');
     return response.data;
   },
 
   // Load Business Dashboard
-  loadBusinessDashboard: async (userProfileId: string): Promise<BusinessDashboardResponse> => {
+  loadBusinessDashboard: async (userProfileId: number): Promise<BusinessDashboardResponse> => {
     const response = await api.get(`/api/user/loadBusinessDashboard/${userProfileId}`);
     return response.data;
   },
