@@ -793,7 +793,7 @@ public class MyController {
 
 	private void populateDefaultProduct(Long userProfileId, List<ProductDTO> products, Long id, String category) {
 
-		if (loginUser.get(loginUserName).getUserProfileId().longValue() == userProfileId) {
+		if (loginUser.get(loginUserName).getUserProfileId().longValue() >0) {
 
 			File folder = new File(uploadDir + category.toLowerCase() + "/");
 
