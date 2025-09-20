@@ -559,7 +559,7 @@ public class MyController {
 				.path("/api/product/images/userdata/").path("9.jpg").toUriString();
 
 		String companyLogo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-				.path("c2cbag.png").toUriString();
+				.path("cost2cost-new.png").toUriString();
 
 		theem.setBackGroundImageURL(backGroundImage);
 		theem.setCompanyLogo(companyLogo);
