@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
@@ -41,7 +42,7 @@ const Home = () => {
         // Get categories to find business profile for the selected category
         const categories = await productService.getCategories(serviceAreaId);
         setCategoriesData(categories);
-        
+
         // Find the selected category and get its first business profile
         const selectedCategoryData = categories.find(
           cat => cat.categoryName.toLowerCase() === category.toLowerCase()
@@ -55,7 +56,7 @@ const Home = () => {
 
         // Use the first business profile for the selected category
         const businessProfileId = selectedCategoryData.linkedBusinessProfile[0].id;
-        
+
         // Get products from API
         const productsData = await productService.getProductsByBusinessProfile(businessProfileId, {
           category
@@ -73,7 +74,8 @@ const Home = () => {
             unit: '',
             discount: item.price > item.offerPrice ? ((item.price - item.offerPrice) / item.price) * 100 : 0,
             offer: '',
-            category: item.category
+            category: item.category,
+            rating: item.starRating || 0 // Include starRating from API response
           }));
 
           // Filter by selected category
@@ -109,9 +111,9 @@ const Home = () => {
       {loading && <div>Loading products...</div>}
       {error && <div style={{ color: 'red' }}>Error: {error}</div>}
       {!loading && !error && products.length > 0 && (
-        <ProductsRow 
-          data={{ title: `${selectedCategory} Products`, show_header: true }} 
-          objects={[{ data: { products: products || [] } }]} 
+        <ProductsRow
+          data={{ title: `${selectedCategory} Products`, show_header: true }}
+          objects={[{ data: { products: products || [] } }]}
         />
       )}
       {!loading && !error && products.length === 0 && (

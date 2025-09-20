@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import LocationPicker from "../LocationPicker";
-import DeliveryToggle from "../DeliveryToggle";
 import UserProfile from "../UserProfile";
 import newLogo from "../../assets/images/COST2COST.png";
 import { authService } from "../../services/auth";
@@ -126,97 +125,84 @@ const Header = () => {
           }}
         >
           <div className="min-h-[80px] sm:min-h-[100px] flex flex-col justify-center">
-            {/* ✅ Mobile Header (2 Rows) */}
+            {/* ✅ Mobile Header - Single Row */}
             <div className="sm:hidden w-full text-black px-4">
-              {/* Row 1: Toggle Center */}
-              <div className="flex justify-center mb-2 mt-3">
-                <div className="scale-125">
-                  <DeliveryToggle />
-                </div>
-              </div>
-
-              {/* Row 2: Location Left - User Right */}
               <div className="flex justify-between items-center">
                 <LocationPicker />
-                <UserProfile />
+                <div className="flex items-center gap-2">
+                  {userDetails?.userWalletImage && (
+                    <img
+                      src={userDetails.userWalletImage}
+                      alt="Wallet"
+                      className="w-8 h-8 object-contain cursor-pointer"
+                    />
+                  )}
+                  <UserProfile />
+                </div>
               </div>
             </div>
 
-            {/* ✅ Desktop Header (grid layout for equal spacing) */}
-            <div className="hidden sm:grid grid-cols-6 w-full h-full items-center gap-6 px-8">
-              {/* 1 - Logo */}
-              <div className="flex justify-start">
+            {/* ✅ Desktop Header (flexible layout with wider search) */}
+            <div className="hidden sm:flex w-full h-full items-center px-8">
+              {/* Left Section - Logo */}
+              <div className="flex items-center mr-10">
                 <Link to={"/"}>
                   <img
                     src={newLogo}
                     alt="Cost2Cost Logo"
-                    className="h-16 md:h-20 object-contain drop-shadow-md"
+                    className="h-16 md:h-12 object-contain drop-shadow-md"
                   />
                 </Link>
               </div>
 
-              {/* 2 - Location Picker */}
-              <div className="flex justify-center text-black">
+              {/* Center Section - Location and Search */}
+              <div className="flex items-center gap-12 flex-1">
                 <LocationPicker />
+                <div className="relative flex-1 max-w-2xl">
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={searchQuery}
+                      onChange={handleSearch}
+                      className="w-full h-10 px-4 py-2 pl-10 rounded-full border border-gray-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 backdrop-blur-sm"
+                    />
+                    <FiSearch
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={18}
+                    />
+                  </div>
+
+                  {filteredProducts.length > 0 && (
+                    <ul className="absolute top-12 left-0 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
+                      {filteredProducts.map((product) => (
+                        <li
+                          key={product.id}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                          onClick={() => handleSelectProduct(product.id)}
+                        >
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-8 h-8 object-contain"
+                          />
+                          <span>{product.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
 
-              {/* 3 - Delivery Toggle */}
-              <div className="flex justify-center">
-                <DeliveryToggle />
-              </div>
-
-              {/* 4 - Wallet */}
-              <div className="flex justify-center">
+              {/* Right Section - Wallet and User Profile */}
+              <div className="flex items-center gap-4 ml-8">
                 {userDetails?.userWalletImage && (
                   <img
                     src={userDetails.userWalletImage}
                     alt="Wallet"
-                    className="w-12 h-12 object-contain cursor-pointer drop-shadow-md"
+                    className="w-8 h-8 object-contain cursor-pointer drop-shadow-md"
                   />
                 )}
-              </div>
-
-              {/* 5 - Search (between Wallet & Profile) */}
-<div className="flex justify-center relative">
-  <div className="opacity-100 translate-y-0"> {/* 👈 Always visible */}
-    <div className="relative flex items-center">
-      <input
-        type="text"
-        placeholder="Search products..."
-        value={searchQuery}
-        onChange={handleSearch}
-        className="w-[250px] md:w-[300px] h-10 px-4 py-2 pl-10 rounded-full border border-gray-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 backdrop-blur-sm"
-      />
-      <FiSearch
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-        size={18}
-      />
-    </div>
-
-    {filteredProducts.length > 0 && (
-      <ul className="absolute top-12 left-0 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
-        {filteredProducts.map((product) => (
-          <li
-            key={product.id}
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-            onClick={() => handleSelectProduct(product.id)}
-          >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-8 h-8 object-contain"
-            />
-            <span>{product.name}</span>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
-</div>
-
-
-              {/* 6 - User Profile */}
-              <div className="flex justify-center">
                 <UserProfile />
               </div>
             </div>

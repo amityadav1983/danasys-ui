@@ -27,8 +27,10 @@ const cartSlice = createSlice({
         (item) => item.product.id === newItem.id
       );
       if (existingItem) {
-        if (existingItem.quantity >= 10) {
-          // Do not add more than 10 items of the same product
+        // Check if the product has inventory limit (default to 10 if not provided)
+        const maxQuantity = (newItem as any).inventory || 10;
+        if (existingItem.quantity >= maxQuantity) {
+          // Do not add more than available inventory
           return;
         }
         existingItem.quantity++;

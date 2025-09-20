@@ -8,9 +8,11 @@ import { CartProduct } from '../../utils/types';
 type ButtonProps = {
   product: CartProduct;
   size?: 'sm' | 'lg';
+  inventory?: number;
+  disabled?: boolean;
 };
 
-const AddToCartButton = ({ product, size }: ButtonProps) => {
+const AddToCartButton = ({ product, size, inventory = 10, disabled = false }: ButtonProps) => {
   const { cartItems } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
 
@@ -53,8 +55,8 @@ const AddToCartButton = ({ product, size }: ButtonProps) => {
       <button
         onClick={add}
         type="button"
-        className={`flex items-center justify-center w-8 text-white ${itemCount >= 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
-        disabled={itemCount >= 10}
+        className={`flex items-center justify-center w-8 text-white ${itemCount >= inventory ? 'opacity-50 cursor-not-allowed' : ''}`}
+        disabled={itemCount >= inventory || disabled}
       >
         <IoAddSharp size={18} />
       </button>
@@ -63,9 +65,10 @@ const AddToCartButton = ({ product, size }: ButtonProps) => {
     <button
       type="button"
       onClick={handleItemAdd}
-      className={`_add_to_cart ${size === 'lg' ? 'text-md' : 'text-sm'} bg-white text-gray-700 font-semibold rounded-md px-3 py-1 flex items-center justify-center h-full w-full`}
+      disabled={disabled}
+      className={`_add_to_cart ${size === 'lg' ? 'text-md' : 'text-sm'} ${disabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700'} font-semibold rounded-md px-3 py-1 flex items-center justify-center h-full w-full`}
     >
-      Add
+      {disabled ? 'Out of Stock' : 'Add'}
     </button>
   );
 };

@@ -13,6 +13,8 @@ export interface Product {
   businessUserProfileId: number;
   status: string | null;
   version: number;
+  rating?: number; // Add rating field for star ratings
+  starRating?: number; // Add starRating field as mentioned by user
 }
 
 export interface BusinessProfile {
@@ -65,7 +67,7 @@ export const productService = {
     page: number;
     totalPages: number;
   }> => {
-    const response = await api.get('/api/product/productList', { 
+    const response = await api.get('/api/product/productList', {
       params: { ...params, businessUserProfileId }
     });
     return response.data;
