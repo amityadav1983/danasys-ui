@@ -27,6 +27,23 @@ const EmailLogin: React.FC<EmailLoginProps> = ({ onRegisterClick, onLogin }) => 
     }
   };
 
+  // ✅ Google login handler
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await api.get("/oauth2/authorization/google");
+
+      if (response.status === 200) {
+        // Success → redirect to home/dashboard
+        window.location.href = "/home"; // apna actual route lagao
+      } else {
+        alert("Google login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -70,8 +87,14 @@ const EmailLogin: React.FC<EmailLoginProps> = ({ onRegisterClick, onLogin }) => 
               return;
             }
             try {
-              const response = await api.post(`/public/forgotPassword?email=${encodeURIComponent(email)}`, {});
-              alert(response.data || "Reset link sent to your email. Please check your inbox.");
+              const response = await api.post(
+                `/public/forgotPassword?email=${encodeURIComponent(email)}`,
+                {}
+              );
+              alert(
+                response.data ||
+                  "Reset link sent to your email. Please check your inbox."
+              );
             } catch (error: any) {
               console.error("Forgot password error:", error);
               if (error.response?.data) {
@@ -89,7 +112,7 @@ const EmailLogin: React.FC<EmailLoginProps> = ({ onRegisterClick, onLogin }) => 
         </button>
       </div>
 
-     {/* Divider with OR */}
+      {/* Divider with OR */}
       <div className="flex items-center gap-2 my-2">
         <div className="flex-grow h-px bg-blue-500"></div>
         <span className="text-blue-800 text-lg font-medium">OR</span>
@@ -99,6 +122,7 @@ const EmailLogin: React.FC<EmailLoginProps> = ({ onRegisterClick, onLogin }) => 
       {/* Google Button */}
       <Button
         type="button"
+        onClick={handleGoogleLogin}
         className="w-full bg-white px-1.5 py-1.5 text-gray-700 rounded-xl shadow-md flex items-center justify-center gap-2 border-2 border-blue-500"
       >
         <img

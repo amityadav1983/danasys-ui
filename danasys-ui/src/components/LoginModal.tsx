@@ -41,7 +41,7 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
       // API call for theme
       const fetchTheme = async () => {
         try {
-          const res = await fetch("/api/public/loginTheem");
+          const res = await fetch("/public/loginTheem");
           if (!res.ok) throw new Error("Failed to fetch theme");
 
           const data: ThemeResponse = await res.json();
