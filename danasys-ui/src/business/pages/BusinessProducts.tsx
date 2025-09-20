@@ -74,7 +74,9 @@ const BusinessProducts: React.FC = () => {
         const userData = await userRes.json();
         setUserRole(userData.role);
 
-        if (userData.role === "ROLE_USER") {
+        // For ROLE_SUPERADMIN: Don't load profiles automatically, wait for search
+        // For all other roles: Load profiles automatically
+        if (userData.role !== "ROLE_SUPERADMIN") {
           const userProfileId = userData.userProfileId;
           const res = await fetch(
             `/api/user/loadUserBusinessProfileById?userProfileId=${userProfileId}`
@@ -82,7 +84,7 @@ const BusinessProducts: React.FC = () => {
           if (!res.ok) throw new Error("Failed to fetch business profiles");
           const data = await res.json();
           setProfiles(data);
-          setSearchTriggered(true); // ROLE_USER ke liye default true
+          setSearchTriggered(true); // Non-SUPERADMIN roles ke liye default true
         }
       } catch (err: any) {
         setError(err.message || "Something went wrong");
@@ -93,9 +95,9 @@ const BusinessProducts: React.FC = () => {
     fetchUserAndProfiles();
   }, []);
 
-  // Fetch Profiles for non-ROLE_USER on userName change
+  // Fetch Profiles for ROLE_SUPERADMIN on userName change
   useEffect(() => {
-    if (userRole !== "ROLE_USER" && userName.trim() && searchTriggered) {
+    if (userRole === "ROLE_SUPERADMIN" && userName.trim() && searchTriggered) {
       const fetchProfiles = async () => {
         setLoadingProfiles(true);
         setError(null);
@@ -286,50 +288,49 @@ const BusinessProducts: React.FC = () => {
         <>
           {(isMyProductActive || isManageProductActive) && (
             <div className="space-y-6">
-              {userRole !== "ROLE_USER" && (
+              {userRole === "ROLE_SUPERADMIN" && (
                 <div className="flex items-center gap-4 mb-6">
                   <label className="font-medium">Search with Username</label>
                   <input
-  type="text"
-  placeholder="Enter Username"
-  value={userName}
-  onChange={(e) => {
-    const value = e.target.value;
-    setUserName(value);
+                    type="text"
+                    placeholder="Enter Username"
+                    value={userName}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setUserName(value);
 
-    if (value.trim() === "") {
-      setSearchTriggered(false); // clear hone par dropdown hide
-      setProfiles([]);           // profiles bhi clear ho jaye
-      setSelectedProfile(null);  // selected profile reset
-    }
-  }}
-  className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-/>
+                      if (value.trim() === "") {
+                        setSearchTriggered(false); // clear hone par dropdown hide
+                        setProfiles([]);           // profiles bhi clear ho jaye
+                        setSelectedProfile(null);  // selected profile reset
+                      }
+                    }}
+                    className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
 
-<button
-  onClick={() => {
-    if (userName.trim() !== "") {
-      setSearchTriggered(true);   // valid search → dropdown dikhao
-    } else {
-      setSearchTriggered(false);  // empty → dropdown hide
-      setProfiles([]);
-      setSelectedProfile(null);
-    }
-  }}
-  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
->
-  Search
-</button>
-
+                  <button
+                    onClick={() => {
+                      if (userName.trim() !== "") {
+                        setSearchTriggered(true);   // valid search → dropdown dikhao
+                      } else {
+                        setSearchTriggered(false);  // empty → dropdown hide
+                        setProfiles([]);
+                        setSelectedProfile(null);
+                      }
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    Search
+                  </button>
                 </div>
               )}
 
-             {/* ✅ Business Profile Selector tabhi dikhega jab: 
-    1) ROLE_USER ho, ya
-    2) searchTriggered true ho + userName empty na ho
+             {/* ✅ Business Profile Selector tabhi dikhega jab:
+    1) ROLE_SUPERADMIN na ho, ya
+    2) ROLE_SUPERADMIN ho aur searchTriggered true ho + userName empty na ho
 */}
-{(userRole === "ROLE_USER" ||
-  (searchTriggered && userName.trim() !== "")) && (
+{(userRole !== "ROLE_SUPERADMIN" ||
+  (userRole === "ROLE_SUPERADMIN" && searchTriggered && userName.trim() !== "")) && (
   <BusinessProfileSelector
     profiles={profiles}
     selectedProfile={selectedProfile}
