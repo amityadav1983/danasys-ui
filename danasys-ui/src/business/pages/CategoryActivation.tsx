@@ -133,7 +133,7 @@ const CategoryActivation: React.FC = () => {
   // ✅ Activate Category
   const handleActivate = async (id: number) => {
     try {
-      const res = await fetch(`/api/admin/approveCategory/${id}/approve`, {
+      const res = await fetch(`/api/admin/approveCategory/${id}/approve?isApprove=true`, {
         method: "PUT",
         headers: { accept: "*/*" },
       });
@@ -150,7 +150,7 @@ const CategoryActivation: React.FC = () => {
   // ✅ Deactivate Category
   const handleDeactivate = async (id: number) => {
     try {
-      const res = await fetch(`/api/admin/removeCategory/${id}/remove`, {
+      const res = await fetch(`/api/admin/approveCategory/${id}/approve?isApprove=false`, {
         method: "PUT",
         headers: { accept: "*/*" },
       });

@@ -100,41 +100,42 @@ const Activation: React.FC = () => {
     }
   }, [activeTab]);
 
-  // Activate Area
-  const handleActivate = async (id: number) => {
-    try {
-      const res = await fetch(`/api/admin/approveServiceArea/${id}/approve`, {
-        method: "PUT",
-        headers: { accept: "*/*" },
-      });
+// Activate Area
+const handleActivate = async (id: number) => {
+  try {
+    const res = await fetch(`/api/admin/approveServiceArea/${id}/approve?isApprove=true`, {
+      method: "PUT",
+      headers: { accept: "*/*" },
+    });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to activate area");
+    const data = await res.text(); // 👈 changed from json()
+    if (!res.ok) throw new Error(data);
 
-      alert("Activated Successfully!");
-      fetchServiceAreas();
-    } catch (err: any) {
-      alert(err.message || "Error activating area");
-    }
-  };
+    alert(data || "Activated Successfully!"); // show backend msg if any
+    fetchServiceAreas();
+  } catch (err: any) {
+    alert(err.message || "Error activating area");
+  }
+};
 
-  // Deactivate Area
-  const handleDeactivate = async (id: number) => {
-    try {
-      const res = await fetch(`/api/admin/removeServiceArea/${id}/remove`, {
-        method: "PUT",
-        headers: { accept: "*/*" },
-      });
+// Deactivate Area
+const handleDeactivate = async (id: number) => {
+  try {
+    const res = await fetch(`/api/admin/approveServiceArea/${id}/approve?isApprove=false`, {
+      method: "PUT",
+      headers: { accept: "*/*" },
+    });
 
-      const data = await res.text();
-      if (!res.ok) throw new Error(data);
+    const data = await res.text(); // 👈 also text here
+    if (!res.ok) throw new Error(data);
 
-      alert("Deactivated Successfully!");
-      fetchServiceAreas();
-    } catch (err: any) {
-      alert(err.message || "Error deactivating area");
-    }
-  };
+    alert(data || "Deactivated Successfully!");
+    fetchServiceAreas();
+  } catch (err: any) {
+    alert(err.message || "Error deactivating area");
+  }
+};
+
 
   // Open Update Modal
   const openUpdateModal = (area: ServiceArea) => {

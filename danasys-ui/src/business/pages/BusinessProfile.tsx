@@ -106,7 +106,7 @@ const handleUpdate = (profile: any) => {
   };
 
  return (
-  <div className="p-6 bg-white h-screen overflow-hidden">
+  <div className="p-6 bg-white h-screen overflow-auto">
     <h1 className="text-2xl font-bold mb-6 mt-20">Business Profiles</h1>
 
     {/* Agar form open hai to sirf form show hoga */}
