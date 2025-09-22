@@ -1150,14 +1150,19 @@ public class MyController {
 	public ResponseEntity<List<ProductCategoryDTO>> getAllRegisteredProductCategory() {
 		List<ProductCategoryDTO> productCategories = new ArrayList<>();
 		ProductCategoryDTO productCategory = new ProductCategoryDTO();
+		productCategory.setId(1l);
 		productCategory.setCategoryName(ProductCategoryEnum.Grocery);
 		ProductCategoryDTO productCategory1 = new ProductCategoryDTO();
+		productCategory1.setId(2l);
 		productCategory1.setCategoryName(ProductCategoryEnum.Electronics);
 		ProductCategoryDTO productCategory2 = new ProductCategoryDTO();
+		productCategory2.setId(3l);
 		productCategory2.setCategoryName(ProductCategoryEnum.Fashion);
 		ProductCategoryDTO productCategory3 = new ProductCategoryDTO();
+		productCategory3.setId(4l);
 		productCategory3.setCategoryName(ProductCategoryEnum.Carservice);
 		ProductCategoryDTO productCategory4 = new ProductCategoryDTO();
+		productCategory4.setId(5l);
 		productCategory4.setCategoryName(ProductCategoryEnum.Vegetables);
 
 		productCategories.add(productCategory);
