@@ -9,6 +9,8 @@ import {
   FaKey,
   FaUserFriends,
   FaUsers,
+  FaBuilding,
+  FaExchangeAlt,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
@@ -259,6 +261,33 @@ const UserProfile = () => {
               <div className="relative">
                 <LanguageSelector />
               </div>
+
+              {/* Mode Switch Button */}
+              {currentMode === 'user' ? (
+                <button
+                  onClick={() => {
+                    dispatch(setMode('business'));
+                    setShowDropdown(false);
+                    navigate('/');
+                  }}
+                  className="flex items-center gap-3 w-full px-3 py-2 text-left rounded-xl hover:bg-blue-50 transition-colors text-blue-600"
+                >
+                  <FaBuilding size={18} />
+                  <span className="font-medium text-sm">Switch to Business</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    dispatch(setMode('user'));
+                    setShowDropdown(false);
+                    navigate('/');
+                  }}
+                  className="flex items-center gap-3 w-full px-3 py-2 text-left rounded-xl hover:bg-green-50 transition-colors text-green-600"
+                >
+                  <FaExchangeAlt size={18} />
+                  <span className="font-medium text-sm">Switch to User</span>
+                </button>
+              )}
 
               {/* Logout */}
               <button

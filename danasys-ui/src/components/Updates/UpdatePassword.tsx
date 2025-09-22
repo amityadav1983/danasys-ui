@@ -44,7 +44,7 @@ const UpdatePassword: React.FC<UpdatePasswordProps> = ({ onClose }) => {
       };
 
       const response = await axios.post(
-        "http://localhost:8080/api/user/updateUserPassword",
+        "api/user/updateUserPassword",
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
