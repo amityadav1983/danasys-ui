@@ -394,7 +394,7 @@ public class MyController {
 		userProfile.setId(1l);
 		userProfile.setFullname("Sri Ram");
 		userProfile.setEmail("ram@gmail.com");
-
+		userProfile.setStatus(StatusEnum.ACTIVE);
 		return ResponseEntity.ok(userProfile);
 	}
 
@@ -875,7 +875,7 @@ public class MyController {
 	@GetMapping("/api/user/loadBusinessDashboard/{userProfileId}")
 	public ResponseEntity<?> loadBusinessUserDashboard(@PathVariable Long userProfileId) {
 
-		if (loginUser.get(loginUserName).getUserProfileId().longValue() == userProfileId) {
+		if (loginUser.get(loginUserName).getUserProfileId() == userProfileId) {
 
 			UserBusinessDashboardDTO buDashboard = new UserBusinessDashboardDTO();
 
