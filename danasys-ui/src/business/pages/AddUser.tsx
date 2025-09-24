@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserShield, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import DeactivatedUsers from "./DeactivatedUsers";
@@ -9,15 +9,51 @@ const AddUser = () => {
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
   const [activeTab, setActiveTab] = useState<"user" | "status">("user");
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [roles, setRoles] = useState<string[]>([]);
+  const [userProfileId, setUserProfileId] = useState<number | null>(null);
 
   const navigate = useNavigate();
+
+  // Fetch user details and roles on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userDetailsResponse = await fetch('/api/user/getUserDetails', {
+          method: 'GET',
+          headers: { accept: '*/*' },
+        });
+        if (!userDetailsResponse.ok) {
+          throw new Error('Failed to fetch user details');
+        }
+        const userData = await userDetailsResponse.json();
+        setUserProfileId(userData.userProfileId);
+
+        const dashboardResponse = await fetch(`/api/user/loadBusinessDashboard/${userData.userProfileId}`, {
+          method: 'GET',
+          headers: { accept: '*/*' },
+        });
+        if (!dashboardResponse.ok) {
+          throw new Error('Failed to fetch dashboard');
+        }
+        const dashData = await dashboardResponse.json();
+        setRoles(dashData.roles);
+      } catch (err: any) {
+        console.error('Error fetching data:', err);
+      }
+    };
+    fetchData();
+  }, []);
 
   // 🔍 Search User
   const searchUser = async () => {
     if (!email.trim() && !mobile.trim()) {
       setError("Please enter either email or mobile number");
       setUser(null);
+      setHasSearched(false);
       return;
     }
 
@@ -39,17 +75,24 @@ const AddUser = () => {
 
       const data = await response.json();
       setUser(data);
+      setHasSearched(true);
     } catch (err: any) {
       setError(err.message || "Failed to search user");
       setUser(null);
+      setHasSearched(true);
     } finally {
       setLoading(false);
     }
   };
 
   // 🎯 Assign Role
-  const handleRoleAssign = async () => {
+  const handleRoleAssign = () => {
     if (!user) return;
+    setShowRoleModal(true);
+  };
+
+  const assignRole = async () => {
+    if (!selectedRole) return;
     try {
       const response = await fetch(`/api/admin/assignDelegationRole`, {
         method: "POST",
@@ -59,7 +102,7 @@ const AddUser = () => {
         },
         body: JSON.stringify({
           delegateUserId: user.id,
-          role: "ROLE_SUPERADMIN",
+          role: selectedRole,
           addRole: true,
         }),
       });
@@ -69,6 +112,8 @@ const AddUser = () => {
         throw new Error(`Error ${response.status}: ${errorText}`);
       }
       alert("Role assigned successfully!");
+      setShowRoleModal(false);
+      setSelectedRole("");
     } catch (err: any) {
       alert("Failed to assign role: " + err.message);
       console.error("Error assigning role:", err);
@@ -113,7 +158,12 @@ const AddUser = () => {
                 type="email"
                 placeholder="Enter user email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setHasSearched(false);
+                  setUser(null);
+                  setError(null);
+                }}
                 disabled={!!mobile}
                 className={`border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 ${
                   mobile ? "bg-gray-100 cursor-not-allowed" : ""
@@ -123,7 +173,12 @@ const AddUser = () => {
                 type="tel"
                 placeholder="Enter mobile number"
                 value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
+                onChange={(e) => {
+                  setMobile(e.target.value);
+                  setHasSearched(false);
+                  setUser(null);
+                  setError(null);
+                }}
                 disabled={!!email}
                 className={`border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 ${
                   email ? "bg-gray-100 cursor-not-allowed" : ""
@@ -156,16 +211,17 @@ const AddUser = () => {
           {!loading && user && (email || mobile) && (
             <div className="w-full">
               {/* Table Header */}
-              <div className="grid grid-cols-3 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
+              <div className="grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
                 <div className="text-left">User</div>
                 <div className="text-left">Email / Contact</div>
+                <div className="text-left">Status</div>
                 <div className="text-right">Actions</div>
               </div>
 
               {/* Table Body */}
               <div className="space-y-3 group">
                 <div
-                  className="grid grid-cols-3 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
+                  className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
                   group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
                 >
                   {/* User */}
@@ -186,12 +242,17 @@ const AddUser = () => {
                     {user.contactInfo || "No contact"}
                   </div>
 
+                  {/* Status */}
+                  <div className="text-gray-600 text-sm">
+                    {user.status || "Unknown"}
+                  </div>
+
                   {/* Actions */}
                   <div className="flex justify-end gap-2">
                     {/* Assign Role */}
                     <button
                       onClick={handleRoleAssign}
-                      className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition"
+                      className="flex items-center gap-1 px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-lg transition whitespace-nowrap"
                     >
                       <FaUserShield /> Assign Role
                     </button>
@@ -202,7 +263,7 @@ const AddUser = () => {
                         try {
                           const res = await fetch(
                             `/api/admin/user/${user.id}/activateUser`,
-                            {
+                   {
                               method: "PUT",
                               headers: { accept: "*/*" },
                             }
@@ -248,7 +309,7 @@ const AddUser = () => {
           )}
 
           {/* No Result */}
-          {!loading && !user && !error && (email || mobile) && (
+          {!loading && !user && !error && hasSearched && (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <p className="text-center text-gray-600">No user found</p>
             </div>
@@ -258,6 +319,44 @@ const AddUser = () => {
 
       {/* Activate / Deactivate Tab */}
       {activeTab === "status" && <DeactivatedUsers />}
+
+      {/* Role Assignment Modal */}
+      {showRoleModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-bold mb-4">Assign Role</h2>
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="border border-gray-300 rounded px-4 py-2 w-full mb-4"
+            >
+              <option value="">Select Role</option>
+              {roles.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setShowRoleModal(false);
+                  setSelectedRole("");
+                }}
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={assignRole}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              >
+                Assign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

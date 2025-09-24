@@ -1,5 +1,5 @@
 import React from "react";
-import { FaRegUser, FaShoppingBag, FaShoppingCart } from "react-icons/fa";
+import { FaShoppingBag, FaShoppingCart } from "react-icons/fa";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { setMode } from "../store/mode";
@@ -10,18 +10,11 @@ const FloatingSwitchButton = () => {
   const currentMode = useAppSelector((state) => state.mode.currentMode);
   const { totalQuantity } = useAppSelector((state) => state.cart);
 
-  const handleSwitch = () => {
-    if (currentMode === 'business') {
-      console.log('Switch to User button clicked');
-      console.log('Current mode before switch:', currentMode);
-      dispatch(setMode('user'));
-      console.log('Mode switched to user');
-    } else {
-      console.log('Switch to Business button clicked');
-      console.log('Current mode before switch:', currentMode);
-      dispatch(setMode('business'));
-      console.log('Mode switched to business');
-    }
+  const handleSwitchToBusiness = () => {
+    console.log('Switch to Business button clicked');
+    console.log('Current mode before switch:', currentMode);
+    dispatch(setMode('business'));
+    console.log('Mode switched to business');
   };
 
   const handleCartClick = () => {
@@ -30,25 +23,21 @@ const FloatingSwitchButton = () => {
 
   return (
     <>
-      {/* Mode Switch Button */}
-      <div className="fixed bottom-6 right-6 z-[999999] pointer-events-none">
-        <button
-          onClick={handleSwitch}
-          className="pointer-events-auto bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 border-4 border-white"
-          style={{ zIndex: 999999 }}
-        >
-          <div className="flex items-center gap-2">
-            {currentMode === 'business' ? (
-              <FaRegUser size={18} />
-            ) : (
+      {/* Switch to Business Button - Show when in user mode */}
+      {currentMode === 'user' && (
+        <div className="fixed bottom-6 right-6 z-[999999] pointer-events-none">
+          <button
+            onClick={handleSwitchToBusiness}
+            className="pointer-events-auto bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 border-4 border-white"
+            style={{ zIndex: 999999 }}
+          >
+            <div className="flex items-center gap-2">
               <FaShoppingBag size={18} />
-            )}
-            <span className="text-sm font-bold">
-              {currentMode === 'business' ? 'User' : 'Business'}
-            </span>
-          </div>
-        </button>
-      </div>
+              <span className="text-sm font-bold">Switch to Business</span>
+            </div>
+          </button>
+        </div>
+      )}
 
       {/* Cart Button - Shows when there are items in cart */}
       {totalQuantity > 0 && (

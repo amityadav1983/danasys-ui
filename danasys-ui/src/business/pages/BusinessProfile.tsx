@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import BusinessProfileForm from "../components/BusinessProfileForm";
+import AddBusinessProfileForm from "../components/AddBusinessProfileForm";
+import UpdateBusinessProfileForm from "../components/UpdateBusinessProfileForm";
 import ManageProfile from "./ManageProfile";
 import { authService } from "../../services/auth";
 
@@ -33,20 +34,7 @@ const BusinessProfile = () => {
     fetchUserDetails();
   }, []);
 
-  // Debounce logic for search
-  useEffect(() => {
-    if (userRole !== 'user') {
-      const handler = setTimeout(() => {
-        if (userName.trim()) {
-          fetchProfiles(userName);
-        } else {
-          setProfiles([]);
-        }
-      }, 500);
 
-      return () => clearTimeout(handler);
-    }
-  }, [userName, userRole]);
 
   // Fetch Business Profiles
   const fetchProfiles = async (searchName: string) => {
@@ -59,10 +47,22 @@ const BusinessProfile = () => {
         )}`
       );
       if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
+        if (response.status === 400) {
+          setError("No user found");
+          setProfiles([]);
+          setLoading(false);
+          return;
+        } else {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
       }
       const data = await response.json();
       setProfiles(data);
+      if (data.length === 0 && searchName.trim() !== '') {
+        setError("No user found");
+      } else {
+        setError(null);
+      }
     } catch (err: any) {
       setError(err.message || "Failed to fetch profiles");
     } finally {
@@ -73,8 +73,7 @@ const BusinessProfile = () => {
   // Add / Update handler
  // Add / Update handler
 const handleUpdate = (profile: any) => {
-  const { addresses, ...rest } = profile; // 🔹 remove addresses
-  setSelectedProfile(rest);
+  setSelectedProfile(profile); // Keep addresses for pre-filling in update form
   setShowForm(true);
 };
 
@@ -111,14 +110,24 @@ const handleUpdate = (profile: any) => {
 
     {/* Agar form open hai to sirf form show hoga */}
     {showForm ? (
-      <BusinessProfileForm
-        onClose={() => {
-          setShowForm(false);
-          setSelectedProfile(null);
-        }}
-        profile={selectedProfile} // null => add, object => update
-        onSuccess={() => userRole === 'user' ? fetchProfiles('') : fetchProfiles(userName)}
-      />
+      selectedProfile ? (
+        <UpdateBusinessProfileForm
+          onClose={() => {
+            setShowForm(false);
+            setSelectedProfile(null);
+          }}
+          profile={selectedProfile}
+          onSuccess={() => userRole === 'user' ? fetchProfiles('') : fetchProfiles(userName)}
+        />
+      ) : (
+        <AddBusinessProfileForm
+          onClose={() => {
+            setShowForm(false);
+            setSelectedProfile(null);
+          }}
+          onSuccess={() => userRole === 'user' ? fetchProfiles('') : fetchProfiles(userName)}
+        />
+      )
     ) : (
       <>
         {/* Tabs */}
@@ -156,7 +165,10 @@ const handleUpdate = (profile: any) => {
                   type="text"
                   placeholder="Enter Email or Mobile"
                   value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
+                  onChange={(e) => {
+                    setUserName(e.target.value);
+                    setError(null);
+                  }}
                   className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
 
@@ -195,7 +207,7 @@ const handleUpdate = (profile: any) => {
 
             {/* Results */}
             {loading && <p>Loading...</p>}
-            {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-gray-500 bg-gray-100 p-2 rounded">{error}</p>}
 
             {!loading && profiles.length > 0 && (
               <div className="w-full">
@@ -213,7 +225,7 @@ const handleUpdate = (profile: any) => {
                     <div
                       key={profile.id}
                       className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                        group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
+                        group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.04] hover:shadow-md"
                     >
                       {/* Logo + Owner */}
                       <div className="flex items-center gap-3">

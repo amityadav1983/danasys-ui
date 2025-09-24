@@ -29,13 +29,11 @@ const initialFormState = {
   businessLogo: null as File | null,
 };
 
-const BusinessProfileForm = ({
+const AddBusinessProfileForm = ({
   onClose,
-  profile,
   onSuccess,
 }: {
   onClose: () => void;
-  profile?: any;
   onSuccess?: () => void;
 }) => {
   const [formData, setFormData] = useState(initialFormState);
@@ -58,18 +56,6 @@ const BusinessProfileForm = ({
 
   // ✅ Categories
   const [categories, setCategories] = useState<any[]>([]);
-
-  // ✅ Pre-fill when editing
-  useEffect(() => {
-    if (profile) {
-      setFormData({
-        ...initialFormState,
-        ...profile,
-        businessLogo: null, // Keep as null for new uploads, existing logo will be shown via businessLogoPath
-      });
-      setAddedAddresses(profile.addresses || []);
-    }
-  }, [profile]);
 
   // ✅ Fetch service areas
   useEffect(() => {
@@ -221,10 +207,7 @@ const handleChange = (
     setAddedAddresses((prev) => prev.filter((addr) => addr.id !== id));
   };
 
-// ✅ Save / Update handler
-// ... imports same rahenge
-
-// inside handleSubmit
+// ✅ Save handler
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setLoading(true);
@@ -280,14 +263,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       console.log("⚠️ No file selected for upload");
     }
 
-    // 🟢 API call
-    let url = "/api/user/createUserBusinessProfile";
-    let method = "POST";
-
-    if (profile && profile.id) {
-      url = `/api/user/updateUserBusinessProfile/${profile.id}`;
-      method = "PUT";
-    }
+    // 🟢 API call - Always POST for create
+    const url = "/api/user/createUserBusinessProfile";
+    const method = "POST";
 
     const response = await fetch(url, {
       method,
@@ -313,11 +291,6 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 };
 
-
-
-
-
-
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <form
@@ -325,7 +298,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         className="bg-white rounded-lg p-8 w-full shadow-lg overflow-y-auto"
       >
         <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          {profile ? "Update Business Profile" : "Create Business Profile"}
+          Create Business Profile
         </h2>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -345,12 +318,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                     {formData.businessLogo ? (
                       <img
                         src={URL.createObjectURL(formData.businessLogo)}
-                        alt="Business Logo"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : profile?.businessLogoPath ? (
-                      <img
-                        src={profile.businessLogoPath}
                         alt="Business Logo"
                         className="w-full h-full object-cover"
                       />
@@ -658,16 +625,14 @@ const handleSubmit = async (e: React.FormEvent) => {
             disabled={loading}
             className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50"
           >
-            {loading ? "Saving..." : profile ? "Update" : "Save"}
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
 
         {error && <p className="text-red-600 mt-3">{error}</p>}
         {success && (
           <p className="text-green-600 mt-3">
-            {profile
-              ? "Profile updated successfully!"
-              : "Profile created successfully!"}
+            Profile created successfully!
           </p>
         )}
       </form>
@@ -701,4 +666,4 @@ const InputField = ({
   </label>
 );
 
-export default BusinessProfileForm;
+export default AddBusinessProfileForm;
