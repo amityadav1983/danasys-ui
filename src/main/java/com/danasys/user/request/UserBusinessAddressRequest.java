@@ -6,6 +6,6 @@ import lombok.Data;
 public class UserBusinessAddressRequest {
     private Long id;
     private boolean active;
-	private UserServiceAreaRequest userServiceAreaDeatils;
+	private UserServiceAreaRequest addressDeatils;
 
 }
