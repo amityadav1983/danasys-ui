@@ -1012,7 +1012,7 @@ public class MyController {
 
 	}
 
-	@GetMapping("/api/user/myConnections/{userProfileId}")
+	@GetMapping("/api/order/myConnections/{userProfileId}")
 	@Operation(summary = "User connections", description = "User connections")
 	public ResponseEntity<?> myConnections(@PathVariable Long userProfileId) {
 		
