@@ -539,11 +539,11 @@ const handleSubmit = async (e: React.FormEvent) => {
                             <p className="text-sm text-blue-600">
                               Shop: {addr.shopAddress}
                             </p>
-                            {index === 0 && (
+                            {/* {index === 0 && (
                               <p className="text-xs text-green-600 mt-1 font-medium">
                                 ✓ Default address for business operations
                               </p>
-                            )}
+                            )} */}
                           </div>
                           <button
                             type="button"
@@ -555,9 +555,9 @@ const handleSubmit = async (e: React.FormEvent) => {
                         </div>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
+                    {/* <p className="text-xs text-gray-500 mt-2">
                       Note: First added address will be set as primary (default: true) and others as secondary (default: false)
-                    </p>
+                    </p> */}
                   </div>
                 )}
               </div>

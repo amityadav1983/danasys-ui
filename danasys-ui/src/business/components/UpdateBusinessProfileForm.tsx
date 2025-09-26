@@ -296,26 +296,31 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     // 🟢 JSON prepare
-    const businessProfilePayload = {
-      id: formData.id,
-      ownerName: formData.ownerName,
-      storeName: formData.storeName,
-      category: formData.category, // full object bhejna hai
-      businessAddresses: addedAddresses.map((area, index) => ({
+const businessProfilePayload = {
+  id: formData.id,
+  ownerName: formData.ownerName,
+  storeName: formData.storeName,
+  category: formData.category,
+  businessAddresses: addedAddresses.map((area, index) => ({
+    id: area.id || 0,
+    active: area.active !== undefined ? area.active : true,
+    userServiceAreaDeatils: {
+      addressLine1: area.shopAddress || "", // ✅ shopAddress ko addressLine1 me map karo
+      addressType: "HOME", // ✅ fix or dropdown se aayega
+      userServiceAreaDeatils: {
         id: area.id || 0,
-        active: true,
-        shopAddress: area.shopAddress || "",
-        userServiceAreaDeatils: {
-          id: area.id || 0,
-          fullAddress: area.fullAddress,
-          district: area.district,
-          state: area.state,
-          pinCode: area.pinCode,
-        },
-        default: index === 0, // First address is primary (default: true), others are secondary (default: false)
-      })),
-      bankAccount: formData.businessAddresses.bankAccount,
-    };
+        fullAddress: area.fullAddress,
+        district: area.district,
+        state: area.state,
+        pinCode: Number(area.pinCode),
+      },
+      default: index === 0, // ✅ first ko default true
+    },
+  })),
+  bankAccount: formData.businessAddresses.bankAccount,
+};
+
+
 
     // 🟢 Debugging
     console.log(
@@ -625,11 +630,11 @@ const handleSubmit = async (e: React.FormEvent) => {
                             <p className="text-sm text-blue-600">
                               Shop: {addr.shopAddress}
                             </p>
-                            {index === 0 && (
+                            {/* {index === 0 && (
                               <p className="text-xs text-green-600 mt-1 font-medium">
                                 ✓ Default address for business operations
                               </p>
-                            )}
+                            )} */}
                           </div>
                           <div className="flex gap-2">
                             <button
@@ -650,9 +655,9 @@ const handleSubmit = async (e: React.FormEvent) => {
                         </div>
                       ))}
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
+                    {/* <p className="text-xs text-gray-500 mt-2">
                       Note: First added address will be set as primary (default: true) and others as secondary (default: false)
-                    </p>
+                    </p> */}
                   </div>
                 )}
               </div>

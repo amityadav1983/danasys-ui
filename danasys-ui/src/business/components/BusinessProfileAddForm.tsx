@@ -224,15 +224,18 @@ const handleSubmit = async (e: React.FormEvent) => {
       businessAddresses: addedAddresses.map((area, index) => ({
         id: area.id || 0,
         active: true,
-        shopAddress: area.shopAddress || "",
         userServiceAreaDeatils: {
-          id: area.id || 0,
-          fullAddress: area.fullAddress,
-          district: area.district,
-          state: area.state,
-          pinCode: area.pinCode,
+          addressLine1: area.shopAddress || "",   // ✅ shopAddress -> addressLine1
+          addressType: "HOME",                    // ✅ fix: static "HOME" for now
+          userServiceAreaDeatils: {               // ✅ nested object
+            id: area.id || 0,
+            fullAddress: area.fullAddress,
+            district: area.district,
+            state: area.state,
+            pinCode: Number(area.pinCode),
+          },
+          default: index === 0, // ✅ default flag inside nested object
         },
-        default: index === 0, // First address is primary (default: true), others are secondary (default: false)
       })),
       bankAccount: formData.businessAddresses.bankAccount,
     };
@@ -256,7 +259,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       console.log("📎 Uploading file:", {
         name: formData.businessLogo.name,
         size: formData.businessLogo.size,
-        type: formData.businessLogo.type
+        type: formData.businessLogo.type,
       });
       payload.append("file", formData.businessLogo);
     } else {
@@ -290,6 +293,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     setLoading(false);
   }
 };
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

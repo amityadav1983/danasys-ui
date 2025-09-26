@@ -92,6 +92,21 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ onClose }) => {
       );
 
       if (response.status === 200) {
+        // Refetch user details to update profile picture
+        try {
+          const res = await axios.get("/api/user/getUserDetails", {
+            headers: { accept: "*/*" },
+          });
+          if (res.status === 200) {
+            const data = res.data;
+            setFormData((prev) => ({
+              ...prev,
+              profilePicUrl: data.userProfilePicture || "",
+            }));
+          }
+        } catch (err) {
+          console.error("Error refetching user details:", err);
+        }
         setMessage("✅ Profile updated successfully!");
         setTimeout(() => {
           onClose();
