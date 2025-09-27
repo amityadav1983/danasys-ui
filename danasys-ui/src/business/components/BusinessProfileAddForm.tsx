@@ -215,38 +215,36 @@ const handleSubmit = async (e: React.FormEvent) => {
   setSuccess(false);
 
   try {
-    // 🟢 JSON prepare
+    // 🟢 JSON prepare (matched with API)
     const businessProfilePayload = {
       id: formData.id,
       ownerName: formData.ownerName,
       storeName: formData.storeName,
-      category: formData.category, // full object bhejna hai
+      category: formData.category,
       businessAddresses: addedAddresses.map((area, index) => ({
         id: area.id || 0,
         active: true,
-        userServiceAreaDeatils: {
-          addressLine1: area.shopAddress || "",   // ✅ shopAddress -> addressLine1
-          addressType: "HOME",                    // ✅ fix: static "HOME" for now
-          userServiceAreaDeatils: {               // ✅ nested object
+        addressDeatils: {                 // ✅ fix: yeh field API ke json me hai
+          addressLine1: area.shopAddress || "",
+          addressType: "HOME",
+          userServiceAreaDeatils: {       // ✅ sirf ek hi jagah hona chahiye
             id: area.id || 0,
             fullAddress: area.fullAddress,
             district: area.district,
             state: area.state,
             pinCode: Number(area.pinCode),
           },
-          default: index === 0, // ✅ default flag inside nested object
+          default: index === 0,           // ✅ API ke hisaab se direct yahan
         },
       })),
       bankAccount: formData.businessAddresses.bankAccount,
     };
 
-    // 🟢 Debugging
     console.log(
       "🚀 Sending businessProfilePayload:",
       JSON.stringify(businessProfilePayload, null, 2)
     );
 
-    // 🟢 FormData banao
     const payload = new FormData();
     payload.append(
       "userBusinessProfile",
@@ -256,26 +254,13 @@ const handleSubmit = async (e: React.FormEvent) => {
     );
 
     if (formData.businessLogo) {
-      console.log("📎 Uploading file:", {
-        name: formData.businessLogo.name,
-        size: formData.businessLogo.size,
-        type: formData.businessLogo.type,
-      });
       payload.append("file", formData.businessLogo);
-    } else {
-      console.log("⚠️ No file selected for upload");
     }
 
-    // 🟢 API call
-    const url = "/api/user/createUserBusinessProfile";
-    const method = "POST";
-
-    const response = await fetch(url, {
-      method,
+    const response = await fetch("/api/user/createUserBusinessProfile", {
+      method: "POST",
       body: payload,
-      headers: {
-        Accept: "application/json",
-      },
+      headers: { Accept: "application/json" },
     });
 
     if (!response.ok) {
@@ -293,6 +278,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     setLoading(false);
   }
 };
+
 
 
   return (

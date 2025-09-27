@@ -304,21 +304,19 @@ const businessProfilePayload = {
   businessAddresses: addedAddresses.map((area, index) => ({
     id: area.id || 0,
     active: area.active !== undefined ? area.active : true,
+    shopAddress: area.shopAddress || "",
     userServiceAreaDeatils: {
-      addressLine1: area.shopAddress || "", // ✅ shopAddress ko addressLine1 me map karo
-      addressType: "HOME", // ✅ fix or dropdown se aayega
-      userServiceAreaDeatils: {
-        id: area.id || 0,
-        fullAddress: area.fullAddress,
-        district: area.district,
-        state: area.state,
-        pinCode: Number(area.pinCode),
-      },
-      default: index === 0, // ✅ first ko default true
+      id: area.id || 0,
+      fullAddress: area.fullAddress,
+      district: area.district,
+      state: area.state,
+      pinCode: Number(area.pinCode),
     },
+    default: index === 0, // first address ko default
   })),
   bankAccount: formData.businessAddresses.bankAccount,
 };
+
 
 
 
