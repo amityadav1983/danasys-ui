@@ -332,6 +332,10 @@ public class MyController {
 			serviceArea.setPinCode(201309);
 
 			address1.setServiceArea(serviceArea);
+			
+			address1.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
+			userAddressList.add(address1);
+			userBusinessProfile.setAddresses(userAddressList);
 			BankAccountDTO bankAccount = new BankAccountDTO();
 			bankAccount.setId(1l);
 			bankAccount.setAccountHolderName("Sri Ram");
@@ -339,10 +343,8 @@ public class MyController {
 			bankAccount.setBankIfscCode("SBIN0001234");
 			bankAccount.setBankName("State Bank of India");
 			bankAccount.setBranch("Noida Sec-62");
-			address1.setBankAccounts(bankAccount);
-			address1.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
-			userAddressList.add(address1);
-			userBusinessProfile.setAddresses(userAddressList);
+			userBusinessProfile.setBankAccount(bankAccount);
+			
 			// BP2
 			UserBusinessProfileDTO userBusinessProfile2 = new UserBusinessProfileDTO();
 			userBusinessProfile2.setId(2l);
@@ -367,6 +369,10 @@ public class MyController {
 			serviceArea2.setPinCode(201309);
 
 			address1.setServiceArea(serviceArea2);
+			
+			address2.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
+			userAddressList2.add(address2);
+			userBusinessProfile2.setAddresses(userAddressList2);
 			BankAccountDTO bankAccount2 = new BankAccountDTO();
 			bankAccount2.setId(2l);
 			bankAccount2.setAccountHolderName("Sri Gupta");
@@ -374,10 +380,8 @@ public class MyController {
 			bankAccount2.setBankIfscCode("HDFC0001234");
 			bankAccount2.setBankName("HDFC Bank");
 			bankAccount2.setBranch("Noida Sec-63");
-			address2.setBankAccounts(bankAccount);
-			address2.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
-			userAddressList2.add(address2);
-			userBusinessProfile2.setAddresses(userAddressList2);
+			userBusinessProfile2.setBankAccount(bankAccount);
+			
 			userBusinessProfiles.add(userBusinessProfile);
 			userBusinessProfiles.add(userBusinessProfile2);
 			return ResponseEntity.ok(userBusinessProfiles);
@@ -1235,6 +1239,10 @@ public class MyController {
 		serviceArea.setPinCode(201309);
 
 		address1.setServiceArea(serviceArea);
+		
+		address1.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
+		userAddressList.add(address1);
+		userBusinessProfile.setAddresses(userAddressList);
 		BankAccountDTO bankAccount = new BankAccountDTO();
 		bankAccount.setId(1l);
 		bankAccount.setAccountHolderName("Sri Ram");
@@ -1242,10 +1250,8 @@ public class MyController {
 		bankAccount.setBankIfscCode("SBIN0001234");
 		bankAccount.setBankName("State Bank of India");
 		bankAccount.setBranch("Noida Sec-62");
-		address1.setBankAccounts(bankAccount);
-		address1.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
-		userAddressList.add(address1);
-		userBusinessProfile.setAddresses(userAddressList);
+		userBusinessProfile.setBankAccount(bankAccount);
+		
 		// BP2
 		UserBusinessProfileDTO userBusinessProfile2 = new UserBusinessProfileDTO();
 		userBusinessProfile2.setId(2l);
@@ -1270,6 +1276,10 @@ public class MyController {
 		serviceArea2.setPinCode(201309);
 
 		address1.setServiceArea(serviceArea2);
+		
+		address2.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
+		userAddressList2.add(address2);
+		userBusinessProfile2.setAddresses(userAddressList2);
 		BankAccountDTO bankAccount2 = new BankAccountDTO();
 		bankAccount2.setId(2l);
 		bankAccount2.setAccountHolderName("Sri Gupta");
@@ -1277,11 +1287,7 @@ public class MyController {
 		bankAccount2.setBankIfscCode("HDFC0001234");
 		bankAccount2.setBankName("HDFC Bank");
 		bankAccount2.setBranch("Noida Sec-63");
-		address2.setBankAccounts(bankAccount);
-		address2.setType(com.danasys.user.enums.AddressTypeEnum.BUSINESS);
-		userAddressList2.add(address2);
-		userBusinessProfile2.setAddresses(userAddressList2);
-
+		userBusinessProfile2.setBankAccount(bankAccount2);
 		userBusinessProfiles.add(userBusinessProfile);
 		userBusinessProfiles.add(userBusinessProfile2);
 

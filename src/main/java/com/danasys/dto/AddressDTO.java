@@ -14,7 +14,7 @@ public class AddressDTO  implements Serializable {
 	
 	private Long id;
 
-	private BankAccountDTO bankAccounts;
+	//private BankAccountDTO bankAccounts;
 
 	private UserProfileDTO userProfile;
 

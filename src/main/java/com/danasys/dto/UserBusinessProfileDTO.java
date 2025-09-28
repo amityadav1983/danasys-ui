@@ -23,4 +23,6 @@ public class UserBusinessProfileDTO {
 	private UserProfileDTO userProfile;
 
 	private List<AddressDTO> addresses = new ArrayList<>();
+	
+	private BankAccountDTO bankAccount;
 }
