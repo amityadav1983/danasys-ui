@@ -1,10 +1,9 @@
 import { FC, useState, useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
 import OtpModal from "./OtpModal";
 import EmailLogin from "./EmailLogin";
 import PhoneLogin from "./PhoneLogin";
 import Register from "./Register";
-import newLogo from "../assets/images/COST2COST.png";
+import newLogo from "../assets/images/cost2cost-new.png";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -27,7 +26,7 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
-  // Theme states
+  // ✅ Default (local) theme
   const [backgroundImage, setBackgroundImage] = useState<string>("/shopping-bg.jpg");
   const [companyLogo, setCompanyLogo] = useState<string>(newLogo);
 
@@ -38,7 +37,7 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
       setShowOtpModal(false);
       setPhoneNumber("");
 
-      // API call for theme
+      // ✅ Theme API fetch with fallback
       const fetchTheme = async () => {
         try {
           const res = await fetch("/public/loginTheem");
@@ -46,17 +45,17 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
 
           const data: ThemeResponse = await res.json();
 
-          if (data.backGroundImageURL) {
-            setBackgroundImage(data.backGroundImageURL);
-          } else {
-            setBackgroundImage("/shopping-bg.jpg"); // fallback
-          }
+          setBackgroundImage(
+            data.backGroundImageURL && data.backGroundImageURL.trim() !== ""
+              ? data.backGroundImageURL
+              : "/shopping-bg.jpg"
+          );
 
-          if (data.companyLogo) {
-            setCompanyLogo(data.companyLogo);
-          } else {
-            setCompanyLogo(newLogo); // fallback
-          }
+          setCompanyLogo(
+            data.companyLogo && data.companyLogo.trim() !== ""
+              ? data.companyLogo
+              : newLogo
+          );
         } catch (error) {
           console.error("Theme API error:", error);
           setBackgroundImage("/shopping-bg.jpg");
@@ -81,7 +80,7 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
 
   return (
     <>
-      {/* Background with API image */}
+      {/* Background with theme */}
       <div
         className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50"
         style={{
@@ -101,11 +100,11 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
           <div className="relative w-full h-[560px] rounded-3xl overflow-hidden shadow-3xl bg-white/100 backdrop-blur-md animate-fade-scale-slide">
             <div className="relative z-10 h-full flex flex-col">
               {/* Logo */}
-              <div className="text-center flex-shrink-0 mt-6">
+              <div className="text-center flex-shrink-0">
                 <img
                   src={companyLogo}
                   alt="Logo"
-                  className="max-w-[250px] mx-auto object-contain mb-5 mt-5 drop-shadow-lg"
+                  className="w-[160px] h-auto mx-auto object-contain"
                 />
               </div>
 

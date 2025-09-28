@@ -168,7 +168,7 @@ public class MyController {
 		userDetailsDTO.setMyQRCode(qrCode);
 
 		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-				.path("c2cbag.png").toUriString();
+				.path("cost2cost-new.png").toUriString();
 		userDetailsDTO.setCompanyLogo(logo);
 
 		return userDetailsDTO;
