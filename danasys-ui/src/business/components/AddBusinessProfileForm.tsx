@@ -216,26 +216,29 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     // 🟢 JSON prepare
-    const businessProfilePayload = {
-      id: formData.id,
-      ownerName: formData.ownerName,
-      storeName: formData.storeName,
-      category: formData.category, // full object bhejna hai
-      businessAddresses: addedAddresses.map((area, index) => ({
+ const businessProfilePayload = {
+  id: formData.id,
+  ownerName: formData.ownerName,
+  storeName: formData.storeName,
+  category: formData.category,
+  businessAddresses: addedAddresses.map((area, index) => ({
+    id: area.id || 0,
+    active: area.active !== undefined ? area.active : true,
+    addressDeatils: {
+      addressLine1: area.shopAddress || "",     // 👈 shopAddress → addressLine1
+      userServiceAreaDeatils: {
         id: area.id || 0,
-        active: true,
-        shopAddress: area.shopAddress || "",
-        userServiceAreaDeatils: {
-          id: area.id || 0,
-          fullAddress: area.fullAddress,
-          district: area.district,
-          state: area.state,
-          pinCode: area.pinCode,
-        },
-        default: index === 0, // First address is primary (default: true), others are secondary (default: false)
-      })),
-      bankAccount: formData.businessAddresses.bankAccount,
-    };
+        fullAddress: area.fullAddress,
+        district: area.district,
+        state: area.state,
+        pinCode: Number(area.pinCode),
+      },
+      default: index === 0,                     // 👈 wrapper ke andar shift
+    }
+  })),
+  bankAccount: formData.businessAddresses.bankAccount,
+};
+
 
     // 🟢 Debugging
     console.log(

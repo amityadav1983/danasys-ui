@@ -296,7 +296,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     // 🟢 JSON prepare
-const businessProfilePayload = {
+  const businessProfilePayload = {
   id: formData.id,
   ownerName: formData.ownerName,
   storeName: formData.storeName,
@@ -304,20 +304,20 @@ const businessProfilePayload = {
   businessAddresses: addedAddresses.map((area, index) => ({
     id: area.id || 0,
     active: area.active !== undefined ? area.active : true,
-    shopAddress: area.shopAddress || "",
-    userServiceAreaDeatils: {
-      id: area.id || 0,
-      fullAddress: area.fullAddress,
-      district: area.district,
-      state: area.state,
-      pinCode: Number(area.pinCode),
-    },
-    default: index === 0, // first address ko default
+    addressDeatils: {
+      addressLine1: area.shopAddress || "",     // 👈 shopAddress → addressLine1
+      userServiceAreaDeatils: {
+        id: area.id || 0,
+        fullAddress: area.fullAddress,
+        district: area.district,
+        state: area.state,
+        pinCode: Number(area.pinCode),
+      },
+      default: index === 0,                     // 👈 wrapper ke andar shift
+    }
   })),
   bankAccount: formData.businessAddresses.bankAccount,
 };
-
-
 
 
     // 🟢 Debugging
@@ -628,11 +628,11 @@ const businessProfilePayload = {
                             <p className="text-sm text-blue-600">
                               Shop: {addr.shopAddress}
                             </p>
-                            {/* {index === 0 && (
+                            {index === 0 && (
                               <p className="text-xs text-green-600 mt-1 font-medium">
                                 ✓ Default address for business operations
                               </p>
-                            )} */}
+                            )}
                           </div>
                           <div className="flex gap-2">
                             <button
