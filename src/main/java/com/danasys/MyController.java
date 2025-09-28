@@ -582,6 +582,17 @@ public class MyController {
 					.path("/api/product/images/category/").path("grocery.png").toUriString();
 			cat1.setImage(imageUrl1);
 			cat1.setTheemColorCode("#228B22");
+			
+			String g_main = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("g_main.png").toUriString();
+			String g_add1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("add1.png").toUriString();
+
+			String g_add2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("add2.png").toUriString();
+			cat1.getDashboardImages().add(g_main);
+			cat1.getDashboardImages().add(g_add1);
+			cat1.getDashboardImages().add(g_add2);
 
 			BusinessProfileDetailsDTO b1 = new BusinessProfileDetailsDTO();
 			b1.setId(1l);
@@ -606,6 +617,18 @@ public class MyController {
 					.path("/api/product/images/category/").path("vegetable.png").toUriString();
 			cat2.setImage(imageUrl2);
 			cat2.setTheemColorCode("#228B22");
+			
+			String v_main = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("v_main.png").toUriString();
+			String v_add1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("add1.png").toUriString();
+
+			String v_add2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("add2.png").toUriString();
+			cat2.getDashboardImages().add(v_main);
+			cat2.getDashboardImages().add(v_add1);
+			cat2.getDashboardImages().add(v_add2);
+			
 
 			BusinessProfileDetailsDTO b3 = new BusinessProfileDetailsDTO();
 			b3.setId(3l);
@@ -740,7 +763,10 @@ public class MyController {
 					.path("/api/product/images/category/").path("restaurant.png").toUriString();
 			cat15.setImage(imageUrl15);
 			cat15.setTheemColorCode("#228B22");
+			
 
+			
+			
 			productCategoryDTOList.add(cat1);
 			productCategoryDTOList.add(cat2);
 			productCategoryDTOList.add(cat3);
