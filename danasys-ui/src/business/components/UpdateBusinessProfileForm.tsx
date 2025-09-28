@@ -62,11 +62,26 @@ const UpdateBusinessProfileForm = ({
   // ✅ Pre-fill when editing
   useEffect(() => {
     if (profile) {
-      setFormData({
+      console.log('Profile data:', profile);
+      const updatedFormData = {
         ...initialFormState,
         ...profile,
         businessLogo: null, // Keep as null for new uploads, existing logo will be shown via businessLogoPath
-      });
+      };
+      // Ensure bankAccount is prefilled from profile.bankAccount if available
+      if (profile.bankAccount) {
+        console.log('Setting bankAccount:', profile.bankAccount);
+        updatedFormData.businessAddresses.bankAccount = {
+          id: profile.bankAccount.id || 0,
+          accountNumber: profile.bankAccount.accountNumber || 0,
+          bankAccountHolderName: profile.bankAccount.accountHolderName || "",
+          bankName: profile.bankAccount.bankName || "",
+          bankBranch: profile.bankAccount.branch || "",
+          bankIFSCCode: profile.bankAccount.bankIfscCode || "",
+          bankAccountType: profile.bankAccount.bankAccountType || "",
+        };
+      }
+      setFormData(updatedFormData);
       setAddedAddresses((profile.addresses || []).map((addr: any) => ({ ...addr, active: addr.active !== undefined ? addr.active : true })));
     }
   }, [profile]);
@@ -605,54 +620,63 @@ const handleSubmit = async (e: React.FormEvent) => {
                       Added Addresses
                     </h4>
                     <div className="border rounded-lg divide-y">
-                      {addedAddresses.map((addr, index) => (
-                        <div
-                          key={addr.id}
-                          className="flex items-center justify-between p-3 hover:bg-gray-50"
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-medium text-gray-800">
-                                {addr.fullAddress}
-                              </p>
-                              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                                index === 0
-                                  ? 'bg-green-100 text-green-600'
-                                  : 'bg-gray-100 text-gray-600'
-                              }`}>
-                                {index === 0 ? 'Primary' : 'Secondary'}
-                              </span>
-                            </div>
-                            <p className="text-sm text-gray-500">
-                              {addr.district}, {addr.state} - {addr.pinCode}
-                            </p>
-                            <p className="text-sm text-blue-600">
-                              Shop: {addr.shopAddress}
-                            </p>
-                            {index === 0 && (
-                              <p className="text-xs text-green-600 mt-1 font-medium">
-                                ✓ Default address for business operations
-                              </p>
-                            )}
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              type="button"
-                              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                              onClick={() => alert("Update functionality not implemented yet")}
-                            >
-                              Update
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteAddress(addr.id)}
-                              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                     {addedAddresses.map((addr, index) => (
+  <div
+    key={addr.id}
+    className={`flex items-center justify-between p-3 hover:bg-gray-50 transition 
+      ${addr.active === false ? "opacity-50 pointer-events-none" : ""}`}
+  >
+    <div className="flex-1">
+      <div className="flex items-center gap-2 mb-1">
+        <p className="font-medium text-gray-800">
+          {addr.fullAddress}
+        </p>
+        <span
+          className={`px-2 py-1 text-xs font-semibold rounded-full ${
+            index === 0
+              ? "bg-green-100 text-green-600"
+              : "bg-gray-100 text-gray-600"
+          }`}
+        >
+          {index === 0 ? "Primary" : "Secondary"}
+        </span>
+      </div>
+      <p className="text-sm text-gray-500">
+        {addr.district}, {addr.state} - {addr.pinCode}
+      </p>
+      <p className="text-sm text-blue-600">Shop: {addr.shopAddress}</p>
+      {/* {index === 0 && (
+        <p className="text-xs text-green-600 mt-1 font-medium">
+          ✓ Default address for business operations
+        </p>
+      )}
+      {addr.active === false && (
+        <p className="text-xs text-red-600 mt-1 font-medium">
+          (Disabled)
+        </p>
+      )} */}
+    </div>
+    <div className="flex gap-2">
+      <button
+        type="button"
+        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+        onClick={() => alert("Update functionality not implemented yet")}
+        disabled={addr.active === false} // ❌ disable update btn if inactive
+      >
+        Update
+      </button>
+      <button
+        type="button"
+        onClick={() => handleDeleteAddress(addr.id)}
+        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+        disabled={addr.active === false} // ❌ disable delete btn if inactive
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+))}
+
                     </div>
                     {/* <p className="text-xs text-gray-500 mt-2">
                       Note: First added address will be set as primary (default: true) and others as secondary (default: false)
@@ -669,43 +693,57 @@ const handleSubmit = async (e: React.FormEvent) => {
               <h3 className="font-semibold text-lg mb-4 text-gray-700">
                 Bank Details
               </h3>
-              <div className="space-y-4">
-                <InputField
-                  label="Bank Account Holder Name"
-                  name="businessAddresses.bankAccount.bankAccountHolderName"
-                  value={
-                    formData.businessAddresses.bankAccount
-                      .bankAccountHolderName
-                  }
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Bank Name"
-                  name="businessAddresses.bankAccount.bankName"
-                  value={formData.businessAddresses.bankAccount.bankName}
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Bank Branch"
-                  name="businessAddresses.bankAccount.bankBranch"
-                  value={formData.businessAddresses.bankAccount.bankBranch}
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Bank IFSC Code"
-                  name="businessAddresses.bankAccount.bankIFSCCode"
-                  value={formData.businessAddresses.bankAccount.bankIFSCCode}
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Bank Account Type"
-                  name="businessAddresses.bankAccount.bankAccountType"
-                  value={
-                    formData.businessAddresses.bankAccount.bankAccountType
-                  }
-                  onChange={handleChange}
-                />
-              </div>
+<div className="space-y-4">
+  <InputField
+    label="Account Number"
+    name="businessAddresses.bankAccount.accountNumber"
+    value={formData.businessAddresses.bankAccount.accountNumber}
+    onChange={handleChange}
+    type="number"
+    required
+  />
+  <InputField
+    label="Bank Account Holder Name"
+    name="businessAddresses.bankAccount.bankAccountHolderName"
+    value={formData.businessAddresses.bankAccount.bankAccountHolderName}
+    onChange={handleChange}
+  />
+  <InputField
+    label="Bank Name"
+    name="businessAddresses.bankAccount.bankName"
+    value={formData.businessAddresses.bankAccount.bankName}
+    onChange={handleChange}
+  />
+  <InputField
+    label="Bank Branch"
+    name="businessAddresses.bankAccount.bankBranch"
+    value={formData.businessAddresses.bankAccount.bankBranch}
+    onChange={handleChange}
+  />
+  <InputField
+    label="Bank IFSC Code"
+    name="businessAddresses.bankAccount.bankIFSCCode"
+    value={formData.businessAddresses.bankAccount.bankIFSCCode}
+    onChange={handleChange}
+  />
+
+  {/* 👇 Bank Account Type dropdown with same styling as InputField */}
+  <label className="block text-sm">
+    <span className="text-gray-600 font-medium">Bank Account Type</span>
+    <select
+      name="businessAddresses.bankAccount.bankAccountType"
+      value={formData.businessAddresses.bankAccount.bankAccountType}
+      onChange={handleChange}
+      className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    >
+      <option value="">Select Account Type</option>
+      <option value="CURRENT">Current</option>
+      <option value="SAVING">Saving</option>
+    </select>
+  </label>
+</div>
+
+
             </div>
           </div>
         </div>
@@ -745,17 +783,19 @@ const InputField = ({
   value,
   onChange,
   required,
+  type = "text",
 }: {
   label: string;
   name: string;
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  type?: string;
 }) => (
   <label className="block text-sm">
     <span className="text-gray-600 font-medium">{label}</span>
     <input
-      type="text"
+      type={type}
       name={name}
       value={value}
       onChange={onChange}
