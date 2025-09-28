@@ -241,7 +241,14 @@ const handleUpdate = (profile: any) => {
 
                       {/* Address */}
                       <div className="text-gray-600 text-sm">
-                        {profile.addresses?.[0]?.fullAddress || "—"}
+                        {profile.addresses?.[0] ? (
+                          <>
+                            {profile.addresses[0].fullAddress}
+                            {profile.addresses[0].serviceArea?.fullAddress && (
+                              <> | {profile.addresses[0].serviceArea.fullAddress.split(',')[0].trim()}</>
+                            )}
+                          </>
+                        ) : "—"}
                       </div>
 
                       {/* Category */}
