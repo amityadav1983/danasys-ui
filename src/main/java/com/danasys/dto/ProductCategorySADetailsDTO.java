@@ -22,4 +22,5 @@ public class ProductCategorySADetailsDTO  implements Serializable {
 	private String image;
 	private String theemColorCode;
 	List<BusinessProfileDetailsDTO> linkedBusinessProfile=new ArrayList<>();
+	private List<String> dashboardImages=new ArrayList<>();
 }
