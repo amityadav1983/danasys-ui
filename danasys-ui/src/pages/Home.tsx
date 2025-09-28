@@ -3,11 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   HeroArea,
-  CategoriesList,
-  DiscountOffers,
-  FeaturedPromo,
-  HighlightedPromo,
   ProductsRow,
+  BusinessTiles,
 } from '../components/home';
 import { authService } from '../services/auth';
 import { productService } from '../services/product';
@@ -22,6 +19,11 @@ const Home = () => {
   const getSelectedCategory = () => {
     const params = new URLSearchParams(location.search);
     return params.get('category') || categoriesData[0]?.categoryName || 'Grocery';
+  };
+
+  const getSelectedBusinessId = () => {
+    const params = new URLSearchParams(location.search);
+    return params.get('business');
   };
 
   useEffect(() => {
@@ -54,8 +56,15 @@ const Home = () => {
           return;
         }
 
-        // Use the first business profile for the selected category
-        const businessProfileId = selectedCategoryData.linkedBusinessProfile[0].id;
+        // Use the selected business profile if specified, else first one
+        const businessParam = getSelectedBusinessId();
+        let businessProfileId;
+        if (businessParam) {
+          const selectedBusiness = selectedCategoryData.linkedBusinessProfile.find(bp => bp.id.toString() === businessParam);
+          businessProfileId = selectedBusiness ? selectedBusiness.id : selectedCategoryData.linkedBusinessProfile[0].id;
+        } else {
+          businessProfileId = selectedCategoryData.linkedBusinessProfile[0].id;
+        }
 
         // Get products from API
         const productsData = await productService.getProductsByBusinessProfile(businessProfileId, {
@@ -104,6 +113,7 @@ const Home = () => {
   return (
     <div className="_container">
       <HeroArea />
+      <BusinessTiles />
       {/* <FeaturedPromo />
       <CategoriesList />
       <DiscountOffers />

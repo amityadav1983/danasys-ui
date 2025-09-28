@@ -1,7 +1,6 @@
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { hide as hideModal } from "../store/modal";
-import DiscountInfo from "./home/DiscountInfo";
 import OrderSuccessModal from "./OrderSuccessModal";
 import LoginModal from "./LoginModal";
 import UpdateProfile from "./Updates/UpdateProfile";
@@ -20,7 +19,7 @@ const Modal = () => {
 
   const output =
     type === "discount" ? (
-      <DiscountInfo data={data} onClose={handleClose} />
+      null
     ) : type === "orderSuccess" && data ? (
       <OrderSuccessModal data={data} />
     ) : type === "login" ? (

@@ -12,6 +12,17 @@
   display: none;  /* Safari and Chrome */
 }
 
+
+/* Hide scrollbar but allow scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE + Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+
 :root {
   color-scheme: light;
   font-synthesis: none;

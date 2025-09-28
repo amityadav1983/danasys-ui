@@ -5,7 +5,7 @@ import Footer from './shared/Footer';
 import Modal from './Modal';
 import { CartPanel } from './cart';
 import { useAppSelector } from '../hooks/useAppSelector';
-import CategoriesSection from './home/CategoriesSection';
+import CategoriesIcons from './home/CategoriesIcons';
 import ViewCartButton from './shared/ViewCartButton';
 import BusinessLayout from '../business/components/BusinessLayout';
 import BusinessHome from '../business/pages/BusinessHome';
@@ -29,34 +29,34 @@ const Layout = ({ noFooter, component }: Props) => {
   const isOrderHistoryPage = location.pathname === '/orders';
 
   return (
-    <div
-      className={`transition-all duration-700 ease-in-out transform perspective-1000 ${
-        currentMode === 'business'
-          ? 'rotate-y-180 scale-100 opacity-100'
-          : 'rotate-y-0 scale-100 opacity-100'
-      }`}
-      style={{ backfaceVisibility: 'hidden' }}
-    >
-      {currentMode === 'business' ? (
-        <BusinessLayout component={<BusinessHome />} />
-      ) : (
-        <>
+    <>
+      <div
+        className={`transition-all duration-700 ease-in-out transform perspective-1000 ${
+          currentMode === 'business'
+            ? 'rotate-y-180 scale-100 opacity-100'
+            : 'rotate-y-0 scale-100 opacity-100'
+        }`}
+        style={{ backfaceVisibility: 'hidden' }}
+      >
+        {currentMode === 'business' ? (
+          <BusinessLayout component={<BusinessHome />} />
+        ) : (
           <div>
             <Header />
-            {!isOrderHistoryPage && <CategoriesSection />}
-            <main className="pt-4">{component}</main>
+            {!isOrderHistoryPage && <CategoriesIcons />}
+            <main className="pt-0">{component}</main>
             {!noFooter && (
               <>
                 <Footer />
               </>
             )}
-            <ViewCartButton />
           </div>
-          {cartShown && <CartPanel />}
-          {modalShown && <Modal />}
-        </>
-      )}
-    </div>
+        )}
+      </div>
+      {currentMode !== 'business' && <ViewCartButton />}
+      {cartShown && <CartPanel />}
+      {modalShown && <Modal />}
+    </>
   );
 };
 

@@ -226,6 +226,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     active: area.active !== undefined ? area.active : true,
     addressDeatils: {
       addressLine1: area.shopAddress || "",     // 👈 shopAddress → addressLine1
+      addressType: "BUSINESS",                      // 👈 default fix (ya UI se input lo)
       userServiceAreaDeatils: {
         id: area.id || 0,
         fullAddress: area.fullAddress,

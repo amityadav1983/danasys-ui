@@ -140,11 +140,11 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
         <div className="text-center">
           <div className="mb-8">
             <img 
-              src="/logo-removebg-preview.png" 
+              src="" 
               alt="Logo" 
               className="w-32 h-32 mx-auto mb-4"
             />
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to QuickCart</h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to Cost2Cost</h1>
             <p className="text-gray-600">Please login to continue</p>
           </div>
           

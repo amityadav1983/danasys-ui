@@ -7,11 +7,13 @@ const HeroArea = () => {
   const [loading, setLoading] = useState(true);
 
   const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % dealImages.length);
+    const maxSlides = Math.ceil(dealImages.length / 2);
+    setCurrentSlide((prev) => (prev + 1) % maxSlides);
   }, [dealImages.length]);
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + dealImages.length) % dealImages.length);
+    const maxSlides = Math.ceil(dealImages.length / 2);
+    setCurrentSlide((prev) => (prev - 1 + maxSlides) % maxSlides);
   };
 
   const goToSlide = (index: number) => {
@@ -43,7 +45,8 @@ const HeroArea = () => {
   }, []);
 
   useEffect(() => {
-    if (dealImages.length > 1) {
+    const maxSlides = Math.ceil(dealImages.length / 2);
+    if (maxSlides > 1) {
       const interval = setInterval(nextSlide, 5000);
       return () => clearInterval(interval);
     }
@@ -51,7 +54,7 @@ const HeroArea = () => {
 
   if (loading) {
     return (
-      <section className="mt-4 md:mt-0">
+      <section className="mt-0 relative">
         <div className="flex justify-center items-center h-48">
           <div className="text-center">Loading deals...</div>
         </div>
@@ -59,15 +62,17 @@ const HeroArea = () => {
     );
   }
 
+  const maxSlides = Math.ceil(dealImages.length / 2);
+
   return (
-    <section className="mt-4 md:mt-0 relative">
+    <section className="mt-0 relative">
       {/* Greeting Image */}
       {greetingImage && (
-        <div className="mb-0 sm:mb-6">
+        <div className="mb-0">
           <img
             src={greetingImage}
             alt="Greeting of the Day"
-            className="w-full h-auto object-cover rounded-none sm:rounded-xl sm:h-[250px]"
+            className="w-full h-auto object-cover rounded-none sm:rounded-xl sm:h-[500px] sm:object-contain sm:w-full "
           />
         </div>
       )}
@@ -76,10 +81,10 @@ const HeroArea = () => {
       <div className="relative overflow-hidden">
         <div
           className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          style={{ transform: `translateX(-${currentSlide * 50}%)` }}
         >
           {dealImages.map((imageUrl, index) => (
-            <div key={index} className="w-full flex-shrink-0">
+            <div key={index} className="w-1/2 flex-shrink-0">
               {/* Desktop Image */}
               <img
                 src={imageUrl}
@@ -97,7 +102,7 @@ const HeroArea = () => {
         </div>
 
         {/* Navigation Buttons - hidden on mobile */}
-        {dealImages.length > 1 && (
+        {maxSlides > 1 && (
           <>
             <button
               onClick={prevSlide}
@@ -142,9 +147,9 @@ const HeroArea = () => {
         )}
 
         {/* Indicator Dots */}
-        {dealImages.length > 1 && (
+        {maxSlides > 1 && (
           <div className="flex justify-center mt-3 sm:mt-5">
-            {dealImages.map((_, index) => (
+            {Array.from({ length: maxSlides }, (_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
