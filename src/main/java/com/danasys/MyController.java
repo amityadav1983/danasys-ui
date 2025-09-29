@@ -144,18 +144,18 @@ public class MyController {
 		String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 				.path("add2.png").toUriString();
 
-		//dealOfTheDayImages.add(imageUrl2);
-		//dealOfTheDayImages.add(imageUrl3);
-		//dealOfTheDayImages.add(imageUrl2);
-		//dealOfTheDayImages.add(imageUrl3);
-		//dealOfTheDayImages.add(imageUrl2);
-		//dealOfTheDayImages.add(imageUrl3);
+		dealOfTheDayImages.add(imageUrl2);
+		dealOfTheDayImages.add(imageUrl3);
+		dealOfTheDayImages.add(imageUrl2);
+		dealOfTheDayImages.add(imageUrl3);
+		dealOfTheDayImages.add(imageUrl2);
+		dealOfTheDayImages.add(imageUrl3);
 		userDetailsDTO.setDealOfTheDayImages(dealOfTheDayImages);
 
 		String greeting = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 				.path("g_main.png").toUriString();
 
-		//userDetailsDTO.setGreetingOfTheDay(greeting);
+		userDetailsDTO.setGreetingOfTheDay(greeting);
 
 		String wallet = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 				.path("wallet.png").toUriString();

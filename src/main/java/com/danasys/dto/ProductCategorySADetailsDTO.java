@@ -16,13 +16,12 @@ import lombok.Setter;
 public class ProductCategorySADetailsDTO  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
 	private Long id;
 	private ProductCategoryEnum categoryName;
 	private String image;
 	private String theemColorCode;
 	List<BusinessProfileDetailsDTO> linkedBusinessProfile=new ArrayList<>();
-	//private List<String> dashboardImages=new ArrayList<>();
+	private List<String> dashboardImages=new ArrayList<>();
 	private String greetingOfTheDay;
-	private List<String> dealOfTheDayImages;
+	private List<String> dealOfTheDayImages=new ArrayList<>();;
 }
