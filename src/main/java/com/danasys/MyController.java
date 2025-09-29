@@ -144,18 +144,18 @@ public class MyController {
 		String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 				.path("add2.png").toUriString();
 
-		dealOfTheDayImages.add(imageUrl2);
-		dealOfTheDayImages.add(imageUrl3);
-		dealOfTheDayImages.add(imageUrl2);
-		dealOfTheDayImages.add(imageUrl3);
-		dealOfTheDayImages.add(imageUrl2);
-		dealOfTheDayImages.add(imageUrl3);
+		//dealOfTheDayImages.add(imageUrl2);
+		//dealOfTheDayImages.add(imageUrl3);
+		//dealOfTheDayImages.add(imageUrl2);
+		//dealOfTheDayImages.add(imageUrl3);
+		//dealOfTheDayImages.add(imageUrl2);
+		//dealOfTheDayImages.add(imageUrl3);
 		userDetailsDTO.setDealOfTheDayImages(dealOfTheDayImages);
 
 		String greeting = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-				.path("greeting.png").toUriString();
+				.path("g_main.png").toUriString();
 
-		userDetailsDTO.setGreetingOfTheDay(greeting);
+		//userDetailsDTO.setGreetingOfTheDay(greeting);
 
 		String wallet = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 				.path("wallet.png").toUriString();
@@ -172,6 +172,243 @@ public class MyController {
 		userDetailsDTO.setCompanyLogo(logo);
 
 		return userDetailsDTO;
+	}
+	
+	@GetMapping("/api/user/productCategoryList/{serviceArea}")
+	@Operation(summary = "Product category list", description = "All listed product category")
+	public List<ProductCategorySADetailsDTO> findAllCategoryByServiceArea(@PathVariable Long serviceArea) {
+
+		if (serviceArea != null && serviceArea > 0) {
+			List<ProductCategorySADetailsDTO> productCategoryDTOList = new ArrayList<>();
+
+			ProductCategorySADetailsDTO cat1 = new ProductCategorySADetailsDTO();
+			cat1.setId(1l);
+			cat1.setCategoryName(ProductCategoryEnum.Grocery);
+			String imageUrl1 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("grocery.png").toUriString();
+			cat1.setImage(imageUrl1);
+			cat1.setTheemColorCode("#228B22");
+			
+			String g_main = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("g_main.png").toUriString();
+			String g_add1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("g_add1.png").toUriString();
+
+			String g_add2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("g_add2.png").toUriString();
+			String g_add3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("g_add3.png").toUriString();
+
+			String g_add4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("g_add4.jpg").toUriString();
+			
+			cat1.setGreetingOfTheDay(g_main);
+			cat1.getDealOfTheDayImages().add(g_add1);
+			cat1.getDealOfTheDayImages().add(g_add2);
+			cat1.getDealOfTheDayImages().add(g_add3);
+			cat1.getDealOfTheDayImages().add(g_add4);
+
+			
+			
+			String guptaStore = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/userdata/").path("gupta_store.jpg").toUriString();
+			BusinessProfileDetailsDTO b1 = new BusinessProfileDetailsDTO();
+			b1.setId(1l);
+			b1.setBusinessLogoPath(guptaStore);
+			b1.setStoreName("Gupta Ji General Store");
+
+			String bansalStore = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/userdata/").path("bansal_store.png").toUriString();
+			BusinessProfileDetailsDTO b2 = new BusinessProfileDetailsDTO();
+			b2.setId(2l);
+			b2.setBusinessLogoPath(bansalStore);
+			b2.setStoreName("Bansal Ji General Store");
+
+			List<BusinessProfileDetailsDTO> bList = new ArrayList<>();
+			bList.add(b2);
+			bList.add(b1);
+			cat1.setLinkedBusinessProfile(bList);
+
+			// CAT 2
+			ProductCategorySADetailsDTO cat2 = new ProductCategorySADetailsDTO();
+			cat2.setId(2l);
+			cat2.setCategoryName(ProductCategoryEnum.Vegetables);
+			String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("vegetable.png").toUriString();
+			cat2.setImage(imageUrl2);
+			cat2.setTheemColorCode("#228B22");
+			
+			String v_main = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("v_main.png").toUriString();
+			String v_add1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("add1.png").toUriString();
+
+			String v_add2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("add2.png").toUriString();
+			
+			cat2.getDealOfTheDayImages().add(v_add1);
+			cat2.getDealOfTheDayImages().add(v_add2);
+			cat2.setGreetingOfTheDay(v_main);
+
+			BusinessProfileDetailsDTO b3 = new BusinessProfileDetailsDTO();
+			b3.setId(3l);
+			b3.setBusinessLogoPath(imageUrl2);
+			b3.setStoreName("Ramu vegetable Store");
+			List<BusinessProfileDetailsDTO> bList2 = new ArrayList<>();
+			bList2.add(b3);
+			cat2.setLinkedBusinessProfile(bList2);
+
+			// CAT 3
+			ProductCategorySADetailsDTO cat3 = new ProductCategorySADetailsDTO();
+			cat3.setId(3l);
+			cat3.setCategoryName(ProductCategoryEnum.Fashion);
+			String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("fashion.png").toUriString();
+			cat3.setImage(imageUrl3);
+			cat3.setTheemColorCode("#B22222");
+
+			BusinessProfileDetailsDTO b4 = new BusinessProfileDetailsDTO();
+			b4.setId(4l);
+			b4.setBusinessLogoPath(imageUrl3);
+			b4.setStoreName("Ramu vegetable Store");
+			List<BusinessProfileDetailsDTO> bList3 = new ArrayList<>();
+			bList3.add(b4);
+			cat3.setLinkedBusinessProfile(bList3);
+
+			// CAT 4
+			ProductCategorySADetailsDTO cat4 = new ProductCategorySADetailsDTO();
+			cat4.setId(4l);
+			cat4.setCategoryName(ProductCategoryEnum.Electronics);
+			String imageUrl4 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("electronics.png").toUriString();
+			cat4.setImage(imageUrl4);
+			cat4.setTheemColorCode("#228B22");
+
+			// CAT 5
+			ProductCategorySADetailsDTO cat5 = new ProductCategorySADetailsDTO();
+			cat5.setId(5l);
+			cat5.setCategoryName(ProductCategoryEnum.RonyRocket);
+			String imageUrl5 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("ronyrocket.png").toUriString();
+			cat5.setImage(imageUrl5);
+			cat5.setTheemColorCode("#228B22");
+
+			// NEW CATEGORY
+
+			ProductCategorySADetailsDTO cat6 = new ProductCategorySADetailsDTO();
+			cat6.setId(6l);
+			cat6.setCategoryName(ProductCategoryEnum.Beauty);
+			String imageUrl6 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("beauty.png").toUriString();
+			cat6.setImage(imageUrl6);
+			cat6.setTheemColorCode("#228B22");
+
+			// CAT 7
+			ProductCategorySADetailsDTO cat7 = new ProductCategorySADetailsDTO();
+			cat7.setId(7l);
+			cat7.setCategoryName(ProductCategoryEnum.Appointment);
+			String imageUrl7 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("appointment.png").toUriString();
+			cat7.setImage(imageUrl7);
+			cat7.setTheemColorCode("#228B22");
+
+			// CAT 8
+			ProductCategorySADetailsDTO cat8 = new ProductCategorySADetailsDTO();
+			cat8.setId(8l);
+			cat8.setCategoryName(ProductCategoryEnum.Carservice);
+			String imageUrl8 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("carservice.png").toUriString();
+			cat8.setImage(imageUrl8);
+			cat8.setTheemColorCode("#228B22");
+
+			// CAT 9
+			ProductCategorySADetailsDTO cat9 = new ProductCategorySADetailsDTO();
+			cat9.setId(9l);
+			cat9.setCategoryName(ProductCategoryEnum.Gift);
+			String imageUrl9 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("gift&stationery.png").toUriString();
+			cat9.setImage(imageUrl9);
+			cat9.setTheemColorCode("#228B22");
+
+			// CAT 10
+			ProductCategorySADetailsDTO cat10 = new ProductCategorySADetailsDTO();
+			cat10.setId(10l);
+			cat10.setCategoryName(ProductCategoryEnum.Gym);
+			String imageUrl10 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("gym&fitness.png").toUriString();
+			cat10.setImage(imageUrl10);
+			cat10.setTheemColorCode("#228B22");
+
+			// CAT 11
+			ProductCategorySADetailsDTO cat11 = new ProductCategorySADetailsDTO();
+			cat11.setId(11l);
+			cat11.setCategoryName(ProductCategoryEnum.HomeDecor);
+			String imageUrl11 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("homedecor.png").toUriString();
+			cat11.setImage(imageUrl11);
+			cat11.setTheemColorCode("#228B22");
+
+			// CAT 12
+			ProductCategorySADetailsDTO cat12 = new ProductCategorySADetailsDTO();
+			cat12.setId(12l);
+			cat12.setCategoryName(ProductCategoryEnum.Pharmacy);
+			String imageUrl12 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("pharmacy.png").toUriString();
+			cat12.setImage(imageUrl12);
+			cat12.setTheemColorCode("#228B22");
+
+			// CAT 13
+			ProductCategorySADetailsDTO cat13 = new ProductCategorySADetailsDTO();
+			cat13.setId(13l);
+			cat13.setCategoryName(ProductCategoryEnum.Pooja);
+			String imageUrl13 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("poojapath.png").toUriString();
+			cat13.setImage(imageUrl13);
+			cat13.setTheemColorCode("#228B22");
+
+			// CAT 14
+			ProductCategorySADetailsDTO cat14 = new ProductCategorySADetailsDTO();
+			cat14.setId(14l);
+			cat14.setCategoryName(ProductCategoryEnum.Print);
+			String imageUrl14 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("printsolution.png").toUriString();
+			cat14.setImage(imageUrl14);
+			cat14.setTheemColorCode("#228B22");
+
+			// CAT 15
+			ProductCategorySADetailsDTO cat15 = new ProductCategorySADetailsDTO();
+			cat15.setId(15l);
+			cat15.setCategoryName(ProductCategoryEnum.Restorent);
+			String imageUrl15 = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/category/").path("restaurant.png").toUriString();
+			cat15.setImage(imageUrl15);
+			cat15.setTheemColorCode("#B22222");
+			
+
+			
+			
+			productCategoryDTOList.add(cat1);
+			productCategoryDTOList.add(cat2);
+			productCategoryDTOList.add(cat3);
+			productCategoryDTOList.add(cat4);
+			productCategoryDTOList.add(cat5);
+
+			productCategoryDTOList.add(cat6);
+			productCategoryDTOList.add(cat7);
+			productCategoryDTOList.add(cat8);
+			productCategoryDTOList.add(cat9);
+			productCategoryDTOList.add(cat10);
+
+			productCategoryDTOList.add(cat11);
+			productCategoryDTOList.add(cat12);
+			productCategoryDTOList.add(cat13);
+			productCategoryDTOList.add(cat14);
+			productCategoryDTOList.add(cat15);
+			return productCategoryDTOList;
+		}
+
+		return null;
+
 	}
 
 	@PostMapping("/public/loginM")
@@ -572,228 +809,7 @@ public class MyController {
 
 	}
 
-	@GetMapping("/api/user/productCategoryList/{serviceArea}")
-	@Operation(summary = "Product category list", description = "All listed product category")
-	public List<ProductCategorySADetailsDTO> findAllCategoryByServiceArea(@PathVariable Long serviceArea) {
-
-		if (serviceArea != null && serviceArea > 0) {
-			List<ProductCategorySADetailsDTO> productCategoryDTOList = new ArrayList<>();
-
-			ProductCategorySADetailsDTO cat1 = new ProductCategorySADetailsDTO();
-			cat1.setId(1l);
-			cat1.setCategoryName(ProductCategoryEnum.Grocery);
-			String imageUrl1 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("grocery.png").toUriString();
-			cat1.setImage(imageUrl1);
-			cat1.setTheemColorCode("#228B22");
-			
-			String g_main = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("g_main.png").toUriString();
-			String g_add1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("add1.png").toUriString();
-
-			String g_add2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("add2.png").toUriString();
-			cat1.getDashboardImages().add(g_main);
-			cat1.getDashboardImages().add(g_add1);
-			cat1.getDashboardImages().add(g_add2);
-
-			BusinessProfileDetailsDTO b1 = new BusinessProfileDetailsDTO();
-			b1.setId(1l);
-			b1.setBusinessLogoPath(imageUrl1);
-			b1.setStoreName("Gupta Ji General Store");
-
-			BusinessProfileDetailsDTO b2 = new BusinessProfileDetailsDTO();
-			b2.setId(2l);
-			b2.setBusinessLogoPath(imageUrl1);
-			b2.setStoreName("Bansal Ji General Store");
-
-			List<BusinessProfileDetailsDTO> bList = new ArrayList<>();
-			bList.add(b2);
-			bList.add(b1);
-			cat1.setLinkedBusinessProfile(bList);
-
-			// CAT 2
-			ProductCategorySADetailsDTO cat2 = new ProductCategorySADetailsDTO();
-			cat2.setId(2l);
-			cat2.setCategoryName(ProductCategoryEnum.Vegetables);
-			String imageUrl2 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("vegetable.png").toUriString();
-			cat2.setImage(imageUrl2);
-			cat2.setTheemColorCode("#228B22");
-			
-			String v_main = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("v_main.png").toUriString();
-			String v_add1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("add1.png").toUriString();
-
-			String v_add2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("add2.png").toUriString();
-			cat2.getDashboardImages().add(v_main);
-			cat2.getDashboardImages().add(v_add1);
-			cat2.getDashboardImages().add(v_add2);
-			
-
-			BusinessProfileDetailsDTO b3 = new BusinessProfileDetailsDTO();
-			b3.setId(3l);
-			b3.setBusinessLogoPath(imageUrl2);
-			b3.setStoreName("Ramu vegetable Store");
-			List<BusinessProfileDetailsDTO> bList2 = new ArrayList<>();
-			bList2.add(b3);
-			cat2.setLinkedBusinessProfile(bList2);
-
-			// CAT 3
-			ProductCategorySADetailsDTO cat3 = new ProductCategorySADetailsDTO();
-			cat3.setId(3l);
-			cat3.setCategoryName(ProductCategoryEnum.Fashion);
-			String imageUrl3 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("fashion.png").toUriString();
-			cat3.setImage(imageUrl3);
-			cat3.setTheemColorCode("#228B22");
-
-			BusinessProfileDetailsDTO b4 = new BusinessProfileDetailsDTO();
-			b4.setId(4l);
-			b4.setBusinessLogoPath(imageUrl3);
-			b4.setStoreName("Ramu vegetable Store");
-			List<BusinessProfileDetailsDTO> bList3 = new ArrayList<>();
-			bList3.add(b4);
-			cat3.setLinkedBusinessProfile(bList3);
-
-			// CAT 4
-			ProductCategorySADetailsDTO cat4 = new ProductCategorySADetailsDTO();
-			cat4.setId(4l);
-			cat4.setCategoryName(ProductCategoryEnum.Electronics);
-			String imageUrl4 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("electronics.png").toUriString();
-			cat4.setImage(imageUrl4);
-			cat4.setTheemColorCode("#228B22");
-
-			// CAT 5
-			ProductCategorySADetailsDTO cat5 = new ProductCategorySADetailsDTO();
-			cat5.setId(5l);
-			cat5.setCategoryName(ProductCategoryEnum.RonyRocket);
-			String imageUrl5 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("ronyrocket.png").toUriString();
-			cat5.setImage(imageUrl5);
-			cat5.setTheemColorCode("#228B22");
-
-			// NEW CATEGORY
-
-			ProductCategorySADetailsDTO cat6 = new ProductCategorySADetailsDTO();
-			cat6.setId(6l);
-			cat6.setCategoryName(ProductCategoryEnum.Beauty);
-			String imageUrl6 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("beauty.png").toUriString();
-			cat6.setImage(imageUrl6);
-			cat6.setTheemColorCode("#228B22");
-
-			// CAT 7
-			ProductCategorySADetailsDTO cat7 = new ProductCategorySADetailsDTO();
-			cat7.setId(7l);
-			cat7.setCategoryName(ProductCategoryEnum.Appointment);
-			String imageUrl7 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("appointment.png").toUriString();
-			cat7.setImage(imageUrl7);
-			cat7.setTheemColorCode("#228B22");
-
-			// CAT 8
-			ProductCategorySADetailsDTO cat8 = new ProductCategorySADetailsDTO();
-			cat8.setId(8l);
-			cat8.setCategoryName(ProductCategoryEnum.Carservice);
-			String imageUrl8 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("carservice.png").toUriString();
-			cat8.setImage(imageUrl8);
-			cat8.setTheemColorCode("#228B22");
-
-			// CAT 9
-			ProductCategorySADetailsDTO cat9 = new ProductCategorySADetailsDTO();
-			cat9.setId(9l);
-			cat9.setCategoryName(ProductCategoryEnum.Gift);
-			String imageUrl9 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("gift&stationery.png").toUriString();
-			cat9.setImage(imageUrl9);
-			cat9.setTheemColorCode("#228B22");
-
-			// CAT 10
-			ProductCategorySADetailsDTO cat10 = new ProductCategorySADetailsDTO();
-			cat10.setId(10l);
-			cat10.setCategoryName(ProductCategoryEnum.Gym);
-			String imageUrl10 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("gym&fitness.png").toUriString();
-			cat10.setImage(imageUrl10);
-			cat10.setTheemColorCode("#228B22");
-
-			// CAT 11
-			ProductCategorySADetailsDTO cat11 = new ProductCategorySADetailsDTO();
-			cat11.setId(11l);
-			cat11.setCategoryName(ProductCategoryEnum.HomeDecor);
-			String imageUrl11 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("homedecor.png").toUriString();
-			cat11.setImage(imageUrl11);
-			cat11.setTheemColorCode("#228B22");
-
-			// CAT 12
-			ProductCategorySADetailsDTO cat12 = new ProductCategorySADetailsDTO();
-			cat12.setId(12l);
-			cat12.setCategoryName(ProductCategoryEnum.Pharmacy);
-			String imageUrl12 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("pharmacy.png").toUriString();
-			cat12.setImage(imageUrl12);
-			cat12.setTheemColorCode("#228B22");
-
-			// CAT 13
-			ProductCategorySADetailsDTO cat13 = new ProductCategorySADetailsDTO();
-			cat13.setId(13l);
-			cat13.setCategoryName(ProductCategoryEnum.Pooja);
-			String imageUrl13 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("poojapath.png").toUriString();
-			cat13.setImage(imageUrl13);
-			cat13.setTheemColorCode("#228B22");
-
-			// CAT 14
-			ProductCategorySADetailsDTO cat14 = new ProductCategorySADetailsDTO();
-			cat14.setId(14l);
-			cat14.setCategoryName(ProductCategoryEnum.Print);
-			String imageUrl14 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("printsolution.png").toUriString();
-			cat14.setImage(imageUrl14);
-			cat14.setTheemColorCode("#228B22");
-
-			// CAT 15
-			ProductCategorySADetailsDTO cat15 = new ProductCategorySADetailsDTO();
-			cat15.setId(15l);
-			cat15.setCategoryName(ProductCategoryEnum.Restorent);
-			String imageUrl15 = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/product/images/category/").path("restaurant.png").toUriString();
-			cat15.setImage(imageUrl15);
-			cat15.setTheemColorCode("#228B22");
-			
-
-			
-			
-			productCategoryDTOList.add(cat1);
-			productCategoryDTOList.add(cat2);
-			productCategoryDTOList.add(cat3);
-			productCategoryDTOList.add(cat4);
-			productCategoryDTOList.add(cat5);
-
-			productCategoryDTOList.add(cat6);
-			productCategoryDTOList.add(cat7);
-			productCategoryDTOList.add(cat8);
-			productCategoryDTOList.add(cat9);
-			productCategoryDTOList.add(cat10);
-
-			productCategoryDTOList.add(cat11);
-			productCategoryDTOList.add(cat12);
-			productCategoryDTOList.add(cat13);
-			productCategoryDTOList.add(cat14);
-			productCategoryDTOList.add(cat15);
-			return productCategoryDTOList;
-		}
-
-		return null;
-
-	}
+	
 
 	public List<ProductDTO> getAllOtherProducts(Long userProfileId) throws IOException {
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
