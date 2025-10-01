@@ -22,5 +22,6 @@ public class UserConnection implements Serializable {
 	private Double unclearedPoint;
 	private String companyLogo;
 	private int totalConnection;
+	private Long userProfileId;
 	List<UserConnection> child = new ArrayList<>();
 }

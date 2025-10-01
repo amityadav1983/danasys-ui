@@ -1062,7 +1062,8 @@ public class MyController {
 	@Operation(summary = "User connections", description = "User connections")
 	public ResponseEntity<?> myConnections(@PathVariable Long userProfileId) {
 		
-		if (loginUser.get(loginUserName).getUserProfileId().longValue() == userProfileId) {
+		if (loginUser.get(loginUserName).getUserProfileId().longValue() == userProfileId) 
+		{
 			
 	
 		UserConnection connection = new UserConnection();
@@ -1081,7 +1082,7 @@ public class MyController {
 			nameChild1 = "Lalit Singh";
 			nameCHild2 = "Hari ram";
 		}
-
+		connection.setUserProfileId(userProfileId);
 		connection.setClearedPoint(150d);
 		connection.setUnclearedPoint(220d);
 		connection.setProfileImagePath(imageUrl);
@@ -1096,12 +1097,14 @@ public class MyController {
 		connectionChild.setDisplayName(nameChild1);
 		connectionChild.setProfileImagePath(imageUrl);
 		connectionChild.setTotalConnection(2);
+		connectionChild.setUserProfileId(2l);
 
 		UserConnection connectionChild1 = new UserConnection();
 		connectionChild1.setClearedPoint(202d);
 		connectionChild1.setUnclearedPoint(840d);
 		connectionChild1.setDisplayName(nameCHild2);
 		connectionChild1.setProfileImagePath(imageUrl);
+		connectionChild1.setUserProfileId(4l);
 		connection.setTotalConnection(2);
 
 		connections.add(connectionChild);
@@ -1110,9 +1113,57 @@ public class MyController {
 		connection.setChild(connections);
 		return ResponseEntity.ok(connection);
 		
+		}else {
+
+			UserConnection connection = new UserConnection();
+
+			String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("user.png").toUriString();
+
+			String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("user.png").toUriString();
+
+			String name = "Changed User";
+			String nameChild1 = "Ram Singh";
+			String nameCHild2 = "New User Mishra";
+			if (userProfileId == 2) {
+				name = "Changed Shah";
+				nameChild1 = "Name Singh";
+				nameCHild2 = "Jai hanuman ram";
+			}
+			connection.setUserProfileId(userProfileId);
+			connection.setClearedPoint(150d);
+			connection.setUnclearedPoint(220d);
+			connection.setProfileImagePath(imageUrl);
+			connection.setDisplayName(name);
+			connection.setTotalConnection(2);
+			connection.setCompanyLogo(logo);
+			List<UserConnection> connections = new ArrayList<>();
+
+			UserConnection connectionChild = new UserConnection();
+			connectionChild.setClearedPoint(102d);
+			connectionChild.setUnclearedPoint(540d);
+			connectionChild.setDisplayName(nameChild1);
+			connectionChild.setProfileImagePath(imageUrl);
+			connectionChild.setTotalConnection(2);
+			connectionChild.setUserProfileId(2l);
+
+			UserConnection connectionChild1 = new UserConnection();
+			connectionChild1.setClearedPoint(202d);
+			connectionChild1.setUnclearedPoint(840d);
+			connectionChild1.setDisplayName(nameCHild2);
+			connectionChild1.setProfileImagePath(imageUrl);
+			connectionChild1.setUserProfileId(4l);
+			connection.setTotalConnection(2);
+
+			connections.add(connectionChild);
+			connections.add(connectionChild1);
+
+			connection.setChild(connections);
+			return ResponseEntity.ok(connection);
 		}
 
-		return ResponseEntity.badRequest().body("Wrong user profile id");
+		
 	}
 
 	// Admin APIS
