@@ -1062,7 +1062,7 @@ public class MyController {
 	@Operation(summary = "User connections", description = "User connections")
 	public ResponseEntity<?> myConnections(@PathVariable Long userProfileId) {
 		
-		if (loginUser.get(loginUserName).getUserProfileId().longValue() == userProfileId) 
+		if ( userProfileId>2) 
 		{
 			
 	
@@ -1109,6 +1109,18 @@ public class MyController {
 
 		connections.add(connectionChild);
 		connections.add(connectionChild1);
+		
+		List<UserConnection> connectionsC1 = new ArrayList<>();
+		UserConnection connectionChild2 = new UserConnection();
+		connectionChild2.setClearedPoint(202d);
+		connectionChild2.setUnclearedPoint(840d);
+		connectionChild2.setDisplayName(nameCHild2);
+		connectionChild2.setProfileImagePath(imageUrl);
+		connectionChild2.setUserProfileId(4l);
+		connection.setTotalConnection(2);
+		connectionsC1.add(connectionChild2);
+		connectionChild1.setChild(connectionsC1);
+		
 
 		connection.setChild(connections);
 		return ResponseEntity.ok(connection);
