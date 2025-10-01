@@ -124,7 +124,7 @@ public class MyController {
 		}
 
 		userDetailsDTO.setContactInfo("+91-91111111111");
-
+		userDetailsDTO.setUserWalletBalance(480d);
 		userDetailsDTO.setStatus(StatusEnum.ACTIVE);
 		userDetailsDTO.setServiceAreaId(1l);
 		userDetailsDTO.setHouseNo("House no-102");

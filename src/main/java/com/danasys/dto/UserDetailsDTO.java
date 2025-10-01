@@ -38,6 +38,8 @@ public class UserDetailsDTO {
 	
 	private String userWalletImage;
 	
+	private Double userWalletBalance;
+	
 	private List<UserRoleEnum> roles = new ArrayList<>();
 
 	private String myQRCode;
