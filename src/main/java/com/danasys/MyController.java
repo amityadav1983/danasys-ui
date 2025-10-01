@@ -949,6 +949,8 @@ public class MyController {
 
 			List<BusinessDashboaardFunctionalityDTO> buIconDetails = new ArrayList<>();
 
+			String ic0 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("dashboard.png").toUriString();
 			String ic1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("bu_businessprofile.png").toUriString();
 			String ic2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
@@ -973,6 +975,10 @@ public class MyController {
 			String ic11 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("bu_users.png").toUriString();
 
+			BusinessDashboaardFunctionalityDTO icone0 = new BusinessDashboaardFunctionalityDTO();
+			icone0.setBuIconPath(ic0);
+			icone0.setName("Dashboard");
+			
 			BusinessDashboaardFunctionalityDTO icone1 = new BusinessDashboaardFunctionalityDTO();
 			icone1.setBuIconPath(ic1);
 			icone1.setName("Business User");
@@ -1017,6 +1023,7 @@ public class MyController {
 			icone11.setBuIconPath(ic11);
 			icone11.setName("Users");
 
+			buIconDetails.add(icone0);
 			buIconDetails.add(icone2);
 			buIconDetails.add(icone1);
 			buIconDetails.add(icone3);
