@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface BusinessConnection {
   userProfileId: number;
@@ -29,25 +30,55 @@ const fetchBusinessConnections = async (
 const ConnectionCard: React.FC<{
   node: BusinessConnection;
   onClick: () => void;
-}> = ({ node, onClick }) => (
+  expandable: boolean;
+  expanded: boolean;
+}> = ({ node, onClick, expandable, expanded }) => (
   <div
     onClick={onClick}
-    className="flex flex-col items-center bg-white shadow-md rounded-xl p-4 border border-gray-200 w-48 cursor-pointer hover:shadow-xl hover:scale-105 transition-all"
+    className="relative flex flex-col items-center bg-white/70 backdrop-blur-xl shadow-lg rounded-2xl p-4 border border-gray-200 w-56 cursor-pointer transition-all hover:shadow-2xl hover:brightness-105"
+
   >
+    {/* Company Logo overlay (if available) */}
+    {node.companyLogo && (
+      <img
+        src={node.companyLogo}
+        alt="logo"
+        className="absolute -top-3 -right-3 w-10 h-10 rounded-full border bg-white shadow"
+      />
+    )}
+
     <img
       src={node.profileImagePath}
       alt={node.displayName}
-      className="w-14 h-14 rounded-full border mb-2 object-cover"
+      className="w-16 h-16 rounded-full border-2 border-blue-500 mb-2 object-cover"
     />
+
     <h4 className="text-sm font-semibold text-gray-800 text-center">
       {node.displayName}
     </h4>
-    <p className="text-xs text-gray-500 text-center">
-      ✅ {node.clearedPoint} | ⏳ {node.unclearedPoint}
-    </p>
-    <p className="text-[10px] text-gray-400 mt-1">
+
+    <div className="flex items-center gap-2 text-xs text-gray-600 mt-1">
+      <span className="px-2 py-0.5 bg-green-100 text-green-600 rounded-full">
+        ✅ {node.clearedPoint}
+      </span>
+      <span className="px-2 py-0.5 bg-yellow-100 text-yellow-600 rounded-full">
+        ⏳ {node.unclearedPoint}
+      </span>
+    </div>
+
+    <p className="text-[11px] text-gray-400 mt-2">
       Connections: {node.totalConnection}
     </p>
+
+    {expandable && (
+      <div className="absolute bottom-2 right-2">
+        {expanded ? (
+          <ChevronDown size={18} className="text-gray-500" />
+        ) : (
+          <ChevronRight size={18} className="text-gray-500" />
+        )}
+      </div>
+    )}
   </div>
 );
 
@@ -62,13 +93,11 @@ const TreeNode: React.FC<{ node: BusinessConnection; alwaysExpanded?: boolean }>
   const handleClick = async () => {
     if (node.totalConnection === 0) return;
 
-    // If already expanded, collapse
     if (expanded) {
       setExpanded(false);
       return;
     }
 
-    // Expand and fetch children if not already loaded
     setExpanded(true);
     if (children.length === 0) {
       try {
@@ -86,25 +115,35 @@ const TreeNode: React.FC<{ node: BusinessConnection; alwaysExpanded?: boolean }>
   return (
     <div className="flex flex-col items-center">
       {/* Current Node */}
-      <ConnectionCard node={node} onClick={handleClick} />
+      <ConnectionCard
+        node={node}
+        onClick={handleClick}
+        expandable={node.totalConnection > 0}
+        expanded={expanded}
+      />
 
       {/* Children */}
       {(expanded || alwaysExpanded) && (
-        <div className="flex justify-center mt-6 relative">
+        <div className="flex justify-center mt-8 relative">
           {/* Vertical line */}
           <div className="absolute top-0 left-0 right-0 flex justify-center">
-            <div className="h-6 w-px bg-gray-400"></div>
+            <div className="h-6 w-px bg-gradient-to-b from-blue-400 to-blue-200"></div>
           </div>
 
           {loading ? (
-            <div className="text-xs text-gray-500 mt-4">Loading...</div>
+            <div className="text-xs text-gray-500 mt-4 animate-pulse">
+              Loading...
+            </div>
           ) : (
-            <div className="flex gap-12 mt-6">
+            <div className="flex gap-12 mt-6 flex-wrap">
               {children.map((child) => (
-                <div key={child.userProfileId} className="relative flex flex-col items-center">
+                <div
+                  key={child.userProfileId}
+                  className="relative flex flex-col items-center"
+                >
                   {/* Connector line */}
-                  <div className="absolute -top-6 w-px h-6 bg-gray-400"></div>
-                  {/* Child nodes */}
+                  <div className="absolute -top-6 w-px h-6 bg-gradient-to-b from-blue-400 to-blue-200"></div>
+                  {/* Child Node */}
                   <TreeNode node={child} />
                 </div>
               ))}
@@ -136,21 +175,24 @@ const BusinessConnections: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className="p-6 text-gray-500">Loading connections...</div>;
+    return (
+      <div className="p-6 text-gray-500 flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   if (!root) {
-    return <div className="p-6 text-red-500">No connections found.</div>;
+    return <div className="p-6 text-red-500 text-center">No connections found.</div>;
   }
 
   return (
     <div className="p-6 overflow-x-auto">
-      <h2 className="text-lg font-semibold text-gray-800 mb-8 text-center">
+      <h2 className="text-2xl font-bold text-gray-800 mb-10 text-center">
         🌐 My Business Connections
       </h2>
 
       <div className="flex justify-center overflow-auto max-w-full">
-        {/* Root node - show its direct children by default */}
         <TreeNode node={root} alwaysExpanded />
       </div>
     </div>
