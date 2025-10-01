@@ -30,6 +30,7 @@ const Layout = ({ noFooter, component }: Props) => {
 
   return (
     <>
+      <Header />
       <div
         className={`transition-all duration-700 ease-in-out transform perspective-1000 ${
           currentMode === 'business'
@@ -42,7 +43,6 @@ const Layout = ({ noFooter, component }: Props) => {
           <BusinessLayout component={<BusinessHome />} />
         ) : (
           <div>
-            <Header />
             {!isOrderHistoryPage && <CategoriesIcons />}
             <main className="pt-0">{component}</main>
             {!noFooter && (

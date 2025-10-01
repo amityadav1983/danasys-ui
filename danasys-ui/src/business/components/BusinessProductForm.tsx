@@ -36,11 +36,29 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
     price: "",
     offerPrice: "",
     quantity: "",
+    categoryId: "", // added categoryId for dropdown
     description: "",
     moreAbout: "",
   });
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const [categories, setCategories] = useState<{id: number; categoryName: string}[]>([]);
+
+  useEffect(() => {
+    // Fetch categories on mount
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/admin/allRegisteredProductCategory');
+        if (!res.ok) throw new Error('Failed to fetch categories');
+        const data = await res.json();
+        setCategories(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (product) {
@@ -49,6 +67,7 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
         price: product.price?.toString() || "",
         offerPrice: product.offerPrice?.toString() || "",
         quantity: product.quantity?.toString() || "",
+        categoryId: "",
         description: product.description || "",
         moreAbout: product.moreAbout || "",
       });
@@ -59,6 +78,7 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
         price: "",
         offerPrice: "",
         quantity: "",
+        categoryId: "",
         description: "",
         moreAbout: "",
       });
@@ -66,8 +86,20 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
     }
   }, [product]);
 
+  useEffect(() => {
+    if (product && categories.length > 0) {
+      const category = categories.find(cat => cat.categoryName === product.category);
+      if (category) {
+        setFormData(prev => ({
+          ...prev,
+          categoryId: String(category.id),
+        }));
+      }
+    }
+  }, [product, categories]);
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -92,6 +124,7 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
       price: formData.price || "0",
       offerPrice: formData.offerPrice || "0",
       quantity: formData.quantity || "0",
+      category: formData.categoryId,
       description: formData.description,
       image: file ? file.name : product?.image || "",
       moreAbout: formData.moreAbout,
@@ -173,17 +206,34 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
                   onChange={handleChange}
                   required
                 />
-                <InputField
-                  label="Quantity"
-                  name="quantity"
-                  type="number"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-          </div>
+        <InputField
+          label="Quantity"
+          name="quantity"
+          type="number"
+          value={formData.quantity}
+          onChange={handleChange}
+          required
+        />
+        <label className="block text-sm">
+          <span className="text-gray-600 font-medium">Category</span>
+          <select
+            name="categoryId"
+            value={formData.categoryId}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat: {id: number; categoryName: string}) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.categoryName}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
 
           {/* Right Column - Extra Info */}
           <div className="space-y-6">

@@ -45,6 +45,12 @@ const ManageProfile = () => {
     fetchManagedProfiles();
   }, []);
 
+  // ✅ Handler for "No More Manager"
+  const handleRemoveManager = (profileId: number) => {
+    console.log("Remove manager for profile:", profileId);
+    // yaha API call kar sakte ho remove ke liye
+  };
+
   return (
     <div className="p-6">
       {loading && <p>Loading...</p>}
@@ -53,11 +59,12 @@ const ManageProfile = () => {
       {!loading && profiles.length > 0 && (
         <div className="w-full">
           {/* Table Header */}
-          <div className="grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
+          <div className="grid grid-cols-5 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
             <div className="text-left">Logo</div>
             <div className="text-left">Owner Name</div>
             <div className="text-left">Store Name</div>
             <div className="text-center">Category</div>
+            <div className="text-center">Action</div>
           </div>
 
           {/* Table Body */}
@@ -65,7 +72,7 @@ const ManageProfile = () => {
             {profiles.map((profile) => (
               <div
                 key={profile.id}
-                className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
+                className="grid grid-cols-5 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
                   group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
               >
                 {/* Logo */}
@@ -90,6 +97,17 @@ const ManageProfile = () => {
                   <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
                     {profile.category?.categoryName || "—"}
                   </span>
+                </div>
+
+                {/* Action */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => handleRemoveManager(profile.id)}
+                    className="flex items-center gap-2 px-3 py-1 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+                  >
+                    <FaTrash size={14} />
+                    <span className="text-xs font-medium">No More Manager</span>
+                  </button>
                 </div>
               </div>
             ))}

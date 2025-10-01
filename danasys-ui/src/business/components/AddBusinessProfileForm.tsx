@@ -574,43 +574,48 @@ const handleSubmit = async (e: React.FormEvent) => {
               <h3 className="font-semibold text-lg mb-4 text-gray-700">
                 Bank Details
               </h3>
-              <div className="space-y-4">
-                <InputField
-                  label="Bank Account Holder Name"
-                  name="businessAddresses.bankAccount.bankAccountHolderName"
-                  value={
-                    formData.businessAddresses.bankAccount
-                      .bankAccountHolderName
-                  }
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Bank Name"
-                  name="businessAddresses.bankAccount.bankName"
-                  value={formData.businessAddresses.bankAccount.bankName}
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Bank Branch"
-                  name="businessAddresses.bankAccount.bankBranch"
-                  value={formData.businessAddresses.bankAccount.bankBranch}
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Bank IFSC Code"
-                  name="businessAddresses.bankAccount.bankIFSCCode"
-                  value={formData.businessAddresses.bankAccount.bankIFSCCode}
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Bank Account Type"
-                  name="businessAddresses.bankAccount.bankAccountType"
-                  value={
-                    formData.businessAddresses.bankAccount.bankAccountType
-                  }
-                  onChange={handleChange}
-                />
-              </div>
+<div className="space-y-4">
+  <InputField
+    label="Bank Account Holder Name"
+    name="businessAddresses.bankAccount.bankAccountHolderName"
+    value={formData.businessAddresses.bankAccount.bankAccountHolderName}
+    onChange={handleChange}
+  />
+  <InputField
+    label="Bank Name"
+    name="businessAddresses.bankAccount.bankName"
+    value={formData.businessAddresses.bankAccount.bankName}
+    onChange={handleChange}
+  />
+  <InputField
+    label="Bank Branch"
+    name="businessAddresses.bankAccount.bankBranch"
+    value={formData.businessAddresses.bankAccount.bankBranch}
+    onChange={handleChange}
+  />
+  <InputField
+    label="Bank IFSC Code"
+    name="businessAddresses.bankAccount.bankIFSCCode"
+    value={formData.businessAddresses.bankAccount.bankIFSCCode}
+    onChange={handleChange}
+  />
+
+  {/* 👇 Bank Account Type dropdown with same styling as InputField */}
+  <label className="block text-sm">
+    <span className="text-gray-600 font-medium">Bank Account Type</span>
+    <select
+      name="businessAddresses.bankAccount.bankAccountType"
+      value={formData.businessAddresses.bankAccount.bankAccountType}
+      onChange={handleChange}
+      className="w-full border border-gray-500 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    >
+      <option value="">Select Account Type</option>
+      <option value="CURRENT">Current</option>
+      <option value="SAVING">Saving</option>
+    </select>
+  </label>
+</div>
+
             </div>
           </div>
         </div>

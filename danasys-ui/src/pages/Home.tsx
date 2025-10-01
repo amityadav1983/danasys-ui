@@ -15,6 +15,7 @@ const Home = () => {
   const [error, setError] = useState<string | null>(null);
   const location = useLocation();
   const [categoriesData, setCategoriesData] = useState<any[]>([]);
+  const [selectedCategoryData, setSelectedCategoryData] = useState<any>(null);
 
   const getSelectedCategory = () => {
     const params = new URLSearchParams(location.search);
@@ -44,6 +45,11 @@ const Home = () => {
         // Get categories to find business profile for the selected category
         const categories = await productService.getCategories(serviceAreaId);
         setCategoriesData(categories);
+
+        // Set selected category data
+        const selectedCatName = getSelectedCategory();
+        const selectedCat = categories.find(cat => cat.categoryName.toLowerCase() === selectedCatName.toLowerCase());
+        setSelectedCategoryData(selectedCat || null);
 
         // Find the selected category and get its first business profile
         const selectedCategoryData = categories.find(
@@ -112,7 +118,10 @@ const Home = () => {
 
   return (
     <div className="_container">
-      <HeroArea />
+      <HeroArea
+        greetingImage={selectedCategoryData?.greetingOfTheDay}
+        dealImages={selectedCategoryData?.dealOfTheDayImages || []}
+      />
       <BusinessTiles />
       {/* <FeaturedPromo />
       <CategoriesList />

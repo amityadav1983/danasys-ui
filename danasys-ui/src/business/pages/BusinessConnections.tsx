@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 interface BusinessConnection {
-  id: number; // ✅ ensure backend returns id
+  userProfileId: number;
   displayName: string;
   profileImagePath: string;
   clearedPoint: number;
@@ -11,10 +11,17 @@ interface BusinessConnection {
   child: BusinessConnection[];
 }
 
+const fetchUserDetails = async (): Promise<{ userProfileId: number }> => {
+  const res = await fetch(`/api/user/getUserDetails`);
+  if (!res.ok) throw new Error("Failed to fetch user details");
+  const data = await res.json();
+  return { userProfileId: data.userProfileId };
+};
+
 const fetchBusinessConnections = async (
   userId: number
 ): Promise<BusinessConnection> => {
-  const res = await fetch(`/api/user/myConnections/${userId}`);
+  const res = await fetch(`/api/order/myConnections/${userId}`);
   if (!res.ok) throw new Error("Failed to fetch connections");
   return res.json();
 };
@@ -66,7 +73,7 @@ const TreeNode: React.FC<{ node: BusinessConnection; alwaysExpanded?: boolean }>
     if (children.length === 0) {
       try {
         setLoading(true);
-        const data = await fetchBusinessConnections(node.id);
+        const data = await fetchBusinessConnections(node.userProfileId);
         setChildren(data.child || []);
       } catch (err) {
         console.error(err);
@@ -94,7 +101,7 @@ const TreeNode: React.FC<{ node: BusinessConnection; alwaysExpanded?: boolean }>
           ) : (
             <div className="flex gap-12 mt-6">
               {children.map((child) => (
-                <div key={child.id} className="relative flex flex-col items-center">
+                <div key={child.userProfileId} className="relative flex flex-col items-center">
                   {/* Connector line */}
                   <div className="absolute -top-6 w-px h-6 bg-gray-400"></div>
                   {/* Child nodes */}
@@ -114,16 +121,18 @@ const BusinessConnections: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const userProfileId = localStorage.getItem('userProfileId');
-    if (!userProfileId) {
-      console.error("User profile ID not found");
-      setLoading(false);
-      return;
-    }
-    fetchBusinessConnections(parseInt(userProfileId))
-      .then((data) => setRoot(data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
+    const loadData = async () => {
+      try {
+        const { userProfileId } = await fetchUserDetails();
+        const data = await fetchBusinessConnections(userProfileId);
+        setRoot(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
   if (loading) {
@@ -140,7 +149,7 @@ const BusinessConnections: React.FC = () => {
         🌐 My Business Connections
       </h2>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center overflow-auto max-w-full">
         {/* Root node - show its direct children by default */}
         <TreeNode node={root} alwaysExpanded />
       </div>

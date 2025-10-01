@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { authService } from '../../services/auth';
-import { productService, ProductCategory, BusinessProfile } from '../../services/product';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { authService } from "../../services/auth";
+import {
+  productService,
+  ProductCategory,
+  BusinessProfile,
+} from "../../services/product";
 
 const BusinessTiles = () => {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('Grocery');
-  const [selectedBusinessProfile, setSelectedBusinessProfile] = useState<BusinessProfile | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("Grocery");
+  const [selectedBusinessProfile, setSelectedBusinessProfile] =
+    useState<BusinessProfile | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Fetch categories on component mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -23,26 +27,26 @@ const BusinessTiles = () => {
         const serviceAreaId = userDetails.serviceAreaId;
 
         if (!serviceAreaId) {
-          throw new Error('Service area ID not found in user details');
+          throw new Error("Service area ID not found in user details");
         }
 
         const categoriesData = await productService.getCategories(serviceAreaId);
         setCategories(categoriesData);
 
-        // Default: first category + its first business profile
         if (categoriesData.length > 0) {
           const firstCategory = categoriesData[0];
           setSelectedCategory(firstCategory.categoryName);
 
           if (firstCategory.linkedBusinessProfile.length > 0) {
-            const firstBusinessProfile = firstCategory.linkedBusinessProfile[0];
-            setSelectedBusinessProfile(firstBusinessProfile);
+            setSelectedBusinessProfile(firstCategory.linkedBusinessProfile[0]);
           }
         }
 
         setLoading(false);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch categories');
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch categories"
+        );
         setLoading(false);
       }
     };
@@ -50,21 +54,23 @@ const BusinessTiles = () => {
     fetchCategories();
   }, []);
 
-  // Initialize category and business from URL if provided
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const categoryFromUrl = params.get('category');
-    const businessFromUrl = params.get('business');
+    const categoryFromUrl = params.get("category");
+    const businessFromUrl = params.get("business");
 
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
     }
 
     if (businessFromUrl) {
-      // Find the business profile by ID
-      const category = categories.find(cat => cat.categoryName === (categoryFromUrl || selectedCategory));
+      const category = categories.find(
+        (cat) => cat.categoryName === (categoryFromUrl || selectedCategory)
+      );
       if (category) {
-        const business = category.linkedBusinessProfile.find(bp => bp.id.toString() === businessFromUrl);
+        const business = category.linkedBusinessProfile.find(
+          (bp) => bp.id.toString() === businessFromUrl
+        );
         if (business) {
           setSelectedBusinessProfile(business);
         }
@@ -72,82 +78,82 @@ const BusinessTiles = () => {
     }
   }, [location.search, categories]);
 
-  // Whenever category changes → select its first business profile automatically if no business selected
-  useEffect(() => {
-    if (selectedCategory && categories.length > 0 && !selectedBusinessProfile) {
-      const category = categories.find((cat) => cat.categoryName === selectedCategory);
-      if (category && category.linkedBusinessProfile.length > 0) {
-        const firstBusinessProfile = category.linkedBusinessProfile[0];
-        setSelectedBusinessProfile(firstBusinessProfile);
-      }
-    }
-  }, [selectedCategory, categories, selectedBusinessProfile]);
-
-  // Handle business profile selection
-  const handleBusinessProfileClick = (businessProfile: BusinessProfile, categoryName: string) => {
+  const handleBusinessProfileClick = (
+    businessProfile: BusinessProfile,
+    categoryName: string
+  ) => {
     setSelectedBusinessProfile(businessProfile);
     setSelectedCategory(categoryName);
 
     const params = new URLSearchParams(location.search);
-    params.set('category', categoryName);
-    params.set('business', businessProfile.id.toString());
-    navigate({ pathname: '/', search: params.toString() });
+    params.set("category", categoryName);
+    params.set("business", businessProfile.id.toString());
+    navigate({ pathname: "/", search: params.toString() });
   };
 
   if (loading) {
     return (
-      <div className="py-8">
-        <div className="text-center">Loading business profiles...</div>
+      <div className="py-8 text-center text-gray-500">
+        Loading business profiles...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="py-8">
-        <div className="text-center text-red-500">Error: {error}</div>
-      </div>
+      <div className="py-8 text-center text-red-500">Error: {error}</div>
     );
   }
 
-  const selectedCategoryData = categories.find((cat) => cat.categoryName === selectedCategory);
+  const selectedCategoryData = categories.find(
+    (cat) => cat.categoryName === selectedCategory
+  );
+
+  if (!selectedCategoryData) return null;
+
+  const businessCount = selectedCategoryData.linkedBusinessProfile.length;
+  if (businessCount === 1) return null;
 
   return (
     <section className="py-8">
       <div className="_container">
-        {/* Business Profiles as Tiles */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-6">
-          {selectedCategoryData?.linkedBusinessProfile.map((businessProfile) => {
+        <div
+          className={`grid gap-5`}
+          style={{
+            gridTemplateColumns: `repeat(${businessCount}, minmax(0, 1fr))`,
+          }}
+        >
+          {selectedCategoryData.linkedBusinessProfile.map((businessProfile) => {
             const isSelected = selectedBusinessProfile?.id === businessProfile.id;
 
             return (
               <div
                 key={businessProfile.id}
-                className={`cursor-pointer flex flex-col items-center p-4 rounded-xl border transition-all duration-300 ${
+                className={`relative cursor-pointer rounded-2xl overflow-hidden shadow-lg group transition-all duration-300 ${
                   isSelected
-                    ? 'ring-2 ring-blue-500 bg-blue-50 scale-105 shadow-md'
-                    : 'hover:scale-105 hover:shadow'
+                    ? "ring-2 ring-blue-500 scale-[1.02]"
+                    : "hover:scale-[1.02] hover:shadow-xl"
                 }`}
                 onClick={() =>
                   handleBusinessProfileClick(businessProfile, selectedCategory)
                 }
               >
-                <div className="w-16 h-20 flex items-center justify-center mb-3">
-                  <img
-                    src={businessProfile.businessLogoPath}
-                    alt={businessProfile.storeName}
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      target.nextElementSibling?.classList.remove('hidden');
-                    }}
-                  />
-                  <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center text-gray-600 text-sm">
-                    {businessProfile.storeName.charAt(0)}
-                  </div>
-                </div>
-                <div className="text-sm font-medium text-gray-800 text-center whitespace-normal leading-tight">
+                {/* Business Image */}
+                <img
+                  src={businessProfile.businessLogoPath}
+                  alt={businessProfile.storeName}
+                  className="w-full h-40 md:h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = "none";
+                  }}
+                />
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+
+                {/* Store Name */}
+                <div className="absolute bottom-3 w-full text-center text-white font-semibold text-base md:text-lg drop-shadow">
                   {businessProfile.storeName}
                 </div>
               </div>

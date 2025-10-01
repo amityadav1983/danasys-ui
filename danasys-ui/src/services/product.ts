@@ -30,6 +30,9 @@ export interface ProductCategory {
   productCount: number;
   themeColorCode?: string;
   linkedBusinessProfile: BusinessProfile[];
+  greetingOfTheDay?: string;
+  dealOfTheDayImages?: string[];
+  dashboardImages?: string[];
 }
 
 export const productService = {

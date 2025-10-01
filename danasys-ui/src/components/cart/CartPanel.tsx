@@ -134,6 +134,8 @@ const CartPanel = () => {
         handler: function (response: any) {
           // Handle successful payment on frontend
           console.log('Payment successful:', response);
+          // Clear the cart
+          dispatch(clearCart());
           // Close the cart panel
           dispatch(hideCart());
           // Redirect to home page

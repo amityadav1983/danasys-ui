@@ -93,7 +93,7 @@ const EmailLogin: React.FC<EmailLoginProps> = ({ onRegisterClick, onLogin }) => 
               );
               alert(
                 response.data ||
-                "Reset link sent to your email. Please check your inbox."
+                  "Reset link sent to your email. Please check your inbox."
               );
             } catch (error: any) {
               console.error("Forgot password error:", error);
@@ -132,14 +132,6 @@ const EmailLogin: React.FC<EmailLoginProps> = ({ onRegisterClick, onLogin }) => 
         />
         Continue with Google
       </Button>
-
-
-      <a href="/oauth2/authorization/google">
-        <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
-          alt="Sign in with Google" />
-      </a>
-
-
     </form>
   );
 };

@@ -104,7 +104,7 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
                 <img
                   src={companyLogo}
                   alt="Logo"
-                  className="w-[160px] h-auto mx-auto object-contain"
+                  className="w-[120px] h-auto mx-auto object-contain"
                 />
               </div>
 

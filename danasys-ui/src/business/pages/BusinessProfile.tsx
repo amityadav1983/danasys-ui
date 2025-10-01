@@ -15,7 +15,7 @@ const BusinessProfile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<"my" | "manage">("my");
+  const [activeTab, setActiveTab] = useState<"my" | "manage" | "manager">("my");
   const [userRole, setUserRole] = useState<string | null>(null);
 
   // Fetch user details on mount
@@ -150,7 +150,17 @@ const handleUpdate = (profile: any) => {
                 : "text-gray-600 hover:text-blue-600"
             }`}
           >
-            Manage Profile
+            Profile Manager
+          </button>
+          <button
+            onClick={() => setActiveTab("manager")}
+            className={`px-4 py-2 font-medium ${
+              activeTab === "manager"
+                ? "border-b-2 border-blue-600 text-blue-600"
+                : "text-gray-600 hover:text-blue-600"
+            }`}
+          >
+            My Manager
           </button>
         </div>
 

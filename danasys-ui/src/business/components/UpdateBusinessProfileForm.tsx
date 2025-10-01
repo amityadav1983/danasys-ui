@@ -59,6 +59,9 @@ const UpdateBusinessProfileForm = ({
   // ✅ Categories
   const [categories, setCategories] = useState<any[]>([]);
 
+  // New state for address fullAddress (e.g., "E2 702")
+  const [addressFullAddressMap, setAddressFullAddressMap] = useState<{ [key: number]: string }>({});
+
   // ✅ Pre-fill when editing
   useEffect(() => {
     if (profile) {
@@ -82,7 +85,21 @@ const UpdateBusinessProfileForm = ({
         };
       }
       setFormData(updatedFormData);
-      setAddedAddresses((profile.addresses || []).map((addr: any) => ({ ...addr, active: addr.active !== undefined ? addr.active : true })));
+      setAddedAddresses((profile.addresses || []).map((addr: any) => ({
+        id: addr.id,
+        fullAddress: addr.serviceArea?.fullAddress || '',
+        district: addr.serviceArea?.district || '',
+        state: addr.serviceArea?.state || '',
+        pinCode: addr.serviceArea?.pinCode || '',
+        shopAddress: addr.shopAddress || '',
+        active: addr.active !== undefined ? addr.active : true,
+      })));
+      // Set the map for fullAddress (e.g., "E2 702")
+      const fullAddressMap: { [key: number]: string } = {};
+      (profile.addresses || []).forEach((addr: any) => {
+        fullAddressMap[addr.id] = addr.fullAddress || '';
+      });
+      setAddressFullAddressMap(fullAddressMap);
     }
   }, [profile]);
 
@@ -255,6 +272,7 @@ const handleChange = (
           id: area.id || 0,
           active: area.active !== undefined ? area.active : true,
           shopAddress: area.shopAddress || "",
+          fullAddress: addressFullAddressMap[area.id] || "",
           userServiceAreaDeatils: {
             id: area.id || 0,
             fullAddress: area.fullAddress,
@@ -302,6 +320,13 @@ const handleChange = (
     }
   };
 
+  const handleFullAddressChange = (id: number, value: string) => {
+    setAddressFullAddressMap((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
 // ✅ Update handler
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -319,6 +344,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   businessAddresses: addedAddresses.map((area, index) => ({
     id: area.id || 0,
     active: area.active !== undefined ? area.active : true,
+    fullAddress: addressFullAddressMap[area.id] || "",
     addressDeatils: {
       addressLine1: area.shopAddress || "",     // 👈 shopAddress → addressLine1
       addressType: "HOME",                      // 👈 default fix (ya UI se input lo)
@@ -623,13 +649,13 @@ const handleSubmit = async (e: React.FormEvent) => {
                      {addedAddresses.map((addr, index) => (
   <div
     key={addr.id}
-    className={`flex items-center justify-between p-3 hover:bg-gray-50 transition 
+    className={`flex items-center justify-between p-3 hover:bg-gray-50 transition
       ${addr.active === false ? "opacity-50 pointer-events-none" : ""}`}
   >
     <div className="flex-1">
       <div className="flex items-center gap-2 mb-1">
         <p className="font-medium text-gray-800">
-          {addr.fullAddress}
+          {addressFullAddressMap[addr.id] || addr.fullAddress}
         </p>
         <span
           className={`px-2 py-1 text-xs font-semibold rounded-full ${
@@ -645,6 +671,16 @@ const handleSubmit = async (e: React.FormEvent) => {
         {addr.district}, {addr.state} - {addr.pinCode}
       </p>
       <p className="text-sm text-blue-600">Shop: {addr.shopAddress}</p>
+      {/* <div className="flex items-center gap-2">
+        <span className="text-sm text-blue-600">Unit:</span>
+        <input
+          type="text"
+          value={addressFullAddressMap[addr.id] || ""}
+          onChange={(e) => handleFullAddressChange(addr.id, e.target.value)}
+          className="text-sm border border-gray-300 rounded px-2 py-1 w-32"
+          placeholder="e.g., E2 702"
+        />
+      </div> */}
       {/* {index === 0 && (
         <p className="text-xs text-green-600 mt-1 font-medium">
           ✓ Default address for business operations
@@ -734,7 +770,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       name="businessAddresses.bankAccount.bankAccountType"
       value={formData.businessAddresses.bankAccount.bankAccountType}
       onChange={handleChange}
-      className="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+      className="w-full border border-gray-500 rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 focus:outline-none"
     >
       <option value="">Select Account Type</option>
       <option value="CURRENT">Current</option>
@@ -766,14 +802,14 @@ const handleSubmit = async (e: React.FormEvent) => {
           </button>
         </div>
 
-        {error && <p className="text-red-600 mt-3">{error}</p>}
-        {success && (
-          <p className="text-green-600 mt-3">
-            Profile updated successfully!
-          </p>
-        )}
-      </form>
-    </div>
+      {error && <p className="text-red-600 mt-3">{error}</p>}
+      {success && (
+        <p className="text-green-600 mt-3">
+          Profile updated successfully!
+        </p>
+      )}
+    </form>
+  </div>
   );
 };
 

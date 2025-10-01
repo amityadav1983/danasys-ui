@@ -109,109 +109,107 @@ const Header = () => {
 
   return (
     <>
-      <div className="relative">
-        {/* Gradient background behind header */}
-        <div
-          className="absolute top-0 left-0 right-0 h-[350px] sm:h-[450px] pointer-events-none"
-          style={{ background: "var(--header-gradient)" }}
-        />
+      {/* Gradient background behind header */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[350px] sm:h-[450px] pointer-events-none"
+        style={{ background: "var(--header-gradient)" }}
+      />
 
-        {/* ✅ Header */}
-        <header
-          className="fixed top-0 left-0 right-0 z-50 transition-colors duration-300"
-          style={{
-            background: isScrolled ? "#ffffff" : "transparent",
-            boxShadow: isScrolled ? "0 2px 8px rgba(0,0,0,0.08)" : "none",
-          }}
-        >
-          <div className="min-h-[80px] sm:min-h-[100px] flex flex-col justify-center">
-            {/* ✅ Mobile Header - Single Row */}
-            <div className="sm:hidden w-full text-black px-4">
-              <div className="flex justify-between items-center">
-                <LocationPicker />
-                <div className="flex items-center gap-2">
-                  {userDetails?.userWalletImage && (
-                    <img
-                      src={userDetails.userWalletImage}
-                      alt="Wallet"
-                      className="w-8 h-8 object-contain cursor-pointer"
-                    />
-                  )}
-                  <UserProfile />
-                </div>
-              </div>
-            </div>
-
-            {/* ✅ Desktop Header (flexible layout with wider search) */}
-            <div className="hidden sm:flex w-full h-full items-center px-8">
-              {/* Left Section - Logo */}
-              <div className="flex items-center mr-10">
-                <Link to={"/"}>
-                  <img
-                    src={newLogo}
-                    alt="Cost2Cost Logo"
-                    className="h-16 md:h-12 object-contain drop-shadow-md"
-                  />
-                </Link>
-              </div>
-
-              {/* Center Section - Location and Search */}
-              <div className="flex items-center gap-12 flex-1">
-                <LocationPicker />
-                <div className="relative flex-1 max-w-2xl">
-                  <div className="relative flex items-center">
-                    <input
-                      type="text"
-                      placeholder="Search products..."
-                      value={searchQuery}
-                      onChange={handleSearch}
-                      className="w-full h-10 px-4 py-2 pl-10 rounded-full border border-gray-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 backdrop-blur-sm"
-                    />
-                    <FiSearch
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                      size={18}
-                    />
-                  </div>
-
-                  {filteredProducts.length > 0 && (
-                    <ul className="absolute top-12 left-0 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
-                      {filteredProducts.map((product) => (
-                        <li
-                          key={product.id}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                          onClick={() => handleSelectProduct(product.id)}
-                        >
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-8 h-8 object-contain"
-                          />
-                          <span>{product.name}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-
-              {/* Right Section - Wallet and User Profile */}
-              <div className="flex items-center gap-4 ml-8">
+      {/* ✅ Header */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 transition-colors duration-300"
+        style={{
+          background: "transparent",
+          boxShadow: "none",
+        }}
+      >
+        <div className="min-h-[80px] sm:min-h-[100px] flex flex-col justify-center">
+          {/* ✅ Mobile Header - Single Row */}
+          <div className="sm:hidden w-full text-black px-4">
+            <div className="flex justify-between items-center">
+              <LocationPicker />
+              <div className="flex items-center gap-2">
                 {userDetails?.userWalletImage && (
                   <img
                     src={userDetails.userWalletImage}
                     alt="Wallet"
-                    className="w-8 h-8 object-contain cursor-pointer drop-shadow-md"
+                    className="w-8 h-8 object-contain cursor-pointer"
                   />
                 )}
                 <UserProfile />
               </div>
             </div>
           </div>
-        </header>
 
-        {/* Spacer */}
-        <div className="h-[80px] sm:h-[60px]"></div>
-      </div>
+          {/* ✅ Desktop Header (flexible layout with wider search) */}
+          <div className="hidden sm:flex w-full h-full items-center px-8">
+            {/* Left Section - Logo */}
+            <div className="flex items-center mr-10">
+              <Link to={"/"}>
+                <img
+                  src={userDetails?.companyLogo || newLogo}
+                  alt="Company Logo"
+                  className="h-24 object-contain drop-shadow-md"
+                />
+              </Link>
+            </div>
+
+            {/* Center Section - Location and Search */}
+            <div className="flex items-center gap-12 flex-1">
+              <LocationPicker />
+              <div className="relative flex-1 max-w-3xl">
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    className="w-full h-10 px-4 py-2 pl-10 rounded-full border border-gray-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 backdrop-blur-sm"
+                  />
+                  <FiSearch
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    size={18}
+                  />
+                </div>
+
+                {filteredProducts.length > 0 && (
+                  <ul className="absolute top-12 left-0 w-full bg-white shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
+                    {filteredProducts.map((product) => (
+                      <li
+                        key={product.id}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                        onClick={() => handleSelectProduct(product.id)}
+                      >
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-8 h-8 object-contain"
+                        />
+                        <span>{product.name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            {/* Right Section - Wallet and User Profile */}
+            <div className="flex items-center gap-4 ml-8">
+              {userDetails?.userWalletImage && (
+                <img
+                  src={userDetails.userWalletImage}
+                  alt="Wallet"
+                  className="w-8 h-8 object-contain cursor-pointer drop-shadow-md"
+                />
+              )}
+              <UserProfile />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Spacer */}
+      <div className="h-[80px] sm:h-[60px]"></div>
 
       {/* ✅ Mobile Sticky Search */}
       {isHeroPast && (
