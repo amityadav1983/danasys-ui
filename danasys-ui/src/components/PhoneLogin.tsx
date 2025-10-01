@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import googleIcon from "../assets/images/google-icon.png";
 import api from "../services/api";
 
 interface PhoneLoginProps {
@@ -14,6 +15,23 @@ const PhoneLogin: React.FC<PhoneLoginProps> = ({ onContinue, onLogin }) => {
   const [shakeKey, setShakeKey] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [phoneFocused, setPhoneFocused] = useState(false);
+
+  // Google login handler
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await api.get("/oauth2/authorization/google");
+
+      if (response.status === 200) {
+        // Success → redirect to home/dashboard
+        window.location.href = "/home"; // apna actual route lagao
+      } else {
+        alert("Google login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
 
   const handleContinuePhone = async () => {
     if (!phone.trim()) {
@@ -103,6 +121,27 @@ const PhoneLogin: React.FC<PhoneLoginProps> = ({ onContinue, onLogin }) => {
         className="w-full bg-[#349FDE] hover:bg-[#2e90cd] text-white py-3 rounded-xl shadow-lg font-medium text-sm h-auto disabled:opacity-50"
       >
         {isLoading ? 'Sending OTP...' : 'Continue'}
+      </Button>
+
+      {/* Divider with OR */}
+      <div className="flex items-center gap-2 my-2">
+        <div className="flex-grow h-px bg-blue-500"></div>
+        <span className="text-blue-800 text-lg font-medium">OR</span>
+        <div className="flex-grow h-px bg-blue-500"></div>
+      </div>
+
+      {/* Google Button */}
+      <Button
+        type="button"
+        onClick={handleGoogleLogin}
+        className="w-full bg-white px-1.5 py-1.5 text-gray-700 rounded-xl shadow-md flex items-center justify-center gap-2 border-2 border-blue-500"
+      >
+        <img
+          src={googleIcon}
+          alt="Google"
+          className="w-7 h-7 border-2 border-blue-200 rounded-full"
+        />
+        Continue with Google
       </Button>
     </div>
   );
