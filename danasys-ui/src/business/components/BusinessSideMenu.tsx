@@ -35,6 +35,7 @@ const BusinessSideMenu: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const menuMap: Record<string, { icon: any; label: string; to: string }> = {
+    "Dashboard": { icon: FaHome, label: "Dashboard", to: "/business" },
     "Business User": { icon: FaUserTie, label: "Business Profile", to: "/business/profile" },
     "Users": { icon: FaUsers, label: "Users", to: "/business/add-user" },
       "Activation": { icon: FaCheckCircle, label: "Activation", to: "/business/activation" },
@@ -72,6 +73,7 @@ const BusinessSideMenu: React.FC = () => {
           .filter(Boolean) as MenuItem[];
         console.log("Dynamic menu items:", dynamicItems);
         const order = [
+          "Dashboard",
           "Business Profile",
           "Users",
           "Activation",
@@ -86,7 +88,11 @@ const BusinessSideMenu: React.FC = () => {
           "Annual Report",
           "Communication",
         ];
-        const combinedItems = [...dynamicItems, ...hardcodedItems];
+        let combinedItems = [...dynamicItems, ...hardcodedItems];
+        // Ensure Dashboard is included
+        if (!combinedItems.find(item => item.label === "Dashboard")) {
+          combinedItems = [{ icon: FaHome, label: "Dashboard", to: "/business" }, ...combinedItems];
+        }
         combinedItems.sort((a, b) => {
           return order.indexOf(a.label) - order.indexOf(b.label);
         });
@@ -97,6 +103,7 @@ const BusinessSideMenu: React.FC = () => {
         console.error("Error fetching dashboard:", error);
         // Fallback to hardcoded
         setMenuItems([
+          { icon: FaHome, label: "Dashboard", to: "/business" },
           { icon: FaUserTie, label: "Business Profile", to: "/business/profile" },
           { icon: FaUsers, label: "Users", to: "/business/add-user" },
           { icon: FaCheckCircle, label: "Activation", to: "/business/activation" },
@@ -140,7 +147,7 @@ const BusinessSideMenu: React.FC = () => {
         <ul className="space-y-1">
           {menuItems.map((item, index) => {
             let isActive = false;
-            if (item.label === "Overview") {
+            if (item.label === "Dashboard") {
               isActive =
                 location.pathname === "/business" ||
                 location.pathname === "/business/";
@@ -153,23 +160,23 @@ const BusinessSideMenu: React.FC = () => {
             }
             return (
               <li key={index}>
-                {item.label === "Overview" ? (
+                {item.label === "Dashboard" ? (
                   <Link
                     to={item.to}
                     onClick={
-                      item.label === "Overview" ? handleOverviewClick : undefined
+                      item.label === "Dashboard" ? handleOverviewClick : undefined
                     }
                     className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 ${
                       isActive
-                        ? "bg-white font-semibold shadow rounded-r-full"
-                        : "text-white hover:bg-white/20 rounded-r-full"
+                        ? "bg-white font-semibold ml-3 shadow rounded-tl-full rounded-bl-full"
+                        : "text-white hover:bg-white/20 rounded-tl-full rounded-bl-full"
                     }`}
                     style={isActive ? { color } : {}}
                   >
                     {item.buIconPath ? (
                       <img src={item.buIconPath} alt={item.label} className="w-8 h-8" />
                     ) : (
-                      <item.icon className="text-2xl text-white" />
+                      <item.icon className="text-xl text-black" />
                     )}
                     <span className="text-base">{item.label}</span>
                   </Link>
@@ -186,7 +193,7 @@ const BusinessSideMenu: React.FC = () => {
                     {item.buIconPath ? (
                       <img src={item.buIconPath} alt={item.label} className="w-6 h-6" />
                     ) : (
-                      <item.icon className="text-2xl text-white" />
+                      <item.icon className="text-xl text-black" />
                     )}
                     <span className="text-base">{item.label}</span>
                   </Link>

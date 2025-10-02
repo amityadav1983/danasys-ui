@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import AddBusinessProfileForm from "../components/AddBusinessProfileForm";
 import UpdateBusinessProfileForm from "../components/UpdateBusinessProfileForm";
 import ManageProfile from "./ManageProfile";
+import MyManager from "./MyManager";
 import { authService } from "../../services/auth";
 
 const BusinessProfile = () => {
@@ -150,7 +151,7 @@ const handleUpdate = (profile: any) => {
                 : "text-gray-600 hover:text-blue-600"
             }`}
           >
-            Profile Manager
+            Manager of Profile
           </button>
           <button
             onClick={() => setActiveTab("manager")}
@@ -292,6 +293,7 @@ const handleUpdate = (profile: any) => {
         )}
 
         {activeTab === "manage" && <ManageProfile />}
+        {activeTab === "manager" && <MyManager />}
       </>
     )}
   </div>

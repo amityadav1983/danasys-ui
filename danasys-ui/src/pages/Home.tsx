@@ -8,6 +8,7 @@ import {
 } from '../components/home';
 import { authService } from '../services/auth';
 import { productService } from '../services/product';
+import { useSearch } from '../contexts/SearchContext';
 
 const Home = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -16,6 +17,7 @@ const Home = () => {
   const location = useLocation();
   const [categoriesData, setCategoriesData] = useState<any[]>([]);
   const [selectedCategoryData, setSelectedCategoryData] = useState<any>(null);
+  const { filteredProducts } = useSearch();
 
   const getSelectedCategory = () => {
     const params = new URLSearchParams(location.search);
@@ -129,13 +131,13 @@ const Home = () => {
       <HighlightedPromo /> */}
       {loading && <div>Loading products...</div>}
       {error && <div style={{ color: 'red' }}>Error: {error}</div>}
-      {!loading && !error && products.length > 0 && (
+      {!loading && !error && ((filteredProducts?.length ?? 0) > 0 ? filteredProducts : (products ?? [])).length > 0 && (
         <ProductsRow
           data={{ title: `${selectedCategory} Products`, show_header: true }}
-          objects={[{ data: { products: products || [] } }]}
+          objects={[{ data: { products: (filteredProducts?.length ?? 0) > 0 ? filteredProducts : (products ?? []) } }]}
         />
       )}
-      {!loading && !error && products.length === 0 && (
+      {!loading && !error && ((filteredProducts?.length ?? 0) > 0 ? filteredProducts : (products ?? [])).length === 0 && (
         <div className="py-8 text-center text-gray-600">
           No products found for {selectedCategory}.
         </div>

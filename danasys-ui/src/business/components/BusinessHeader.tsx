@@ -53,11 +53,14 @@ const BusinessHeader = () => {
         {/* Right: Wallet and UserProfile */}
         <div className="flex items-center gap-4">
           {userDetails?.userWalletImage && (
-            <img
-              src={userDetails.userWalletImage}
-              alt="Wallet"
-              className="w-8 h-8 object-contain cursor-pointer"
-            />
+            <div className="flex flex-col items-center">
+              <img
+                src={userDetails.userWalletImage}
+                alt="Wallet"
+                className="w-8 h-8 object-contain cursor-pointer"
+              />
+              <span className="text-xs text-gray-600">₹{userDetails?.userWalletBalance}</span>
+            </div>
           )}
           <UserProfile />
         </div>

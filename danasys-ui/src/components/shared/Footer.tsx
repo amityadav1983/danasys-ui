@@ -74,7 +74,7 @@ const Footer = () => {
         <div className="_container">
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center">
             <div className="text-xs flex-1 text-gray-500 lg:max-w-md pr-6">
-              &copy; Danasys (formerly known as Design Inc Private Limited), 2025. All rights reserved.
+              &copy; Danasys Private Limited, 2025. All rights reserved.
             </div>
 
             <div className="flex flex-1 md:flex-row items-center gap-3">

@@ -38,6 +38,7 @@ export interface UserDetails {
   fullname: string;
   contactInfo?: string;
   serviceAreaId?: number;
+  userWalletBalance: number;
 }
 
 export interface BusinessDashboardItem {

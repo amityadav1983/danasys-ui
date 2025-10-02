@@ -40,7 +40,7 @@ const Layout = ({ noFooter, component }: Props) => {
         style={{ backfaceVisibility: 'hidden' }}
       >
         {currentMode === 'business' ? (
-          <BusinessLayout component={<BusinessHome />} />
+          <BusinessLayout component={<div></div>} />
         ) : (
           <div>
             {!isOrderHistoryPage && <CategoriesIcons />}

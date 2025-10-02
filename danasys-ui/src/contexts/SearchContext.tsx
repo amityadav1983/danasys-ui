@@ -13,6 +13,7 @@ type SearchContextType = {
   setSearchQuery: (value: string) => void;
   filteredProducts: Product[];
   setFilteredProducts: (value: Product[]) => void;
+  suggestions: Product[];
 };
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
@@ -21,9 +22,11 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
+  const suggestions = (filteredProducts || []).slice(0, 5);
+
   return (
     <SearchContext.Provider
-      value={{ searchQuery, setSearchQuery, filteredProducts, setFilteredProducts }}
+      value={{ searchQuery, setSearchQuery, filteredProducts, setFilteredProducts, suggestions }}
     >
       {children}
     </SearchContext.Provider>
