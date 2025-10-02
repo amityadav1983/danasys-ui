@@ -118,7 +118,7 @@ const BusinessTiles = () => {
     <section className="py-8">
       <div className="_container">
         <div
-          className={`grid gap-5`}
+          className={`grid gap-8`}
           style={{
             gridTemplateColumns: `repeat(${businessCount}, minmax(0, 1fr))`,
           }}
@@ -131,7 +131,7 @@ const BusinessTiles = () => {
                 key={businessProfile.id}
                 className={`relative cursor-pointer rounded-2xl overflow-hidden shadow-lg group transition-all duration-300 ${
                   isSelected
-                    ? "ring-2 ring-blue-500 scale-[1.02]"
+                    ? "ring-2 ring-blue-800 scale-[1.05]"
                     : "hover:scale-[1.02] hover:shadow-xl"
                 }`}
                 onClick={() =>
@@ -142,7 +142,7 @@ const BusinessTiles = () => {
                 <img
                   src={businessProfile.businessLogoPath}
                   alt={businessProfile.storeName}
-                  className="w-full h-40 md:h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-40 md:h-48 object-cover transition-transform duration-500 group-hover:scale-100"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = "none";

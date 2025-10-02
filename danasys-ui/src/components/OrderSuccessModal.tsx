@@ -56,7 +56,7 @@ const OrderSuccessModal = ({ data }: { data: OrderSuccessData }) => {
             className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 flex items-center justify-center"
           >
             <FaShoppingBag className="mr-2" size={14} />
-            View My Cart
+            Order Details
           </button>
         </div>
       </div>

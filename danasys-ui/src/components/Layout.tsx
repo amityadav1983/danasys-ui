@@ -30,7 +30,7 @@ const Layout = ({ noFooter, component }: Props) => {
 
   return (
     <>
-      <Header />
+      {currentMode !== 'business' && <Header />}
       <div
         className={`transition-all duration-700 ease-in-out transform perspective-1000 ${
           currentMode === 'business'
