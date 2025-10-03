@@ -39,6 +39,8 @@ const ConnectionCard: React.FC<{
 
   >
     {/* Company Logo overlay (if available) */}
+    {/* Removed company logo overlay to remove extra icon */}
+    {/*
     {node.companyLogo && (
       <img
         src={node.companyLogo}
@@ -46,6 +48,7 @@ const ConnectionCard: React.FC<{
         className="absolute -top-3 -right-3 w-10 h-10 rounded-full border bg-white shadow"
       />
     )}
+    */}
 
     <img
       src={node.profileImagePath}

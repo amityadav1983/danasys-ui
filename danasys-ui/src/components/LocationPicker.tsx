@@ -141,7 +141,7 @@ const LocationPicker = () => {
             onClick={toggleDropdown}
           >
             <span
-              className="text-sm _text-default max-w-[200px] ml-8 truncate"
+              className="text-sm _text-default max-w-[250px] ml-8 truncate"
               title={shortAddress}
             >
               {shortAddress}

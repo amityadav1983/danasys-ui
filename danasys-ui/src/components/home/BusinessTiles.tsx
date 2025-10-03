@@ -129,9 +129,9 @@ const BusinessTiles = () => {
             return (
               <div
                 key={businessProfile.id}
-                className={`relative cursor-pointer rounded-2xl overflow-hidden shadow-lg group transition-all duration-300 ${
+                className={`relative cursor-pointer rounded-2xl overflow-hidden shadow-lg group transition-all duration-100 ${
                   isSelected
-                    ? "ring-2 ring-blue-800 scale-[1.05]"
+                    ? "ring-4 ring-blue-800 scale-[1.05] shadow-2xl"
                     : "hover:scale-[1.02] hover:shadow-xl"
                 }`}
                 onClick={() =>
