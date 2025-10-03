@@ -187,7 +187,7 @@ public class MyController {
 			String imageUrl1 = ServletUriComponentsBuilder.fromCurrentContextPath()
 					.path("/api/product/images/category/").path("grocery.png").toUriString();
 			cat1.setImage(imageUrl1);
-			cat1.setTheemColorCode("#228B22");
+			cat1.setTheemColorCode("#FFFF00");
 			
 			String g_main = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("g_main.png").toUriString();
@@ -238,6 +238,7 @@ public class MyController {
 			cat2.setImage(imageUrl2);
 			cat2.setTheemColorCode("#228B22");
 			
+			
 			String v_main = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("v_main.png").toUriString();
 			String v_add1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
@@ -257,6 +258,53 @@ public class MyController {
 			List<BusinessProfileDetailsDTO> bList2 = new ArrayList<>();
 			bList2.add(b3);
 			cat2.setLinkedBusinessProfile(bList2);
+			
+			String rauSabji = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/userdata/").path("ramu.png").toUriString();
+			BusinessProfileDetailsDTO b4 = new BusinessProfileDetailsDTO();
+			b4.setId(4l);
+			b4.setBusinessLogoPath(rauSabji);
+			b4.setStoreName("Ramu Sabji wala");
+
+			String shyamuSabji = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/userdata/").path("bansal_store.png").toUriString();
+			BusinessProfileDetailsDTO b5 = new BusinessProfileDetailsDTO();
+			b5.setId(5l);
+			b5.setBusinessLogoPath(shyamuSabji);
+			b5.setStoreName("Shaym Vegitable Store");
+			
+			String hariOm = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/userdata/").path("gupta_store.jpg").toUriString();
+			BusinessProfileDetailsDTO b6 = new BusinessProfileDetailsDTO();
+			b6.setId(6l);
+			b6.setBusinessLogoPath(hariOm);
+			b6.setStoreName("Hari Om Vegitable and Fruit Corner");
+			
+			String mandiFresh = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/userdata/").path("mandi.jpg").toUriString();
+			BusinessProfileDetailsDTO b7 = new BusinessProfileDetailsDTO();
+			b7.setId(7l);
+			b7.setBusinessLogoPath(mandiFresh);
+			b7.setStoreName("Mandi Fresh Vegitables");
+
+			String wholeSale = ServletUriComponentsBuilder.fromCurrentContextPath()
+					.path("/api/product/images/userdata/").path("whole.png").toUriString();
+			BusinessProfileDetailsDTO b8 = new BusinessProfileDetailsDTO();
+			b8.setId(8l);
+			b8.setBusinessLogoPath(wholeSale);
+			b8.setStoreName("WholeSale vegitable store");
+
+			List<BusinessProfileDetailsDTO> vegiList = new ArrayList<>();
+			vegiList.add(b3);
+			vegiList.add(b4);
+			vegiList.add(b5);
+			vegiList.add(b6);
+			vegiList.add(b7);
+			vegiList.add(b8);
+			
+			
+			cat2.setLinkedBusinessProfile(vegiList);
+			
 
 			// CAT 3
 			ProductCategorySADetailsDTO cat3 = new ProductCategorySADetailsDTO();
@@ -267,12 +315,12 @@ public class MyController {
 			cat3.setImage(imageUrl3);
 			cat3.setTheemColorCode("#B22222");
 
-			BusinessProfileDetailsDTO b4 = new BusinessProfileDetailsDTO();
-			b4.setId(4l);
-			b4.setBusinessLogoPath(imageUrl3);
-			b4.setStoreName("Ramu vegetable Store");
+			BusinessProfileDetailsDTO b12 = new BusinessProfileDetailsDTO();
+			b12.setId(12l);
+			b12.setBusinessLogoPath(imageUrl3);
+			b12.setStoreName("Ramu vegetable Store");
 			List<BusinessProfileDetailsDTO> bList3 = new ArrayList<>();
-			bList3.add(b4);
+			bList3.add(b12);
 			cat3.setLinkedBusinessProfile(bList3);
 
 			// CAT 4
@@ -866,7 +914,14 @@ public class MyController {
 					product.setMoreAbout(fileName);
 					product.setOfferPrice(100d);
 					product.setPrice(120d);
-					product.setQuantity(10);
+					if(fileName.contains("Fortune")) {
+						product.setQuantity(0);
+					}else if(fileName.contains("Tata")) {
+						product.setQuantity(5);
+					}else {
+						product.setQuantity(10);
+					}
+					
 					product.setDescription("good product");
 					product.setUserBusinessProfileId(userProfileId);
 					product.setId(id);
