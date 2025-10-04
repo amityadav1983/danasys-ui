@@ -25,6 +25,7 @@ interface WalletData {
 const WalletTab: React.FC = () => {
   const [walletData, setWalletData] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   useEffect(() => {
     const fetchWalletData = async () => {
@@ -98,7 +99,7 @@ const WalletTab: React.FC = () => {
 
                   {/* Table Body */}
                   <div className="space-y-3 group">
-                    {walletData.transferReqDTO.map((transfer, index) => (
+                    {walletData.transferReqDTO.slice(0, visibleCount).map((transfer, index) => (
                       <div
                         key={index}
                         className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
@@ -132,6 +133,14 @@ const WalletTab: React.FC = () => {
                       </div>
                     ))}
                   </div>
+                  {walletData.transferReqDTO.length > visibleCount && (
+                    <button
+                      onClick={() => setVisibleCount(prev => prev + 10)}
+                      className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition mt-4"
+                    >
+                      View More
+                    </button>
+                  )}
                 </div>
               ) : (
                 <p className="text-gray-500">No transactions yet.</p>
