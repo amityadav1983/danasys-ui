@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCheckCircle, FaTimesCircle, FaEdit } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 
 interface Category {
   id: number;
@@ -130,39 +130,7 @@ const CategoryActivation: React.FC = () => {
     }
   };
 
-  // ✅ Activate Category
-  const handleActivate = async (id: number) => {
-    try {
-      const res = await fetch(`/api/admin/approveCategory/${id}/approve?isApprove=true`, {
-        method: "PUT",
-        headers: { accept: "*/*" },
-      });
 
-      if (!res.ok) throw new Error("Failed to activate category");
-      await res.text();
-      alert(`Category activated: ${id}`);
-      fetchCategories();
-    } catch (err: any) {
-      alert(`Error activating category: ${err.message}`);
-    }
-  };
-
-  // ✅ Deactivate Category
-  const handleDeactivate = async (id: number) => {
-    try {
-      const res = await fetch(`/api/admin/approveCategory/${id}/approve?isApprove=false`, {
-        method: "PUT",
-        headers: { accept: "*/*" },
-      });
-
-      if (!res.ok) throw new Error("Failed to deactivate category");
-      await res.text();
-      alert(`Category deactivated: ${id}`);
-      fetchCategories();
-    } catch (err: any) {
-      alert(`Error deactivating category: ${err.message}`);
-    }
-  };
 
   return (
     <div className="p-6">
@@ -206,18 +174,33 @@ const CategoryActivation: React.FC = () => {
                   >
                     <FaEdit /> Update
                   </button>
-                  <button
-                    onClick={() => handleActivate(cat.id)}
-                    className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition"
-                  >
-                    <FaCheckCircle /> Activate
-                  </button>
-                  <button
-                    onClick={() => handleDeactivate(cat.id)}
-                    className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-full transition"
-                  >
-                    <FaTimesCircle /> Deactivate
-                  </button>
+                  {/* Toggle Status */}
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={cat.status === "ACTIVE"}
+                      onChange={async (e) => {
+                        const isChecked = e.target.checked;
+                        try {
+                          const res = await fetch(
+                            `/api/admin/approveCategory/${cat.id}/approve?isApprove=${isChecked}`,
+                            {
+                              method: "PUT",
+                              headers: { accept: "*/*" },
+                            }
+                          );
+                          const data = await res.text();
+                          if (!res.ok) throw new Error(data);
+                          alert(`${isChecked ? "Activated" : "Deactivated"} Successfully!`);
+                          fetchCategories();
+                        } catch (err: any) {
+                          alert(err.message || `Error ${isChecked ? "activating" : "deactivating"} category`);
+                        }
+                      }}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
                 </div>
               </div>
             ))}

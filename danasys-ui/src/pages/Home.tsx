@@ -81,18 +81,25 @@ const Home = () => {
         console.log('Fetched products data:', productsData);
 
         if (Array.isArray(productsData)) {
-          // Map products
+          // Map products to match ProductItem interface
           const mappedProducts = productsData.map((item: any) => ({
-            product_id: item.id,
+            id: item.id,
             name: item.name,
-            price: item.offerPrice,
+            description: item.description,
+            offerPrice: item.offerPrice,
+            price: item.price,
+            image: item.image,
+            starRating: item.starRating || 0,
+            quantity: item.quantity,
+            category: item.category,
+            // Keep old properties for compatibility with other components
+            product_id: item.id,
             mrp: item.price,
             image_url: item.image,
+            rating: item.starRating || 0,
             unit: '',
             discount: item.price > item.offerPrice ? ((item.price - item.offerPrice) / item.price) * 100 : 0,
             offer: '',
-            category: item.category,
-            rating: item.starRating || 0 // Include starRating from API response
           }));
 
           // Filter by selected category

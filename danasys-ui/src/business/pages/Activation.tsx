@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCheckCircle, FaTimesCircle, FaEdit } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import CategoryActivation from "./CategoryActivation";
 
 interface ServiceArea {
@@ -100,41 +100,7 @@ const Activation: React.FC = () => {
     }
   }, [activeTab]);
 
-// Activate Area
-const handleActivate = async (id: number) => {
-  try {
-    const res = await fetch(`/api/admin/approveServiceArea/${id}/approve?isApprove=true`, {
-      method: "PUT",
-      headers: { accept: "*/*" },
-    });
 
-    const data = await res.text(); // 👈 changed from json()
-    if (!res.ok) throw new Error(data);
-
-    alert(data || "Activated Successfully!"); // show backend msg if any
-    fetchServiceAreas();
-  } catch (err: any) {
-    alert(err.message || "Error activating area");
-  }
-};
-
-// Deactivate Area
-const handleDeactivate = async (id: number) => {
-  try {
-    const res = await fetch(`/api/admin/approveServiceArea/${id}/approve?isApprove=false`, {
-      method: "PUT",
-      headers: { accept: "*/*" },
-    });
-
-    const data = await res.text(); // 👈 also text here
-    if (!res.ok) throw new Error(data);
-
-    alert(data || "Deactivated Successfully!");
-    fetchServiceAreas();
-  } catch (err: any) {
-    alert(err.message || "Error deactivating area");
-  }
-};
 
 
   // Open Update Modal
@@ -250,18 +216,33 @@ const handleDeactivate = async (id: number) => {
                       >
                         <FaEdit /> Update
                       </button>
-                      <button
-                        onClick={() => handleActivate(a.id)}
-                        className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-full transition"
-                      >
-                        <FaCheckCircle /> Activate
-                      </button>
-                      <button
-                        onClick={() => handleDeactivate(a.id)}
-                        className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-full transition"
-                      >
-                        <FaTimesCircle /> Deactivate
-                      </button>
+                      {/* Toggle Status */}
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={a.status === "ACTIVE"}
+                          onChange={async (e) => {
+                            const isChecked = e.target.checked;
+                            try {
+                              const res = await fetch(
+                                `/api/admin/approveServiceArea/${a.id}/approve?isApprove=${isChecked}`,
+                                {
+                                  method: "PUT",
+                                  headers: { accept: "*/*" },
+                                }
+                              );
+                              const data = await res.text();
+                              if (!res.ok) throw new Error(data);
+                              alert(data || `${isChecked ? "Activated" : "Deactivated"} Successfully!`);
+                              fetchServiceAreas();
+                            } catch (err: any) {
+                              alert(err.message || `Error ${isChecked ? "activating" : "deactivating"} area`);
+                            }
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
                     </div>
                   </div>
                 ))}

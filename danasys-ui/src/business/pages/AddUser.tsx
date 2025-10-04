@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUserShield, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaUserShield } from "react-icons/fa";
 import DeactivatedUsers from "./DeactivatedUsers";
 
 const AddUser = () => {
@@ -257,51 +257,34 @@ const AddUser = () => {
                       <FaUserShield /> Assign Role
                     </button>
 
-                    {/* Activate */}
-                    <button
-                      onClick={async () => {
-                        try {
-                          const res = await fetch(
-                            `/api/admin/user/${user.id}/activateUser`,
-                   {
-                              method: "PUT",
-                              headers: { accept: "*/*" },
-                            }
-                          );
-                          if (!res.ok) throw new Error("Failed to activate user");
-                          const result = await res.text();
-                          alert(result);
-                        } catch (err: any) {
-                          alert(err.message || "Error activating user");
-                        }
-                      }}
-                      className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-full transition"
-                    >
-                      <FaCheckCircle className="text-blue-600" /> Activate
-                    </button>
-
-                    {/* Deactivate */}
-                    <button
-                      onClick={async () => {
-                        try {
-                          const res = await fetch(
-                            `/api/admin/user/${user.id}/deActivateUser`,
-                            {
-                              method: "PUT",
-                              headers: { accept: "*/*" },
-                            }
-                          );
-                          if (!res.ok) throw new Error("Failed to deactivate user");
-                          const result = await res.text();
-                          alert(result);
-                        } catch (err: any) {
-                          alert(err.message || "Error deactivating user");
-                        }
-                      }}
-                      className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-full transition"
-                    >
-                      <FaTimesCircle className="text-red-600" /> Deactivate
-                    </button>
+                    {/* Toggle Status */}
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={user.status?.toLowerCase() === 'active'}
+                        onChange={async (e) => {
+                          const isChecked = e.target.checked;
+                          try {
+                            const res = await fetch(
+                              `/api/admin/user/${user.id}/${isChecked ? 'activateUser' : 'deActivateUser'}`,
+                              {
+                                method: "PUT",
+                                headers: { accept: "*/*" },
+                              }
+                            );
+                            if (!res.ok) throw new Error(`Failed to ${isChecked ? 'activate' : 'deactivate'} user`);
+                            const result = await res.text();
+                            alert(result);
+                            // Update status
+                            setUser({ ...user, status: isChecked ? 'active' : 'inactive' });
+                          } catch (err: any) {
+                            alert(err.message || `Error ${isChecked ? 'activating' : 'deactivating'} user`);
+                          }
+                        }}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                 </div>
               </div>

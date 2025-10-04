@@ -49,49 +49,63 @@ export type ProductRow = {
 }
 
 export interface ProductItem {
-  rating: number;
-  type_id: number;
-  sbc_offer: string;
-  default_product_id: number;
-  has_details: boolean;
-  sts_visibility: boolean;
-  mapping_id: number;
-  merchant_type: string;
-  sbc_price: number;
-  unit: string;
-  pricing_comment: string;
-  level1_category?: (LevelCategoryEntity)[] | null;
-  unit_price: number;
-  unit_type: string;
-  rating_count: number;
-  badges?: (null)[] | null;
-  line_1: string;
-  sbc_enabled: boolean;
-  type: string;
-  brand: string;
-  inventory: number;
-  recommended_purchase_quantity: number;
-  offer: string;
-  price: number;
-  incentives?: (null)[] | null;
-  sts_sbc_savings?: null;
-  discount: number;
-  level0_category?: (LevelCategoryEntity)[] | null;
-  rating_star_color?: null;
-  pl_flag: boolean;
-  product_tags?: (null)[] | null;
-  video_meta?: (null)[] | null;
-  line_2: string;
+  // New properties from productList API
+  id: number;
   name: string;
-  rating_flag: boolean;
-  mrp: number;
-  leaf_category: LeafCategory;
-  received_at_ts: number;
-  product_id: number;
-  image_url: string;
-  group_id: number;
-  next_available_at: NextAvailableAt;
-  combo_flag: boolean;
+  price: number;
+  offerPrice: number;
+  category: string;
+  quantity: number;
+  description: string;
+  image: string;
+  starRating: number;
+  moreAbout?: string;
+  userBusinessProfileId?: number;
+  status?: null;
+  version?: number;
+  // Old properties for compatibility
+  product_id?: number;
+  mrp?: number;
+  image_url?: string;
+  rating?: number;
+  unit?: string;
+  discount?: number;
+  offer?: string;
+  // Keeping some existing properties if needed, but commenting out unused ones
+  // type_id: number;
+  // sbc_offer: string;
+  // default_product_id: number;
+  // has_details: boolean;
+  // sts_visibility: boolean;
+  // mapping_id: number;
+  // merchant_type: string;
+  // sbc_price: number;
+  // pricing_comment: string;
+  // level1_category?: (LevelCategoryEntity)[] | null;
+  // unit_price: number;
+  // unit_type: string;
+  // rating_count: number;
+  // badges?: (null)[] | null;
+  // line_1: string;
+  // sbc_enabled: boolean;
+  // type: string;
+  // brand: string;
+  // inventory: number;
+  // recommended_purchase_quantity: number;
+  // incentives?: (null)[] | null;
+  // sts_sbc_savings?: null;
+  // level0_category?: (LevelCategoryEntity)[] | null;
+  // rating_star_color?: null;
+  // pl_flag: boolean;
+  // product_tags?: (null)[] | null;
+  // video_meta?: (null)[] | null;
+  // line_2: string;
+  // rating_flag: boolean;
+  // leaf_category: LeafCategory;
+  // received_at_ts: number;
+  // group_id: number;
+  // next_available_at: NextAvailableAt;
+  // combo_flag: boolean;
 }
 
 interface LevelCategoryEntity {
