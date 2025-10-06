@@ -55,10 +55,11 @@ const DeactivatedUsers = () => {
       {!loading && !error && users.length > 0 && (
         <div className="w-full">
           {/* Table Header */}
-          <div className="grid grid-cols-3 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
+          <div className="grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
             <div className="text-left">User</div>
             <div className="text-left">Email</div>
             <div className="text-left">Status</div>
+            <div className="text-left">Actions</div>
           </div>
 
           {/* Table Body */}
@@ -66,7 +67,7 @@ const DeactivatedUsers = () => {
             {users.map((u) => (
               <div
                 key={u.id}
-                className="grid grid-cols-3 items-center px-5 py-4 bg-red-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
+                className="grid grid-cols-4 items-center px-5 py-4 bg-red-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
                 group-hover:opacity-40 hover:!opacity-100 hover:bg-red-100 hover:scale-[1.03] hover:shadow-md"
               >
                 {/* User */}
@@ -86,6 +87,41 @@ const DeactivatedUsers = () => {
 
                 {/* Status */}
                 <div className="text-sm font-medium text-red-600">{u.status}</div>
+
+                {/* Actions - Toggle Button */}
+                <div className="text-right">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={u.status?.toLowerCase() === "active"}
+                      onChange={async (e) => {
+                        const isChecked = e.target.checked;
+                        try {
+                          const res = await fetch(
+                            `/api/admin/user/${u.id}/${isChecked ? "activateUser" : "deActivateUser"}`,
+                            {
+                              method: "PUT",
+                              headers: { accept: "*/*" },
+                            }
+                          );
+                          if (!res.ok) throw new Error(`Failed to ${isChecked ? "activate" : "deactivate"} user`);
+                          const result = await res.text();
+                          alert(result);
+                          // Update user status locally
+                          setUsers((prevUsers) =>
+                            prevUsers.map((user) =>
+                              user.id === u.id ? { ...user, status: isChecked ? "active" : "inactive" } : user
+                            )
+                          );
+                        } catch (err: any) {
+                          alert(err.message || `Error ${isChecked ? "activating" : "deactivating"} user`);
+                        }
+                      }}
+                      className="sr-only peer"
+                    />
+                    <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
               </div>
             ))}
           </div>

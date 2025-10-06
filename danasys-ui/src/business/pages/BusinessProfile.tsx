@@ -17,15 +17,16 @@ const BusinessProfile = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState<"my" | "manage" | "manager">("my");
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
 
   // Fetch user details on mount
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const user = await authService.getUserDetails() as any;
-        setUserRole(user.role || null);
-        if (user.role === 'user') {
+        const roles = user.roles || [];
+        setUserRoles(roles);
+        if (roles.includes('ROLE_USER')) {
           fetchProfiles(''); // Fetch all profiles for user role
         }
       } catch (err) {
@@ -99,7 +100,7 @@ const handleUpdate = (profile: any) => {
       }
 
       alert("Profile removed successfully!");
-      userRole === 'user' ? fetchProfiles('') : fetchProfiles(userName); // Refresh after delete
+      userRoles.includes('ROLE_USER') ? fetchProfiles('') : fetchProfiles(userName); // Refresh after delete
     } catch (err: any) {
       alert(err.message || "Error removing profile");
     }
@@ -118,7 +119,7 @@ const handleUpdate = (profile: any) => {
             setSelectedProfile(null);
           }}
           profile={selectedProfile}
-          onSuccess={() => userRole === 'user' ? fetchProfiles('') : fetchProfiles(userName)}
+          onSuccess={() => userRoles.includes('ROLE_USER') ? fetchProfiles('') : fetchProfiles(userName)}
         />
       ) : (
         <AddBusinessProfileForm
@@ -126,7 +127,7 @@ const handleUpdate = (profile: any) => {
             setShowForm(false);
             setSelectedProfile(null);
           }}
-          onSuccess={() => userRole === 'user' ? fetchProfiles('') : fetchProfiles(userName)}
+          onSuccess={() => userRoles.includes('ROLE_USER') ? fetchProfiles('') : fetchProfiles(userName)}
         />
       )
     ) : (
@@ -168,42 +169,42 @@ const handleUpdate = (profile: any) => {
         {/* Tab Content */}
         {activeTab === "my" && (
           <>
-            {/* Search + Add - Hide if role is 'user' */}
-            {userRole !== 'user' && (
-              <div className="flex items-center gap-4 mb-6">
-                <label className="font-medium">Search with Email / Mobile</label>
-                <input
-                  type="text"
-                  placeholder="Enter Email or Mobile"
-                  value={userName}
-                  onChange={(e) => {
-                    setUserName(e.target.value);
-                    setError(null);
-                  }}
-                  className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+          {/* Search + Add - Hide if role is 'user' */}
+          {!userRoles.includes('ROLE_USER') && (
+            <div className="flex items-center gap-4 mb-6">
+              <label className="font-medium">Search with Email / Mobile</label>
+              <input
+                type="text"
+                placeholder="Enter Email or Mobile"
+                value={userName}
+                onChange={(e) => {
+                  setUserName(e.target.value);
+                  setError(null);
+                }}
+                className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
 
-                <button
-                  className="bg-green-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-green-700 transition-colors"
-                  aria-label="Search"
-                  onClick={() => fetchProfiles(userName)}
-                >
-                  Search
-                </button>
+              <button
+                className="bg-green-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-green-700 transition-colors"
+                aria-label="Search"
+                onClick={() => fetchProfiles(userName)}
+              >
+                Search
+              </button>
 
-                <button
-                  className="bg-blue-600 text-white rounded-md px-4 py-2 ml-auto flex items-center hover:bg-blue-700 transition-colors"
-                  aria-label="Add new item"
-                  onClick={() => setShowForm(true)}
-                >
-                  <FaPlus className="mr-2" />
-                  Add
-                </button>
-              </div>
-            )}
+              <button
+                className="bg-blue-600 text-white rounded-md px-4 py-2 ml-auto flex items-center hover:bg-blue-700 transition-colors"
+                aria-label="Add new item"
+                onClick={() => setShowForm(true)}
+              >
+                <FaPlus className="mr-2" />
+                Add
+              </button>
+            </div>
+          )}
 
             {/* Add button for user role */}
-            {userRole === 'user' && (
+            {userRoles.includes('ROLE_USER') && (
               <div className="flex justify-end mb-6">
                 <button
                   className="bg-blue-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-blue-700 transition-colors"
@@ -292,8 +293,63 @@ const handleUpdate = (profile: any) => {
           </>
         )}
 
-        {activeTab === "manage" && <ManageProfile />}
-        {activeTab === "manager" && <MyManager />}
+        {activeTab === "manage" && (
+          <>
+            {/* Show search bar only if user has required roles */}
+            {(userRoles.includes("ROLE_SUPERADMIN") || userRoles.includes("ROLE_SUPERADMIN_MANAGER")) && (
+              <div className="flex items-center gap-4 mb-6">
+                <label className="font-medium">Search with Email / Mobile</label>
+                <input
+                  type="text"
+                  placeholder="Enter Email or Mobile"
+                  value={userName}
+                  onChange={(e) => {
+                    setUserName(e.target.value);
+                    setError(null);
+                  }}
+                  className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  className="bg-green-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-green-700 transition-colors"
+                  aria-label="Search"
+                  onClick={() => fetchProfiles(userName)}
+                >
+                  Search
+                </button>
+              </div>
+            )}
+            <ManageProfile />
+          </>
+        )}
+
+        {activeTab === "manager" && (
+          <>
+            {/* Show search bar only if user has required roles */}
+            {(userRoles.includes("ROLE_SUPERADMIN") || userRoles.includes("ROLE_SUPERADMIN_MANAGER")) && (
+              <div className="flex items-center gap-4 mb-6">
+                <label className="font-medium">Search with Email / Mobile</label>
+                <input
+                  type="text"
+                  placeholder="Enter Email or Mobile"
+                  value={userName}
+                  onChange={(e) => {
+                    setUserName(e.target.value);
+                    setError(null);
+                  }}
+                  className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  className="bg-green-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-green-700 transition-colors"
+                  aria-label="Search"
+                  onClick={() => fetchProfiles(userName)}
+                >
+                  Search
+                </button>
+              </div>
+            )}
+            <MyManager />
+          </>
+        )}
       </>
     )}
   </div>

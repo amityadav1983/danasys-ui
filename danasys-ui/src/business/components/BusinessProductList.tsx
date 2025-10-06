@@ -133,7 +133,7 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
 
                   {/* MRP */}
                   <div>
-                    {isSelected ? (
+                    {isSelected && selectedProducts.length > 1 ? (
                       <input
                         type="number"
                         value={editable.price}
@@ -153,7 +153,7 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
 
                   {/* Offer Price */}
                   <div>
-                    {isSelected ? (
+                    {isSelected && selectedProducts.length > 1 ? (
                       <input
                         type="number"
                         value={editable.offerPrice}
@@ -173,7 +173,7 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
 
                   {/* Quantity */}
                   <div>
-                    {isSelected ? (
+                    {isSelected && selectedProducts.length > 1 ? (
                       <input
                         type="number"
                         value={editable.quantity}

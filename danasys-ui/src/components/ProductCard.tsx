@@ -5,7 +5,7 @@ import { CartProduct, ProductItem } from "../utils/types";
 import { convertTextToURLSlug } from "../utils/helper";
 
 const ProductCard = ({ data }: { data: ProductItem }) => {
-  if (!data) return null;
+  if (!data || !data.id) return null;
 
   const navigate = useNavigate();
   const { id, name, description, offerPrice, price, image, starRating, quantity } = data;
@@ -47,9 +47,9 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
     >
       {/* 🟥 Modern Out of Stock Overlay */}
       {isOutOfStock && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-black/80 to-black/50 backdrop-blur-[2px] z-20 transition-all duration-500">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-black/30 to-black/10 backdrop-blur-[1px] z-20 transition-all duration-500">
           <div className="flex flex-col items-center space-y-2 animate-fadeIn">
-            <div className="flex items-center space-x-2 bg-red-600/90 px-4 py-2 rounded-full shadow-lg backdrop-blur-sm">
+            <div className="flex items-center space-x-2 bg-red-600/70 px-7 py-2 rounded-full shadow-lg backdrop-blur-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4 text-white animate-pulse"
@@ -69,7 +69,7 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
               </span>
             </div>
 
-            <span className="text-gray-200 text-xs sm:text-sm italic opacity-90">
+            <span className="text-black font-bold text-lg sm:text-sm italic opacity-100">
               Coming Soon
             </span>
           </div>

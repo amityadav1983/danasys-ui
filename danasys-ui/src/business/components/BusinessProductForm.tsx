@@ -116,33 +116,29 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
   }
   setSubmitting(true);
   try {
-    console.log("Sending userBusinessProfileId:", profileId);
-    // Backend API ke hisaab se query params bana rahe hain
-    const queryParams = new URLSearchParams({
-      id: isUpdateMode && product ? String(product.id) : "0",
-      name: formData.name,
-      price: formData.price || "0",
-      offerPrice: formData.offerPrice || "0",
-      quantity: formData.quantity || "0",
-      category: formData.categoryId,
-      description: formData.description,
-      image: file ? file.name : product?.image || "",
-      moreAbout: formData.moreAbout,
-      userBusinessProfileId: String(profileId),
-      status: product?.status || "ACTIVE",
-      version: String(product?.version || 0),
-    });
-
     const formDataObj = new FormData();
+    formDataObj.append("id", isUpdateMode && product ? String(product.id) : "0");
+    formDataObj.append("name", formData.name);
+    formDataObj.append("price", formData.price || "0");
+    formDataObj.append("offerPrice", formData.offerPrice || "0");
+    formDataObj.append("quantity", formData.quantity || "0");
+    formDataObj.append("category", formData.categoryId);
+    formDataObj.append("description", formData.description);
+    formDataObj.append("moreAbout", formData.moreAbout);
+    formDataObj.append("userBusinessProfileId", String(profileId));
+    formDataObj.append("status", product?.status || "ACTIVE");
+    formDataObj.append("version", String(product?.version || 0));
     if (file) {
       formDataObj.append("file", file); // backend "file" key expect karta hai
+    } else if (product?.image) {
+      formDataObj.append("image", product.image);
     }
 
     let url = "";
     if (isUpdateMode && product) {
-      url = `/api/product/updateProduct?${queryParams.toString()}`;
+      url = `/api/product/updateProduct`;
     } else {
-      url = `/api/product/addProduct?${queryParams.toString()}`;
+      url = `/api/product/addProduct`;
     }
 
     const res = await fetch(url, {
@@ -177,7 +173,43 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
       <form onSubmit={handleSubmit} className="space-y-6" id="product-form">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Left Column - Product Info */}
-          <div className="space-y-6">
+          <div className="space-y-6 relative">
+            {(isUpdateMode && product?.image) || (!isUpdateMode) ? (
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full overflow-hidden border border-gray-300 cursor-pointer">
+                <img
+                  src={
+                    file
+                      ? URL.createObjectURL(file)
+                      : isUpdateMode && product?.image
+                      ? product.image
+                      : "https://via.placeholder.com/80?text=Upload"
+                  }
+                  alt="Product image"
+                  className="w-full h-full object-cover rounded-full"
+                  onClick={() => document.getElementById('image-upload')?.click()}
+                />
+                <div
+                  className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-2 cursor-pointer flex items-center justify-center shadow-lg border-2 border-white"
+                  onClick={() => document.getElementById('image-upload')?.click()}
+                  style={{ width: '28px', height: '28px' }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3h-1.586a1 1 0 00-.707.293l-1.414 1.414A1 1 0 0112.586 5H11a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            ) : null}
             <div className="p-4 bg-gray-50 rounded-xl shadow-sm">
               <h3 className="font-semibold text-lg mb-4 text-gray-700">
                 Product Details
@@ -258,15 +290,45 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
             </div>
 
             {/* File Upload */}
-            <div className="p-4 bg-gray-50 rounded-xl shadow-sm">
-              <h3 className="font-semibold text-lg mb-4 text-gray-700">
+            <div className="">
+              {/* <h3 className="font-semibold text-lg mb-4 text-gray-700">
                 Upload Image
-              </h3>
+              </h3> */}
+              {isUpdateMode && product?.image && (
+                <div className="absolute top-0 right-0 w-20 h-20 rounded-full overflow-hidden border border-gray-300 cursor-pointer">
+                  <img
+                    src={product.image}
+                    alt="Current product image"
+                    className="w-full h-full object-cover rounded-full"
+                    onClick={() => document.getElementById('image-upload')?.click()}
+                  />
+                  <div
+                    className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-1"
+                    onClick={() => document.getElementById('image-upload')?.click()}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M16 3h-1.586a1 1 0 00-.707.293l-1.414 1.414A1 1 0 0112.586 5H11a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              )}
               <input
+                id="image-upload"
                 type="file"
                 accept="image/*"
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
-                className="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer p-2"
+                className="hidden"
               />
               {file && (
                 <p className="text-sm text-gray-500 mt-2">

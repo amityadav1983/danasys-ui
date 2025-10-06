@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import ActiveOrderTab from '../components/orders/ActiveOrderTab';
 import TrackOrderTab from '../components/orders/TrackOrderTab';
 import OrderHistoryTab from '../components/orders/OrderHistoryTab';
+import MyOrderTab from '../components/orders/MyOrderTab';
 
 const BusinessOrders: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'active' | 'track' | 'history'>('active');
+  const [activeTab, setActiveTab] = useState<'active' | 'track' | 'history' | 'myorder'>('active');
 
   const tabs = [
     { key: 'active', label: 'Active Order' },
     { key: 'track', label: 'Track Order' },
     { key: 'history', label: 'Order History' },
+    { key: 'myorder', label: 'My Order' },
   ];
 
   const renderTabContent = () => {
@@ -20,6 +22,8 @@ const BusinessOrders: React.FC = () => {
         return <TrackOrderTab />;
       case 'history':
         return <OrderHistoryTab />;
+      case 'myorder':
+        return <MyOrderTab />;
       default:
         return <ActiveOrderTab />;
     }

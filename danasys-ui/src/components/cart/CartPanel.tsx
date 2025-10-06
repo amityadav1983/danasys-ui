@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { FiChevronRight } from 'react-icons/fi';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
@@ -12,6 +12,7 @@ import Misc from '../../lib/data/layout.json';
 import SuggestedItems from './SuggestedItems';
 import { shuffleItems } from '../../utils/helper';
 import { useNavigate } from 'react-router-dom';
+import { authService, UserDetails } from '../../services/auth';
 
 declare global {
   interface Window {
@@ -59,8 +60,21 @@ const CartPanel = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const { totalAmount, totalQuantity, cartItems, billAmount, discount } =
     useAppSelector((state) => state.cart);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const details = await authService.getUserDetails();
+        setUserDetails(details);
+      } catch (error) {
+        console.error('Failed to fetch user details:', error);
+      }
+    };
+    fetchUserDetails();
+  }, []);
 
   const productItems: any[] = Misc.filter((item) => item.type === 77).map(
     (el) => el.objects
@@ -85,8 +99,8 @@ const CartPanel = () => {
       // 1. Prepare request body for holdOrder API
       const holdOrderPayload = {
         orderId: 0,
-        customerUserProfileId: 1, // TODO: replace with actual logged-in userProfileId
-        businessUserProfileId: 101, // TODO: replace with actual businessProfileId
+        customerUserProfileId: userDetails?.userProfileId || 1,
+        businessUserProfileId: (cartItems[0]?.product as any)?.userBusinessProfileId || 101,
         items: cartItems.map((item) => ({
           productId: item.product.id,
           quantity: item.quantity,

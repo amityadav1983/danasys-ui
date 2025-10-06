@@ -39,6 +39,7 @@ export interface UserDetails {
   contactInfo?: string;
   serviceAreaId?: number;
   userWalletBalance: number;
+  myQRCode?: string;
 }
 
 export interface BusinessDashboardItem {

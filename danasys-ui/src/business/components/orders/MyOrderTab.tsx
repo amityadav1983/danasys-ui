@@ -22,7 +22,7 @@ interface OrderHistory {
   deliveryAddress: string;
 }
 
-const OrderHistoryTab: React.FC = () => {
+const MyOrderTab: React.FC = () => {
   const [orders, setOrders] = useState<OrderHistory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -208,17 +208,6 @@ const OrderHistoryTab: React.FC = () => {
                             }
                             className="border rounded-lg px-3 py-1 text-sm text-gray-700 focus:outline-none focus:ring focus:ring-blue-200"
                           />
-
-                          {/* Status */}
-                          <select
-                            className="border rounded-lg px-3 py-1 text-sm text-gray-700 focus:outline-none"
-                            defaultValue={p.status}
-                          >
-                            <option value="ORDER_PLACED">ORDER_PLACED</option>
-                            <option value="DELIVERED">DELIVERED</option>
-                            <option value="RETURN_REQUESTED">RETURN_REQUESTED</option>
-                            <option value="CANCELLED">CANCELLED</option>
-                          </select>
                         </div>
                       )}
                     </div>
@@ -285,4 +274,4 @@ const OrderHistoryTab: React.FC = () => {
   );
 };
 
-export default OrderHistoryTab;
+export default MyOrderTab;
