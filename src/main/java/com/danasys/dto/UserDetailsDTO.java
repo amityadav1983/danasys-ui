@@ -47,6 +47,8 @@ public class UserDetailsDTO {
 	private String companyLogo;
 	
 	private Long userProfileId;
+	
+	private Double businessUserOneTimePayment;
 
 
 }
