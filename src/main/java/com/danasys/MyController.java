@@ -170,7 +170,7 @@ public class MyController {
 		String logo = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 				.path("cost2cost-new.png").toUriString();
 		userDetailsDTO.setCompanyLogo(logo);
-
+		userDetailsDTO.setBusinessUserOneTimePayment(101d);
 		return userDetailsDTO;
 	}
 	
@@ -961,7 +961,7 @@ public class MyController {
 		} else if (requestURI.contains("images/category")) {
 			newUploadDir = uploadDir + "category/";
 		} else if (requestURI.contains("images/userdata")) {
-			newUploadDir = uploadDir + "userdata/";
+			newUploadDir = uploadDir + "userdata\\";
 		}
 
 		Path imagePath = Paths.get(newUploadDir).resolve(filename);
