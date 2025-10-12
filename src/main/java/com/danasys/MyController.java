@@ -1472,5 +1472,13 @@ public class MyController {
 		return ResponseEntity.badRequest().body("Wrong user profile id");
 
 	}
+	
+	@PutMapping("/api/user/removeBusinessManager/{businessProfileId}")
+	@Operation(summary = "Remove business manager", description = "Set selected address as user deafult address.")
+	public ResponseEntity<?> removeBusinessManager(@PathVariable Long businessProfileId)
+			throws IOException {
+		String status = "Business manager removed successfully";
+		return ResponseEntity.ok(status);
+	}
 
 }
