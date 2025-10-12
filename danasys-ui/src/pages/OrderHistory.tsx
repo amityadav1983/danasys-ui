@@ -1,178 +1,305 @@
-import React, { useEffect } from 'react';
-import { useAppSelector } from '../hooks/useAppSelector';
-import { OrderHistory as OrderHistoryType } from '../utils/types';
-import { FaShoppingBag, FaCalendarAlt, FaMapMarkerAlt, FaRupeeSign } from 'react-icons/fa';
-import { format } from 'date-fns';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from '../services/api';
+import { FaUndoAlt, FaArrowLeft } from "react-icons/fa";
 
-const OrderHistory = () => {
-  const orders = useAppSelector((state) => state.orders.orders);
+interface Product {
+  purchasedProductId: number;
+  product: any;
+  returnDateLimit: string;
+  status: string;
+  quantity: number;
+  offerPrice: number;
+  mrp: number;
+}
 
-  // Sample data for demonstration
-  const sampleOrders: OrderHistoryType[] = [
-    {
-      orderId: 'ORD-001',
-      date: '2024-01-15',
-      items: [
-        {
-          product: {
-            id: '1',
-            title: 'Fresh Milk',
-            subTitle: '1L Pack',
-            image: '/public/categories/1.avif',
-            price: 70,
-            mrp: 75,
-          },
-          quantity: 2,
-          price: 140,
-        },
-        {
-          product: {
-            id: '2',
-            title: 'Brown Bread',
-            subTitle: '400g',
-            image: '/public/categories/2.avif',
-            price: 45,
-            mrp: 50,
-          },
-          quantity: 1,
-          price: 45,
-        },
-      ],
-      totalAmount: 185,
-      status: 'delivered',
-      deliveryAddress: '123 Main Street, Delhi',
-      estimatedDelivery: '2024-01-16',
-    },
-    {
-      orderId: 'ORD-002',
-      date: '2024-01-10',
-      items: [
-        {
-          product: {
-            id: '3',
-            title: 'Organic Eggs',
-            subTitle: '12 pieces',
-            image: '/public/categories/3.avif',
-            price: 120,
-            mrp: 130,
-          },
-          quantity: 1,
-          price: 120,
-        },
-      ],
-      totalAmount: 120,
-      status: 'processing',
-      deliveryAddress: '456 Park Avenue, Delhi',
-      estimatedDelivery: '2024-01-12',
-    },
-  ];
+interface OrderHistory {
+  id: number;
+  orderStatus: string;
+  products: Product[];
+  orderDeliverTimeSlot: string;
+  totalPrice: number;
+  totalDiscount: number;
+  deliveryAddress: string;
+}
 
-  const getStatusColor = (status: OrderHistoryType['status']) => {
-    switch (status) {
-      case 'delivered':
-        return 'text-green-600 bg-green-100';
-      case 'processing':
-        return 'text-blue-600 bg-blue-100';
-      case 'cancelled':
-        return 'text-red-600 bg-red-100';
-      default:
-        return 'text-gray-600 bg-gray-100';
+const OrderHistory: React.FC = () => {
+  const [orders, setOrders] = useState<OrderHistory[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [userProfileId, setUserProfileId] = useState<number | null>(null);
+
+  const [selectedProducts, setSelectedProducts] = useState<Record<number, boolean>>({});
+  const [reasons, setReasons] = useState<Record<number, string>>({});
+  const [images, setImages] = useState<Record<number, File | null>>({});
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await api.get('/api/user/getUserDetails');
+        setUserProfileId(res.data.userProfileId);
+      } catch (err: any) {
+        console.error('Error fetching user details:', err);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+  useEffect(() => {
+    if (userProfileId === null) return;
+
+    const fetchOrders = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await api.get(`/api/order/orderHistory/${userProfileId}`);
+        setOrders(res.data);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [userProfileId]);
+
+  const handleCheckboxChange = (productId: number) => {
+    setSelectedProducts((prev) => ({
+      ...prev,
+      [productId]: !prev[productId],
+    }));
+  };
+
+  const handleReasonChange = (productId: number, value: string) => {
+    setReasons((prev) => ({
+      ...prev,
+      [productId]: value,
+    }));
+  };
+
+  const handleFileChange = (productId: number, file: File | null) => {
+    setImages((prev) => ({
+      ...prev,
+      [productId]: file,
+    }));
+  };
+
+  const handleReturn = async (orderId: number) => {
+    if (userProfileId === null) return;
+
+    const selectedIds = Object.keys(selectedProducts).filter((id) => selectedProducts[+id]);
+    if (selectedIds.length === 0) return;
+
+    const items = selectedIds.map((id) => ({
+      purchasedProductId: +id,
+      status: "IN_PROGRESS",
+      comments: reasons[+id] || "",
+      starRating: 0,
+    }));
+
+    let file = "";
+    const firstSelected = selectedIds.find((id) => images[+id]);
+    if (firstSelected && images[+firstSelected]) {
+      file = await toBase64(images[+firstSelected]!);
+    }
+
+    const payload = {
+      returnOrderRequest: {
+        orderId,
+        items,
+        platformFees: 0,
+      },
+      file,
+    };
+
+    try {
+      await api.post("/api/order/returnOrder", payload);
+      alert("Return request submitted successfully");
+      setSelectedProducts({});
+      setReasons({});
+      setImages({});
+    } catch (err: any) {
+      alert("Failed to submit return request: " + (err.message || "Something went wrong"));
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'dd MMM yyyy');
+  const toBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-8 mt-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow-sm rounded-lg">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <FaShoppingBag className="mr-3 text-blue-600" />
-              Order History
-            </h1>
-            <p className="text-sm text-gray-600 mt-1">
-              Track all your past orders and deliveries
-            </p>
-          </div>
+  const handleDownload = (orderId: number) => {
+    window.open(`/api/order/invoice/${orderId}/download?type=pdf`, '_blank');
+  };
 
-          <div className="p-6">
-            {orders.length === 0 && (
-              <div className="text-center py-12">
-                <FaShoppingBag className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
-                <p className="text-gray-500 mb-4">Add items to your cart and place an order to see your order history here</p>
+  if (loading) {
+    return (
+      <div className="p-6 text-gray-500 flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="p-6 text-red-500 text-center">{error}</div>;
+  }
+
+  return (
+    <div className="p-6">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 mb-4 text-gray-600 hover:text-gray-800 transition-colors"
+      >
+        <FaArrowLeft size={16} />
+        Back
+      </button>
+      {orders.length > 0 ? (
+        <div className="space-y-6">
+          {orders.map((order) => (
+            <div
+              key={order.id}
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition"
+            >
+              {/* Header */}
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Order #{order.id}
+                </h3>
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
+                  {order.orderStatus}
+                </span>
+              </div>
+
+              {/* Products */}
+              <div className="space-y-3">
+                {order.products.map((p) => {
+                  const isSelected = selectedProducts[p.purchasedProductId] || false;
+                  return (
+                    <div
+                      key={p.purchasedProductId}
+                      className="flex flex-col md:flex-row md:justify-between md:items-start bg-gray-50 px-4 py-3 rounded-lg border gap-3"
+                    >
+                      {/* Checkbox + Info */}
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleCheckboxChange(p.purchasedProductId)}
+                          className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        />
+                        <div>
+                          <p className="font-medium text-gray-800">
+                            {p.product ? p.product.title || `Product #${p.purchasedProductId}` : `Product #${p.purchasedProductId}`}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Qty: {p.quantity} | MRP: ₹{p.mrp} | Offer: ₹{p.offerPrice}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Hidden/Shown Fields */}
+                      {isSelected && (
+                        <div className="flex flex-wrap items-center gap-3">
+                          {/* Upload Image */}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            id={`upload-${p.purchasedProductId}`}
+                            onChange={(e) =>
+                              handleFileChange(
+                                p.purchasedProductId,
+                                e.target.files ? e.target.files[0] : null
+                              )
+                            }
+                          />
+                          <label
+                            htmlFor={`upload-${p.purchasedProductId}`}
+                            className="px-3 py-1 border rounded-lg text-sm text-gray-600 cursor-pointer hover:bg-gray-100"
+                          >
+                            Upload Image
+                          </label>
+
+                          {/* Reason */}
+                          <input
+                            type="text"
+                            placeholder="Reason to return"
+                            value={reasons[p.purchasedProductId] || ""}
+                            onChange={(e) =>
+                              handleReasonChange(p.purchasedProductId, e.target.value)
+                            }
+                            className="border rounded-lg px-3 py-1 text-sm text-gray-700 focus:outline-none focus:ring focus:ring-blue-200"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Order Details */}
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                <p>
+                  <span className="font-semibold">Delivery Slot: </span>
+                  {new Date(order.orderDeliverTimeSlot).toLocaleString()}
+                </p>
+                <p>
+                  <span className="font-semibold">Delivery Address: </span>
+                  {order.deliveryAddress}
+                </p>
+                <p>
+                  <span className="font-semibold">Total Price: </span>₹
+                  {order.totalPrice.toFixed(2)}
+                </p>
+                <p>
+                  <span className="font-semibold">Discount: </span>₹
+                  {order.totalDiscount.toFixed(2)}
+                </p>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="mt-6 flex flex-wrap justify-end gap-3">
                 <button
-                  onClick={() => window.location.href = '/'}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                  onClick={() => handleReturn(order.id)}
+                  disabled={
+                    !Object.keys(selectedProducts).some((id) => selectedProducts[+id])
+                  }
+                  className={`px-4 py-2 flex items-center gap-2 rounded-lg text-sm font-medium ${
+                    Object.keys(selectedProducts).some((id) => selectedProducts[+id])
+                      ? "bg-red-100 text-red-700 hover:bg-red-200"
+                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  }`}
                 >
-                  Start Shopping
+                  <FaUndoAlt /> Return Order
+                </button>
+                <button className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-sm font-medium">
+                  View Details
+                </button>
+                <button
+                  onClick={() => handleDownload(order.id)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium"
+                >
+                  Download Invoice
                 </button>
               </div>
-            )}
-
-            <div className="space-y-6">
-              {(orders.length > 0 ? orders : sampleOrders).map((order) => (
-                <div key={order.orderId} className="bg-white border border-gray-200 rounded-lg shadow-sm">
-                  <div className="px-6 py-4 border-b border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">Order #{order.orderId}</h3>
-                        <div className="flex items-center text-sm text-gray-500 mt-1">
-                          <FaCalendarAlt className="mr-1" />
-                          {formatDate(order.date)}
-                        </div>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="px-6 py-4">
-                    <div className="space-y-3">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex items-center space-x-4">
-                          <img
-                            src={item.product.image}
-                            alt={item.product.title}
-                            className="w-16 h-16 rounded-md object-cover"
-                          />
-                          <div className="flex-1">
-                            <h4 className="text-sm font-medium text-gray-900">{item.product.title}</h4>
-                            <p className="text-sm text-gray-500">{item.product.subTitle}</p>
-                            <p className="text-sm text-gray-900">
-                              Qty: {item.quantity} × ₹{item.product.price}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm font-medium text-gray-900">₹{item.price}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <FaMapMarkerAlt className="mr-2" />
-                          <span className="truncate">{order.deliveryAddress}</span>
-                        </div>
-                        <div className="flex items-center text-lg font-semibold text-gray-900">
-                          <FaRupeeSign className="mr-1" />
-                          {order.totalAmount}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
-          </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        !loading && (
+          <div className="bg-white p-6 rounded-xl shadow text-center text-gray-600">
+            No order history available.
+          </div>
+        )
+      )}
     </div>
   );
 };

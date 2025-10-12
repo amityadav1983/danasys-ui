@@ -199,9 +199,9 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => handleUpdateProduct(product)}
-                      disabled={selectedProducts.length > 1}
+                      disabled={!isSelected || selectedProducts.length > 1}
                       className={`flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full transition ${
-                        selectedProducts.length > 1
+                        !isSelected || selectedProducts.length > 1
                           ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                           : "text-yellow-700 bg-yellow-100 hover:bg-yellow-200"
                       }`}

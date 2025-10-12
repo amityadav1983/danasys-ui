@@ -261,7 +261,7 @@ const BusinessProducts: React.FC = () => {
                 : "text-gray-600 hover:text-blue-600"
             }`}
           >
-            Manager of Product
+            Product Manager
           </button>
         )}
       </div>

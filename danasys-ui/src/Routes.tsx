@@ -18,6 +18,7 @@ const BusinessHome = React.lazy(() => import('./business/pages/BusinessHome'));
 const UnderConstruction = React.lazy(() => import('./business/pages/UnderConstruction'));
 const BusinessConnections = React.lazy(() => import('./business/pages/BusinessConnections'));
 const BusinessMoneyTransfer = React.lazy(() => import('./business/pages/BusinessMoneyTransfer'));
+const MyConnections = React.lazy(() => import('./components/MyRef/MyConnections'));
 
 const AppWithRouting = () => {
   return (
@@ -36,6 +37,14 @@ const AppWithRouting = () => {
         element={
           <Suspense fallback={<Loader fullscreen />}>
             <Layout component={<OrderHistory />} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/my-connections"
+        element={
+          <Suspense fallback={<Loader fullscreen />}>
+            <Layout component={<MyConnections />} />
           </Suspense>
         }
       />
