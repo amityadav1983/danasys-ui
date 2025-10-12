@@ -1485,5 +1485,13 @@ public class MyController {
 		String status = "Business manager removed successfully";
 		return ResponseEntity.ok(status);
 	}
+	
+	@PutMapping("/api/user/noMoreManagerOfBusiness/{userProfileId}")
+	@Operation(summary = "Remove business manager", description = "Set selected address as user deafult address.")
+	public ResponseEntity<?> noMoreManagerOfBusiness(@PathVariable Long userProfileId)
+			throws IOException {
+		String status = "Business manager removed successfully";
+		return ResponseEntity.ok(status);
+	}
 
 }
