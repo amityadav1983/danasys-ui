@@ -528,7 +528,7 @@ public class OrderAndPaymentController {
 		status.add(AccountTransferStatusEnum.TRANSFER_DECLIENED);
 		status.add(AccountTransferStatusEnum.TRANSFER_DONE);
 		status.add(AccountTransferStatusEnum.TRANSFER_REQ_RAISED);
-		
+		dto.setTransactionStatus(status);
 
 		List<BankTransferRequestDTO> allPendingReq = new ArrayList<>();
 
