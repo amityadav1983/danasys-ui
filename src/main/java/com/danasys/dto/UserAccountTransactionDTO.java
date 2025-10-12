@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.danasys.user.enums.AccountTransferStatusEnum;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,4 +24,5 @@ public class UserAccountTransactionDTO implements Serializable{
 	
 	private List<TransactionDTO> transactionDTO  = new ArrayList<>();
 
+	private List<AccountTransferStatusEnum> transactionStatus;
 }

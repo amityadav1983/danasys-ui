@@ -524,6 +524,11 @@ public class OrderAndPaymentController {
 
 		UserAccountTransactionDTO dto = new UserAccountTransactionDTO();
 		dto.setCurrentBalance(50000d);
+		List<AccountTransferStatusEnum> status = new ArrayList<>();
+		status.add(AccountTransferStatusEnum.TRANSFER_DECLIENED);
+		status.add(AccountTransferStatusEnum.TRANSFER_DONE);
+		status.add(AccountTransferStatusEnum.TRANSFER_REQ_RAISED);
+		
 
 		List<BankTransferRequestDTO> allPendingReq = new ArrayList<>();
 
