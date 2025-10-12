@@ -27,10 +27,12 @@ const Layout = ({ noFooter, component }: Props) => {
 
   // Check if current page is Order History
   const isOrderHistoryPage = location.pathname === '/orders';
+  const isMyConnectionsPage = location.pathname === '/my-connections';
+  const isMinimalLayoutPage = isMyConnectionsPage || isOrderHistoryPage;
 
   return (
     <>
-      {currentMode !== 'business' && <Header />}
+      {currentMode !== 'business' && !isMinimalLayoutPage && <Header />}
       <div
         className={`transition-all duration-700 ease-in-out transform perspective-1000 ${
           currentMode === 'business'
@@ -43,9 +45,9 @@ const Layout = ({ noFooter, component }: Props) => {
           <BusinessLayout component={<div></div>} />
         ) : (
           <div>
-            {!isOrderHistoryPage && <CategoriesIcons />}
-            <main className="pt-0">{component}</main>
-            {!noFooter && (
+            {!isOrderHistoryPage && !isMinimalLayoutPage && <CategoriesIcons />}
+            <main className={isMinimalLayoutPage ? "p-0" : "pt-0"}>{component}</main>
+            {!noFooter && !isMinimalLayoutPage && (
               <>
                 <Footer />
               </>
@@ -53,9 +55,9 @@ const Layout = ({ noFooter, component }: Props) => {
           </div>
         )}
       </div>
-      {currentMode !== 'business' && <ViewCartButton />}
-      {cartShown && <CartPanel />}
-      {modalShown && <Modal />}
+      {currentMode !== 'business' && !isMinimalLayoutPage && <ViewCartButton />}
+      {cartShown && !isMinimalLayoutPage && <CartPanel />}
+      {modalShown && !isMinimalLayoutPage && <Modal />}
     </>
   );
 };

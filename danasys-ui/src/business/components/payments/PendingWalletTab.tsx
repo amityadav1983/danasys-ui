@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaWallet, FaHistory } from "react-icons/fa";
+import api from "../../../services/api";
 
 interface TransactionDTO {
   amount: string;
@@ -17,12 +18,27 @@ interface PendingWalletData {
 const PendingWalletTab: React.FC = () => {
   const [walletData, setWalletData] = useState<PendingWalletData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [roles, setRoles] = useState<string[]>([]);
+  const [userName, setUserName] = useState("");
+  const [searchedUserId, setSearchedUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const res = await api.get("/api/user/getUserDetails");
+        setRoles(res.data.roles || []);
+      } catch (err) {
+        console.error("Error fetching roles:", err);
+      }
+    };
+    fetchRoles();
+  }, []);
 
   useEffect(() => {
     const fetchWalletData = async () => {
       try {
-        // Get userProfileId from localStorage, fallback to '1' if not found
-        const userProfileId = localStorage.getItem('userProfileId') || '1';
+        // Get userProfileId from searched or localStorage, fallback to '1' if not found
+        const userProfileId = searchedUserId || localStorage.getItem('userProfileId') || '1';
 
         const response = await fetch(
           `/api/payment/getUnclearedWalletBalance/${userProfileId}`,
@@ -42,13 +58,48 @@ const PendingWalletTab: React.FC = () => {
     };
 
     fetchWalletData();
-  }, []);
+  }, [searchedUserId]);
+
+  const handleSearch = async () => {
+    if (!userName.trim()) return;
+    try {
+      const res = await api.get(`/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(userName)}`);
+      if (res.data && res.data.length > 0) {
+        setSearchedUserId(res.data[0].userProfileId.toString());
+      } else {
+        alert("User not found");
+      }
+    } catch (err) {
+      console.error("Error searching user:", err);
+      alert("Error searching user");
+    }
+  };
+
+  const isSuper = roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
 
   return (
     <div className="p-6">
       {/* <h2 className="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-2">
         <FaWallet className="text-blue-600" /> Pending Wallet
       </h2> */}
+
+      {isSuper && (
+        <div className="mb-6 flex w-full md:w-2/3 gap-2">
+          <input
+            type="text"
+            placeholder="Enter Email or Mobile"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          />
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Search
+          </button>
+        </div>
+      )}
 
       <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
         {loading ? (

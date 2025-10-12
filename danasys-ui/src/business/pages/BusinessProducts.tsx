@@ -52,8 +52,8 @@ const BusinessProducts: React.FC = () => {
     {}
   );
 
-  // User role and search
-  const [userRole, setUserRole] = useState<string | null>(null);
+  // User roles and search
+  const [userRoles, setUserRoles] = useState<string[]>([]);
   const [userName, setUserName] = useState("");
 
   // ✅ New: search triggered state
@@ -72,11 +72,11 @@ const BusinessProducts: React.FC = () => {
         const userRes = await fetch("/api/user/getUserDetails");
         if (!userRes.ok) throw new Error("Failed to fetch user details");
         const userData = await userRes.json();
-        setUserRole(userData.role);
+        setUserRoles(userData.roles || []);
 
         // For ROLE_SUPERADMIN: Don't load profiles automatically, wait for search
         // For all other roles: Load profiles automatically
-        if (userData.role !== "ROLE_SUPERADMIN") {
+        if (!userRoles.includes("ROLE_SUPERADMIN")) {
           const userProfileId = userData.userProfileId;
           const res = await fetch(
             `/api/user/loadUserBusinessProfileById?userProfileId=${userProfileId}`
@@ -97,7 +97,7 @@ const BusinessProducts: React.FC = () => {
 
   // Fetch Profiles for ROLE_SUPERADMIN on userName change
   useEffect(() => {
-    if (userRole === "ROLE_SUPERADMIN" && userName.trim() && searchTriggered) {
+    if (userRoles.includes("ROLE_SUPERADMIN") && userName.trim() && searchTriggered) {
       const fetchProfiles = async () => {
         setLoadingProfiles(true);
         setError(null);
@@ -116,7 +116,7 @@ const BusinessProducts: React.FC = () => {
       };
       fetchProfiles();
     }
-  }, [userName, userRole, searchTriggered]);
+  }, [userName, userRoles, searchTriggered]);
 
   // Fetch Products
   useEffect(() => {
@@ -252,16 +252,18 @@ const BusinessProducts: React.FC = () => {
         >
           My Product
         </button>
-        <button
-          onClick={() => navigate("/business/manage-products")}
-          className={`px-4 py-2 font-medium ${
-            isManageProductActive
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-blue-600"
-          }`}
-        >
-          Manager of Product
-        </button>
+        {(userRoles.includes("ROLE_BUSINESS_USER_MGR") || userRoles.includes("ROLE_BUSINESS_USER")) && (
+          <button
+            onClick={() => navigate("/business/manage-products")}
+            className={`px-4 py-2 font-medium ${
+              isManageProductActive
+                ? "border-b-2 border-blue-600 text-blue-600"
+                : "text-gray-600 hover:text-blue-600"
+            }`}
+          >
+            Product Manager
+          </button>
+        )}
       </div>
 
       {/* ✅ Show Form if open */}
@@ -288,7 +290,7 @@ const BusinessProducts: React.FC = () => {
         <>
           {(isMyProductActive || isManageProductActive) && (
             <div className="space-y-6">
-              {userRole === "ROLE_SUPERADMIN" && (
+              {userRoles.includes("ROLE_SUPERADMIN") && (
                 <div className="flex items-center gap-4 mb-6">
                   <label className="font-medium">Search with Username</label>
                   <input
@@ -329,8 +331,8 @@ const BusinessProducts: React.FC = () => {
     1) ROLE_SUPERADMIN na ho, ya
     2) ROLE_SUPERADMIN ho aur searchTriggered true ho + userName empty na ho
 */}
-{(userRole !== "ROLE_SUPERADMIN" ||
-  (userRole === "ROLE_SUPERADMIN" && searchTriggered && userName.trim() !== "")) && (
+{(!userRoles.includes("ROLE_SUPERADMIN") ||
+  (userRoles.includes("ROLE_SUPERADMIN") && searchTriggered && userName.trim() !== "")) && (
   <BusinessProfileSelector
     profiles={profiles}
     selectedProfile={selectedProfile}
@@ -356,6 +358,7 @@ const BusinessProducts: React.FC = () => {
                   handleUpdateProduct={handleUpdateProduct}
                   handleDeleteProduct={handleDeleteProduct}
                   loadingProducts={loadingProducts}
+                  showSearch={userRoles.includes("ROLE_SUPERADMIN") || userRoles.includes("ROLE_SUPERADMIN_MGR")}
                 />
               )}
             </div>

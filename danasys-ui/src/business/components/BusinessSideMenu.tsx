@@ -60,12 +60,14 @@ const BusinessSideMenu: React.FC = () => {
     const fetchData = async () => {
       try {
         const user = await authService.getUserDetails();
+        const userRoles = (user as any).roles || [];
+        const isSuperAdmin = userRoles.some((role: string) => ["ROLE_SUPERADMIN", "ROLE_SUPERADMIN_MGR"].includes(role));
         const dashboard = await authService.loadBusinessDashboard(user.userProfileId);
         console.log("Dashboard response:", dashboard);
         const dynamicItems = dashboard.buIconDetails
           .map((item) => {
             const config = menuMap[item.name];
-            if (config) {
+            if (config && (item.name !== "Activation" || isSuperAdmin)) {
               return { ...config, buIconPath: item.buIconPath };
             }
             return null;
@@ -76,7 +78,7 @@ const BusinessSideMenu: React.FC = () => {
           "Dashboard",
           "Business Profile",
           "Users",
-          "Activation",
+          ...(isSuperAdmin ? ["Activation"] : []),
           "Products",
           "Orders",
           "Payments",
@@ -102,22 +104,46 @@ const BusinessSideMenu: React.FC = () => {
       } catch (error) {
         console.error("Error fetching dashboard:", error);
         // Fallback to hardcoded
-        setMenuItems([
-          { icon: FaHome, label: "Dashboard", to: "/business" },
-          { icon: FaUserTie, label: "Business Profile", to: "/business/profile" },
-          { icon: FaUsers, label: "Users", to: "/business/add-user" },
-          { icon: FaCheckCircle, label: "Activation", to: "/business/activation" },
-          { icon: FaBoxOpen, label: "Products", to: "/business/products" },
-          { icon: FaShoppingCart, label: "Orders", to: "/business/orders" },
-          { icon: FaMoneyBillWave, label: "Payments", to: "/business/payments" },
-          { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
-          { icon: FaNetworkWired, label: "My Connections", to: "/business/connections" },
-          { icon: FaChartBar, label: "Reports", to: "/business/reports" },
-          { icon: FaBuilding, label: "Company Profile", to: "/business/company-profile" },
-          { icon: FaChartLine, label: "Trends", to: "/business/trends" },
-          { icon: FaFileAlt, label: "Annual Report", to: "/business/annual-report" },
-          { icon: FaComments, label: "Communication", to: "/business/communication" },
-        ]);
+        try {
+          const user = await authService.getUserDetails();
+          const userRoles = (user as any).roles || [];
+          const isSuperAdmin = userRoles.some((role: string) => ["ROLE_SUPERADMIN", "ROLE_SUPERADMIN_MGR"].includes(role));
+          const fallbackItems = [
+            { icon: FaHome, label: "Dashboard", to: "/business" },
+            { icon: FaUserTie, label: "Business Profile", to: "/business/profile" },
+            { icon: FaUsers, label: "Users", to: "/business/add-user" },
+            ...(isSuperAdmin ? [{ icon: FaCheckCircle, label: "Activation", to: "/business/activation" }] : []),
+            { icon: FaBoxOpen, label: "Products", to: "/business/products" },
+            { icon: FaShoppingCart, label: "Orders", to: "/business/orders" },
+            { icon: FaMoneyBillWave, label: "Payments", to: "/business/payments" },
+            { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
+            { icon: FaNetworkWired, label: "My Connections", to: "/business/connections" },
+            { icon: FaChartBar, label: "Reports", to: "/business/reports" },
+            { icon: FaBuilding, label: "Company Profile", to: "/business/company-profile" },
+            { icon: FaChartLine, label: "Trends", to: "/business/trends" },
+            { icon: FaFileAlt, label: "Annual Report", to: "/business/annual-report" },
+            { icon: FaComments, label: "Communication", to: "/business/communication" },
+          ];
+          setMenuItems(fallbackItems);
+        } catch (fallbackError) {
+          console.error("Error in fallback:", fallbackError);
+          // Ultimate fallback without Activation
+          setMenuItems([
+            { icon: FaHome, label: "Dashboard", to: "/business" },
+            { icon: FaUserTie, label: "Business Profile", to: "/business/profile" },
+            { icon: FaUsers, label: "Users", to: "/business/add-user" },
+            { icon: FaBoxOpen, label: "Products", to: "/business/products" },
+            { icon: FaShoppingCart, label: "Orders", to: "/business/orders" },
+            { icon: FaMoneyBillWave, label: "Payments", to: "/business/payments" },
+            { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
+            { icon: FaNetworkWired, label: "My Connections", to: "/business/connections" },
+            { icon: FaChartBar, label: "Reports", to: "/business/reports" },
+            { icon: FaBuilding, label: "Company Profile", to: "/business/company-profile" },
+            { icon: FaChartLine, label: "Trends", to: "/business/trends" },
+            { icon: FaFileAlt, label: "Annual Report", to: "/business/annual-report" },
+            { icon: FaComments, label: "Communication", to: "/business/communication" },
+          ]);
+        }
       } finally {
         setLoading(false);
       }

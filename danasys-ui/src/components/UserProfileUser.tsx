@@ -76,7 +76,7 @@ const UserProfileUser: React.FC<UserProfileUserProps> = ({
         className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
         onClick={() => {
           setShowDropdown(false);
-          dispatch(showModal({ type: "myConnections" }));
+          navigate('/my-connections');
         }}
       >
         <FaUsers className="text-indigo-600" size={18} />
@@ -98,7 +98,13 @@ const UserProfileUser: React.FC<UserProfileUserProps> = ({
         </span>
       </div>
 
-      <div className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+      <div 
+        className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
+        onClick={() => {
+          setShowDropdown(false);
+          navigate('/orders');
+        }}
+      >
         <FaShoppingBag className="text-blue-600" size={18} />
         <span className="text-sm font-medium text-gray-700">
           {t("myOrders")}

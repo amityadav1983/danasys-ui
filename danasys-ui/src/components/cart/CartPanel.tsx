@@ -87,7 +87,7 @@ const CartPanel = () => {
   });
   const addedProducts = cartItems.map((item) => item.product.id);
   const otherProducts = allProducts.filter(
-    (item) => !addedProducts.includes(item.product_id.toString())
+    (item) => item.product_id && !addedProducts.includes(item.product_id.toString())
   );
   const topProducts = shuffleItems(otherProducts).slice(0, 10);
 

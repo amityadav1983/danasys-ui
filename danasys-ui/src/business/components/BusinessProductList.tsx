@@ -35,6 +35,7 @@ interface BusinessProductListProps {
   handleUpdateProduct: (product: Product) => void;
   handleDeleteProduct: (productId: number) => void;
   loadingProducts: boolean;
+  showSearch?: boolean;
 }
 
 const BusinessProductList: React.FC<BusinessProductListProps> = ({
@@ -51,6 +52,7 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
   handleUpdateProduct,
   handleDeleteProduct,
   loadingProducts,
+  showSearch = true,
 }) => {
   const toggleSelectProduct = (product: Product) => {
     if (selectedProducts.includes(product.id)) {
@@ -67,18 +69,20 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
     <div>
       {/* Search + Add */}
       <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-2 w-full max-w-md">
-          <input
-            type="text"
-            placeholder="Search by name or category..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition">
-            Search
-          </button>
-        </div>
+        {showSearch && (
+          <div className="flex gap-2 w-full max-w-md">
+            <input
+              type="text"
+              placeholder="Search by name or category..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition">
+              Search
+            </button>
+          </div>
+        )}
         <button
           onClick={handleAddProduct}
           className="ml-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
@@ -195,9 +199,9 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => handleUpdateProduct(product)}
-                      disabled={selectedProducts.length > 1}
+                      disabled={!isSelected || selectedProducts.length > 1}
                       className={`flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full transition ${
-                        selectedProducts.length > 1
+                        !isSelected || selectedProducts.length > 1
                           ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                           : "text-yellow-700 bg-yellow-100 hover:bg-yellow-200"
                       }`}

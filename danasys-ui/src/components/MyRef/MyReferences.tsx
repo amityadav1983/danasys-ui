@@ -44,7 +44,7 @@ const MyReferences: React.FC<MyReferencesProps> = ({ onBack }) => {
         <p className="text-red-600">{error}</p>
       ) : userDetails?.myQRCode ? (
         <div className="flex flex-col items-center">
-          <p className="text-gray-600 mb-4">Scan QR Code:</p>
+          <p className="text-gray-600 mb-4">Scan QR Code</p>
           <img
             src={userDetails.myQRCode}
             alt="My QR Code"

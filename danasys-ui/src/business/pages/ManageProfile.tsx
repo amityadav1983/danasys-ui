@@ -51,8 +51,8 @@ const ManageProfile = () => {
     // yaha API call kar sakte ho remove ke liye
   };
 
-  return (
-    <div className="p-6">
+return (
+    <div className="pt-0 px-6 pb-6">
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 

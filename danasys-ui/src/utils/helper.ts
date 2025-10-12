@@ -28,12 +28,12 @@ const shuffleItems = (unshuffled: any[] | undefined): any[] => {
 const getProductForCart = (product: ProductItem | ProductItemDetailed): CartProduct => {
   const { product_id, name, price, mrp, unit, image_url } = product;
   return {
-    id: product_id.toString(),
+    id: (product_id ?? 0).toString(),
     title: name,
-    subTitle: unit,
+    subTitle: unit ?? '',
     image: image_url || '',
     price,
-    mrp,
+    mrp: mrp ?? price,
   }
 }
 
