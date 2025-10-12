@@ -86,7 +86,7 @@ public class MyController {
 	@Operation(summary = "Authenticate user", description = "Using user credential authenticate user")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 
-		if (List.of("admin@dana.com", "gupta@dana.com", "banasal@dana.com", "user@dana.com")
+		if (List.of("admin@dana.com", "gupta@dana.com", "banasal@dana.com", "user@dana.com","new@dana.com")
 				.contains(loginRequest.getEmail())) {
 			UserDetailsDTO userDetailsDTO = loadUser(loginRequest.getEmail());
 			loginUser.put(loginRequest.getEmail(), userDetailsDTO);
@@ -101,11 +101,14 @@ public class MyController {
 
 		UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
 		List<UserRoleEnum> roles = new ArrayList<>();
+		userDetailsDTO.setStatus(StatusEnum.ACTIVE);
+		
 		if (userName.equals("admin@dana.com")) {
 			userDetailsDTO.setEmail("admin@dana.com");
 			userDetailsDTO.setFullname("Sri Admin");
 			roles.add(UserRoleEnum.ROLE_SUPERADMIN);
 			userDetailsDTO.setUserProfileId(1l);
+			
 		} else if (userName.equals("gupta@dana.com")) {
 			userDetailsDTO.setEmail("gupta@dana.com");
 			userDetailsDTO.setFullname("Ramesh Gupta shopkeeper");
@@ -121,11 +124,16 @@ public class MyController {
 			userDetailsDTO.setFullname("Shopping user");
 			roles.add(UserRoleEnum.ROLE_USER);
 			userDetailsDTO.setUserProfileId(4l);
+		}else if (userName.equals("new@dana.com")) {
+			userDetailsDTO.setEmail("new@dana.com");
+			userDetailsDTO.setFullname("Shopping user");
+			roles.add(UserRoleEnum.ROLE_USER);
+			userDetailsDTO.setUserProfileId(5l);
+			userDetailsDTO.setStatus(StatusEnum.UNDER_REVIEW);
 		}
 
 		userDetailsDTO.setContactInfo("+91-91111111111");
 		userDetailsDTO.setUserWalletBalance(480d);
-		userDetailsDTO.setStatus(StatusEnum.ACTIVE);
 		userDetailsDTO.setServiceAreaId(1l);
 		userDetailsDTO.setHouseNo("House no-102");
 		userDetailsDTO.setFullAddress("House No-102, Pocket-5, Noida Sec-62, UP-201301");
