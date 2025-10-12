@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../../services/api";
 
 interface Product {
@@ -22,10 +22,53 @@ interface TrackOrder {
 }
 
 const TrackOrderTab: React.FC = () => {
+  const [orders, setOrders] = useState<TrackOrder[]>([]);
   const [order, setOrder] = useState<TrackOrder | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchId, setSearchId] = useState<string>("");
+  const [roles, setRoles] = useState<string[]>([]);
+  const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
+
+  // Fetch user roles on mount
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await api.get("/api/user/getUserDetails");
+        const userRoles = res.data.roles || [];
+        setRoles(userRoles);
+        // For non-superadmin roles, directly set profileId and fetch orders
+        if (!userRoles.includes("ROLE_SUPERADMIN") && !userRoles.includes("ROLE_SUPERADMIN_MGR")) {
+          setSelectedProfileId(res.data.userProfileId);
+        }
+      } catch (err) {
+        console.error("Error fetching user details:", err);
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+  // Fetch user's orders for non-superadmin roles
+  useEffect(() => {
+    const fetchUserOrders = async () => {
+      if (!selectedProfileId) return;
+      setLoading(true);
+      setError(null);
+      try {
+        const userProfileId = localStorage.getItem('userProfileId') || selectedProfileId.toString();
+        const res = await api.get(`/api/order/fetchActiveOrder/${userProfileId}`);
+        setOrders(res.data);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!roles.includes("ROLE_SUPERADMIN") && !roles.includes("ROLE_SUPERADMIN_MGR") && selectedProfileId) {
+      fetchUserOrders();
+    }
+  }, [selectedProfileId, roles]);
 
   const fetchOrder = async () => {
     if (!searchId.trim()) return;
@@ -46,22 +89,24 @@ const TrackOrderTab: React.FC = () => {
     <div className="p-6">
       {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Track Orders</h2> */}
 
-      {/* 🔹 Search Bar */}
-      <div className="mb-6 flex w-full md:w-2/3 gap-2">
-        <input
-          type="text"
-          placeholder="Enter Order ID"
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
-          className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-        />
-        <button
-          onClick={fetchOrder}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
-          Search
-        </button>
-      </div>
+      {/* 🔹 Search Bar for ROLE_SUPERADMIN and ROLE_SUPERADMIN_MGR */}
+      {(roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR")) && (
+        <div className="mb-6 flex w-full md:w-2/3 gap-2">
+          <input
+            type="text"
+            placeholder="Enter Order ID"
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
+            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          />
+          <button
+            onClick={fetchOrder}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Search
+          </button>
+        </div>
+      )}
 
       {/* Loading State */}
       {loading && <p className="text-gray-600">Loading tracked order...</p>}
@@ -131,6 +176,78 @@ const TrackOrderTab: React.FC = () => {
               Contact Support
             </button>
           </div>
+        </div>
+      ) : !loading && orders.length > 0 ? (
+        <div className="space-y-6">
+          {orders.map((ord) => (
+            <div
+              key={ord.id}
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition cursor-pointer"
+              onClick={() => setOrder(ord)}
+            >
+              {/* Header */}
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Order #{ord.id}
+                </h3>
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
+                  {ord.orderStatus}
+                </span>
+              </div>
+
+              {/* Products */}
+              <div className="space-y-3">
+                {ord.products.map((p) => (
+                  <div
+                    key={p.purchasedProductId}
+                    className="flex justify-between items-center bg-gray-50 px-4 py-2 rounded-lg border"
+                  >
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        Product #{p.purchasedProductId}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Qty: {p.quantity} | MRP: ₹{p.mrp} | Offer: ₹{p.offerPrice}
+                      </p>
+                    </div>
+                    <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
+                      {p.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Order Details */}
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                <p>
+                  <span className="font-semibold">Delivery Slot: </span>
+                  {new Date(ord.orderDeliverTimeSlot).toLocaleString()}
+                </p>
+                <p>
+                  <span className="font-semibold">Delivery Address: </span>
+                  {ord.deliveryAddress}
+                </p>
+                <p>
+                  <span className="font-semibold">Total Price: </span>₹
+                  {ord.totalPrice.toFixed(2)}
+                </p>
+                <p>
+                  <span className="font-semibold">Discount: </span>₹
+                  {ord.totalDiscount.toFixed(2)}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-6 flex justify-end gap-3">
+                <button className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium">
+                  View Details
+                </button>
+                <button className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-sm font-medium">
+                  Contact Support
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         !loading && (

@@ -1,5 +1,6 @@
-# TODO for AddUser.tsx Modifications
-
-1. [x] Modify search section to always show email input, and show mobile input only if user has "ROLE_SUPERADMIN" or "ROLE_SUPERADMIN_MANAGER" roles.
-2. [x] Modify user actions to show the toggle button (status switch) only if user has "ROLE_SUPERADMIN" or "ROLE_SUPERADMIN_MANAGER" roles.
-3. [x] Ensure search functionality works with both email and mobile when mobile is visible.
+b- [ ] Define searchRoles and directLoadRoles constants
+- [ ] Modify useEffect to fetch profiles for direct load roles
+- [ ] Update "my" tab to show search bar only for search roles
+- [ ] Update add button condition for direct load roles
+- [ ] Modify handleDelete refresh logic
+o - [ ] Modify onSuccess in forms refresh logic

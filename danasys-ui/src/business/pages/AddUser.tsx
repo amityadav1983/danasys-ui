@@ -4,8 +4,7 @@ import { FaUserShield } from "react-icons/fa";
 import DeactivatedUsers from "./DeactivatedUsers";
 
 const AddUser = () => {
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,7 +12,8 @@ const AddUser = () => {
   const [activeTab, setActiveTab] = useState<"user" | "status">("user");
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
-  const [roles, setRoles] = useState<string[]>([]);
+  const [assignableRoles, setAssignableRoles] = useState<string[]>([]);
+  const [currentUserRoles, setCurrentUserRoles] = useState<string[]>([]);
   const [userProfileId, setUserProfileId] = useState<number | null>(null);
 
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ const AddUser = () => {
         }
         const userData = await userDetailsResponse.json();
         setUserProfileId(userData.userProfileId);
+        setCurrentUserRoles(userData.roles || []);
 
         const dashboardResponse = await fetch(`/api/user/loadBusinessDashboard/${userData.userProfileId}`, {
           method: 'GET',
@@ -40,7 +41,7 @@ const AddUser = () => {
           throw new Error('Failed to fetch dashboard');
         }
         const dashData = await dashboardResponse.json();
-        setRoles(dashData.roles);
+        setAssignableRoles(dashData.roles);
       } catch (err: any) {
         console.error('Error fetching data:', err);
       }
@@ -50,8 +51,8 @@ const AddUser = () => {
 
   // 🔍 Search User
   const searchUser = async () => {
-    if (!email.trim() && !mobile.trim()) {
-      setError("Please enter either email or mobile number");
+    if (!searchTerm.trim()) {
+      setError("Please enter email or mobile number");
       setUser(null);
       setHasSearched(false);
       return;
@@ -61,8 +62,11 @@ const AddUser = () => {
     setError(null);
     try {
       const params = new URLSearchParams();
-      if (email.trim()) params.append("userEmail", email.trim());
-      if (mobile.trim()) params.append("contactNumber", mobile.trim());
+      if (searchTerm.includes('@')) {
+        params.append("userEmail", searchTerm.trim());
+      } else {
+        params.append("contactNumber", searchTerm.trim());
+      }
 
       const response = await fetch(`/api/user/searchUser?${params.toString()}`, {
         method: "GET",
@@ -136,79 +140,62 @@ const AddUser = () => {
         >
           Users
         </button>
-        <button
-          onClick={() => setActiveTab("status")}
-          className={`px-4 py-2 font-medium ${
-            activeTab === "status"
-              ? "border-b-2 border-blue-600 text-blue-600"
-              : "text-gray-600 hover:text-blue-600"
-          }`}
-        >
-          Deactivated Users
-        </button>
+        {currentUserRoles.some((role: string) => ["ROLE_SUPERADMIN", "ROLE_SUPERADMIN_MGR"].includes(role)) && (
+          <button
+            onClick={() => setActiveTab("status")}
+            className={`px-4 py-2 font-medium ${
+              activeTab === "status"
+                ? "border-b-2 border-blue-600 text-blue-600"
+                : "text-gray-600 hover:text-blue-600"
+            }`}
+          >
+            Deactivated Users
+          </button>
+        )}
       </div>
 
       {/* User Tab */}
       {activeTab === "user" && (
         <>
           {/* Search Section */}
-          <div className="mb-6">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
-              <input
-                type="email"
-                placeholder="Enter user email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setHasSearched(false);
-                  setUser(null);
-                  setError(null);
-                }}
-                disabled={!!mobile}
-                className={`border border-gray-300 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 ${
-                  mobile ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-              />
-              <input
-                type="tel"
-                placeholder="Enter mobile number"
-                value={mobile}
-                onChange={(e) => {
-                  setMobile(e.target.value);
-                  setHasSearched(false);
-                  setUser(null);
-                  setError(null);
-                }}
-                disabled={!!email}
-                className={`border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 ${
-                  email ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-              />
-              <button
-                onClick={searchUser}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-              >
-                Search
-              </button>
-            </div>
+          <div className="flex items-center gap-4 mb-6">
+            <label className="font-medium">Search</label>
+            <input
+              type="text"
+              placeholder={currentUserRoles.some((role: string) => ["ROLE_SUPERADMIN", "ROLE_SUPERADMIN_MGR"].includes(role)) ? "Enter Email or Mobile" : "Enter Email"}
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setHasSearched(false);
+                setUser(null);
+                setError(null);
+              }}
+              className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              className="bg-green-600 text-white rounded-md px-4 py-2 flex items-center hover:bg-green-700 transition-colors"
+              onClick={searchUser}
+            >
+              Search
+            </button>
           </div>
 
           {/* Loader */}
-          {loading && (email || mobile) && (
+          {loading && searchTerm && (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <p className="text-center text-gray-600">Searching...</p>
             </div>
           )}
 
           {/* Error */}
-          {error && (email || mobile) && (
+          {error && searchTerm && (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <p className="text-center text-red-600">{error}</p>
             </div>
           )}
 
           {/* Results Table */}
-          {!loading && user && (email || mobile) && (
+          {!loading && user && searchTerm && (
             <div className="w-full">
               {/* Table Header */}
               <div className="grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
@@ -257,34 +244,36 @@ const AddUser = () => {
                       <FaUserShield /> Assign Role
                     </button>
 
-                    {/* Toggle Status */}
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={user.status?.toLowerCase() === 'active'}
-                        onChange={async (e) => {
-                          const isChecked = e.target.checked;
-                          try {
-                            const res = await fetch(
-                              `/api/admin/user/${user.id}/${isChecked ? 'activateUser' : 'deActivateUser'}`,
-                              {
-                                method: "PUT",
-                                headers: { accept: "*/*" },
-                              }
-                            );
-                            if (!res.ok) throw new Error(`Failed to ${isChecked ? 'activate' : 'deactivate'} user`);
-                            const result = await res.text();
-                            alert(result);
-                            // Update status
-                            setUser({ ...user, status: isChecked ? 'active' : 'inactive' });
-                          } catch (err: any) {
-                            alert(err.message || `Error ${isChecked ? 'activating' : 'deactivating'} user`);
-                          }
-                        }}
-                        className="sr-only peer"
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                    </label>
+                    {/* Toggle Status - Only for SuperAdmin roles */}
+                    {currentUserRoles.some((role: string) => ["ROLE_SUPERADMIN", "ROLE_SUPERADMIN_MGR"].includes(role)) && (
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={user.status?.toLowerCase() === 'active'}
+                          onChange={async (e) => {
+                            const isChecked = e.target.checked;
+                            try {
+                              const res = await fetch(
+                                `/api/admin/user/${user.id}/${isChecked ? 'activateUser' : 'deActivateUser'}`,
+                                {
+                                  method: "PUT",
+                                  headers: { accept: "*/*" },
+                                }
+                              );
+                              if (!res.ok) throw new Error(`Failed to ${isChecked ? 'activate' : 'deactivate'} user`);
+                              const result = await res.text();
+                              alert(result);
+                              // Update status
+                              setUser({ ...user, status: isChecked ? 'active' : 'inactive' });
+                            } catch (err: any) {
+                              alert(err.message || `Error ${isChecked ? 'activating' : 'deactivating'} user`);
+                            }
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    )}
                   </div>
                 </div>
               </div>
@@ -314,7 +303,7 @@ const AddUser = () => {
               className="border border-gray-300 rounded px-4 py-2 w-full mb-4"
             >
               <option value="">Select Role</option>
-              {roles.map((role) => (
+              {assignableRoles.map((role) => (
                 <option key={role} value={role}>
                   {role}
                 </option>

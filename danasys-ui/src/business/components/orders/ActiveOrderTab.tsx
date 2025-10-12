@@ -32,23 +32,21 @@ const ActiveOrderTab: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [role, setRole] = useState<string>("");
+  const [roles, setRoles] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [businessProfiles, setBusinessProfiles] = useState<BusinessProfile[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
 
-  // 🔹 Fetch user role on mount
+  // 🔹 Fetch user roles on mount
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const res = await api.get("/api/user/getUserDetails");
-        setRole(res.data.role);
-        // agar user h to profiles bhi fetch karo
-        if (res.data.role === "ROLE_USER") {
-          const profileRes = await api.get(
-            `/api/user/loadUserBusinessProfile/{userName}?userName=`
-          );
-          setBusinessProfiles(profileRes.data);
+        const userRoles = res.data.roles || [];
+        setRoles(userRoles);
+        // For non-superadmin roles, directly set profileId and fetch orders
+        if (!userRoles.includes("ROLE_SUPERADMIN") && !userRoles.includes("ROLE_SUPERADMIN_MGR")) {
+          setSelectedProfileId(res.data.userProfileId);
         }
       } catch (err) {
         console.error("Error fetching user details:", err);
@@ -100,29 +98,8 @@ const ActiveOrderTab: React.FC = () => {
     <div className="p-6">
       {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Active Orders</h2> */}
 
-      {/* 🔹 ROLE_USER → Direct Dropdown */}
-      {role === "ROLE_USER" && businessProfiles.length > 0 && (
-        <div className="mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Select Profile
-          </label>
-          <select
-            value={selectedProfileId ?? ""}
-            onChange={(e) => setSelectedProfileId(Number(e.target.value))}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-          >
-            <option value="">-- Select Profile --</option>
-            {businessProfiles.map((profile) => (
-              <option key={profile.id} value={profile.id}>
-                {profile.ownerName}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {/* 🔹 Other Roles → Search + Button → Dropdown */}
-      {role !== "ROLE_USER" && (
+      {/* 🔹 Search for ROLE_SUPERADMIN and ROLE_SUPERADMIN_MGR */}
+      {(roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR")) && (
         <div className="mb-6">
           <div className="flex flex-col md:flex-row items-center gap-4 p-4 rounded-xl ">
             {/* Search Input + Button */}
