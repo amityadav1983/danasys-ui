@@ -1013,7 +1013,7 @@ public class MyController {
 			List<BusinessDashboaardFunctionalityDTO> buIconDetails = new ArrayList<>();
 
 			String ic0 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("dashboard.png").toUriString();
+					.path("bu_dashboard.png").toUriString();
 			String ic1 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("bu_businessprofile.png").toUriString();
 			String ic2 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")

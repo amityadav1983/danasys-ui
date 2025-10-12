@@ -555,7 +555,8 @@ public class OrderAndPaymentController {
 	@GetMapping("/api/payment/getTransferRequestHistory/{userProfileId}")
 	public ResponseEntity<List<BankTransferRequestDTO>> getTransferRequestHistory(@PathVariable Long userProfileId) {
 
-		if(userProfileId>0) {
+		//if(userProfileId>0) 
+		{
 		List<BankTransferRequestDTO> allPendingReq = new ArrayList<>();
 
 		BankTransferRequestDTO t1 = new BankTransferRequestDTO();
@@ -582,10 +583,15 @@ public class OrderAndPaymentController {
 
 		return ResponseEntity.ok(allPendingReq);
 		}
-		return null;
+		
 	}
 	
-	
+	@PostMapping("/api/order/transferPlatformToBankAccount")
+	public ResponseEntity<String> transferPlatformToBankAccount(@RequestBody TransferMoneyDTO transferMoneyDTO) {
+
+		return ResponseEntity.ok("Point Redeemed ! ");
+
+	}
 
 	@PostMapping("/api/order/transferWalletToBankAccount")
 	public ResponseEntity<String> transferWalletToBankAccount(@RequestBody TransferMoneyDTO transferMoneyDTO) {
