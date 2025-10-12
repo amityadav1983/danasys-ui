@@ -46,9 +46,27 @@ const ManageProfile = () => {
   }, []);
 
   // ✅ Handler for "No More Manager"
-  const handleRemoveManager = (profileId: number) => {
-    console.log("Remove manager for profile:", profileId);
-    // yaha API call kar sakte ho remove ke liye
+  const handleRemoveManager = async (profileId: number) => {
+    if (!userProfileId) {
+      setError('User profile ID not available');
+      return;
+    }
+    setError(null);
+    try {
+      const response = await fetch(`/api/user/noMoreManagerOfBusiness/${userProfileId}`, {
+        method: 'PUT',
+        headers: {
+          'accept': '*/*',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to remove manager: ${response.statusText}`);
+      }
+      // Success, refetch the managed profiles
+      await fetchManagedProfiles();
+    } catch (err: any) {
+      setError(err.message || 'Failed to remove manager');
+    }
   };
 
 return (

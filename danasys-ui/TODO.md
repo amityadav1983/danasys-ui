@@ -1,3 +1,9 @@
-- [x] Add getTransferHistory method to authService in src/services/auth.ts
-- [x] Update TransferHistory.tsx to fetch userProfileId from getUserDetails and use it for transfer history
-- Test the component for correct API calls and data display
+# TODO: Implement "No More Manager" Action in Profile Manager Tab
+
+## Steps to Complete
+
+- [x] Update handleRemoveManager function in ManageProfile.tsx to call PUT API /api/user/noMoreManagerOfBusiness/{userProfileId}
+- [x] Ensure userProfileId is fetched from getUserDetails and used in the API call
+- [x] On successful API response, refetch the managed profiles to update the UI
+- [x] Add proper error handling and user feedback for API failures
+- [ ] Test the button click to verify the API call and UI update

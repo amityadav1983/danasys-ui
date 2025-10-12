@@ -46,10 +46,14 @@ const MyManager = () => {
   }, []);
 
   // ✅ Handler for "No More Manager"
-  const handleRemoveManager = async (profileId: number) => {
+  const handleRemoveManager = async () => {
+    if (!userProfileId) {
+      setError('User profile ID not available');
+      return;
+    }
     setError(null);
     try {
-      const response = await fetch(`/api/user/removeBusinessManager/${profileId}`, {
+      const response = await fetch(`/api/user/removeBusinessManager/${userProfileId}`, {
         method: 'PUT',
         headers: {
           'accept': '*/*',
@@ -116,7 +120,7 @@ const MyManager = () => {
                 {/* Action */}
                 <div className="flex justify-center">
                   <button
-                    onClick={() => handleRemoveManager(profile.id)}
+                    onClick={() => handleRemoveManager()}
                     className="flex items-center gap-2 px-3 py-1 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
                   >
                     <FaTrash size={14} />
