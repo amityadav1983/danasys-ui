@@ -1478,9 +1478,9 @@ public class MyController {
 
 	}
 	
-	@PutMapping("/api/user/removeBusinessManager/{businessProfileId}")
+	@PutMapping("/api/user/removeBusinessManager/{userProfileId}")
 	@Operation(summary = "Remove business manager", description = "Set selected address as user deafult address.")
-	public ResponseEntity<?> removeBusinessManager(@PathVariable Long businessProfileId)
+	public ResponseEntity<?> removeBusinessManager(@PathVariable Long userProfileId)
 			throws IOException {
 		String status = "Business manager removed successfully";
 		return ResponseEntity.ok(status);
