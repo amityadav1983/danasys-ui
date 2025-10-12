@@ -1,5 +1,3 @@
-- [x] Add state for payment loading in UserProfile.tsx
-- [x] Add handleSwitchToBusiness function to fetch user details and check roles
-- [x] Add initiatePayment function to handle Razorpay payment
-- [x] Update the "Switch to Business" button onClick to call handleSwitchToBusiness
-- [ ] Test the implementation
+- [x] Add getTransferHistory method to authService in src/services/auth.ts
+- [x] Update TransferHistory.tsx to fetch userProfileId from getUserDetails and use it for transfer history
+- Test the component for correct API calls and data display

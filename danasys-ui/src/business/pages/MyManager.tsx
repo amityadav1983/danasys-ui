@@ -21,7 +21,7 @@ const MyManager = () => {
 
       // Step 2: fetch managed profiles with userProfileId
       const response = await fetch(
-        `/api/user/getManagedUserBusinessProfiles/${userProfileIdFromApi}?userProfileId=${userProfileIdFromApi}`,
+        `/api/user/getUserBusinessProfileMangers/${userProfileIdFromApi}?userProfileId=${userProfileIdFromApi}`,
         {
           method: "GET",
           headers: {
@@ -46,9 +46,23 @@ const MyManager = () => {
   }, []);
 
   // ✅ Handler for "No More Manager"
-  const handleRemoveManager = (profileId: number) => {
-    console.log("Remove manager for profile:", profileId);
-    // yaha API call kar sakte ho remove ke liye
+  const handleRemoveManager = async (profileId: number) => {
+    setError(null);
+    try {
+      const response = await fetch(`/api/user/removeBusinessManager/${profileId}`, {
+        method: 'PUT',
+        headers: {
+          'accept': '*/*',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to remove manager: ${response.statusText}`);
+      }
+      // Success, refetch the managed profiles
+      await fetchManagedProfiles();
+    } catch (err: any) {
+      setError(err.message || 'Failed to remove manager');
+    }
   };
 
   return (
@@ -60,10 +74,10 @@ const MyManager = () => {
         <div className="w-full">
           {/* Table Header */}
           <div className="grid grid-cols-5 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
-            <div className="text-left">Logo</div>
-            <div className="text-left">Owner Name</div>
+            <div className="text-left">Profile</div>
+            <div className="text-left">Manager Name</div>
             <div className="text-left">Store Name</div>
-            <div className="text-center">Category</div>
+            <div className="text-center">Contact</div>
             <div className="text-center">Action</div>
           </div>
 
@@ -78,14 +92,14 @@ const MyManager = () => {
                 {/* Logo */}
                 <div className="flex items-center gap-3">
                   <img
-                    src={profile.businessLogoPath}
+                    src={profile.userProfilePicture}
                     alt="Logo"
                     className="h-10 w-10 rounded-full border object-cover"
                   />
                 </div>
 
                 {/* Owner Name */}
-                <div className="text-gray-800">{profile.ownerName}</div>
+                <div className="text-gray-800">{profile.fullname}</div>
 
                 {/* Store Name */}
                 <div className="text-gray-600 text-sm">
@@ -95,7 +109,7 @@ const MyManager = () => {
                 {/* Category */}
                 <div className="text-center">
                   <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
-                    {profile.category?.categoryName || "—"}
+                    {profile.contactInfo || "—"}
                   </span>
                 </div>
 

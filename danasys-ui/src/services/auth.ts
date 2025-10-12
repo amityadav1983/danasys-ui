@@ -42,6 +42,17 @@ export interface UserDetails {
   myQRCode?: string;
 }
 
+export interface TransferReqDTO {
+  id: number | null;
+  amount: string;
+  bankName: string;
+  toUser: string;
+  reqDate: string;
+  reqRaisedBy: string;
+  status: string;
+  requestType: string;
+}
+
 export interface BusinessDashboardItem {
   buIconPath: string;
   name: string;
@@ -94,6 +105,12 @@ export const authService = {
   // Get User Details - updated to return UserDetails interface
   getUserDetails: async (): Promise<UserDetails> => {
     const response = await api.get('/api/user/getUserDetails');
+    return response.data;
+  },
+
+  // Get Transfer History
+  getTransferHistory: async (userProfileId: number): Promise<TransferReqDTO[]> => {
+    const response = await api.get(`/api/payment/getTransferRequestHistory/${userProfileId}`);
     return response.data;
   },
 

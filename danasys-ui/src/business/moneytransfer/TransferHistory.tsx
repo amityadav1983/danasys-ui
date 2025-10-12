@@ -1,16 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { authService } from "../../services/auth";
-
-interface TransferReqDTO {
-  id: number | null;
-  amount: string;
-  bankName: string;
-  toUser: string;
-  reqDate: string;
-  reqRaisedBy: string;
-  status: string;
-  requestType: string;
-}
+import { authService, TransferReqDTO } from "../../services/auth";
 
 const TransferHistory: React.FC = () => {
   const [transferHistory, setTransferHistory] = useState<TransferReqDTO[]>([]);
@@ -19,17 +8,9 @@ const TransferHistory: React.FC = () => {
   useEffect(() => {
     const fetchTransferHistory = async () => {
       try {
-        const userProfileId = localStorage.getItem('userProfileId');
-        if (!userProfileId) {
-          console.error("User profile ID not found");
-          setLoading(false);
-          return;
-        }
-        const response = await fetch(`/api/payment/getTransferRequestHistory/${userProfileId}`, {
-          method: "GET",
-          headers: { accept: "*/*" },
-        });
-        const data: TransferReqDTO[] = await response.json();
+        const userDetails = await authService.getUserDetails();
+        const userProfileId = userDetails.userProfileId;
+        const data = await authService.getTransferHistory(userProfileId);
         setTransferHistory(data);
       } catch (error) {
         console.error("Error fetching transfer history:", error);
