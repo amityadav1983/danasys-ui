@@ -744,12 +744,12 @@ public class MyController {
 		userManager.setStoreName("Amit Store");
 		
 		UserBusinessProfileManagerDTO userManager2 = new UserBusinessProfileManagerDTO();
-		userManager.setId(2L);
-		userManager.setFullname("SP");
-		userManager.setUserProfilePicture(ServletUriComponentsBuilder.fromCurrentContextPath()
+		userManager2.setId(2L);
+		userManager2.setFullname("SP");
+		userManager2.setUserProfilePicture(ServletUriComponentsBuilder.fromCurrentContextPath()
 				.path("/api/product/images/userdata/").path("logo.png").toUriString());
-		userManager.setContactInfo("1234567");
-		userManager.setStoreName("SP Store");
+		userManager2.setContactInfo("1234567");
+		userManager2.setStoreName("SP Store");
 
 		userManagers.add(userManager);
 		userManagers.add(userManager2);
