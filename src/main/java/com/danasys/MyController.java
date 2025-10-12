@@ -48,6 +48,7 @@ import com.danasys.dto.ServiceAreaDetails;
 import com.danasys.dto.StatusEnum;
 import com.danasys.dto.UserBusinessDashboardDTO;
 import com.danasys.dto.UserBusinessProfileDTO;
+import com.danasys.dto.UserBusinessProfileManagerDTO;
 import com.danasys.dto.UserConnection;
 import com.danasys.dto.UserDetailsDTO;
 import com.danasys.dto.UserProfileDTO;
@@ -730,21 +731,25 @@ public class MyController {
 
 	}
 
-	@GetMapping("/api/user/getUserMangers")
+	@GetMapping("/api/user/getUserBusinessProfileMangers")
 	@Operation(summary = "load user manager", description = "load user manager.")
 	public ResponseEntity<?> getUserMangers() {
-		List<UserProfileDTO> userManagers = new ArrayList();
-		UserProfileDTO userManager = new UserProfileDTO();
+		List<UserBusinessProfileManagerDTO> userManagers = new ArrayList();
+		UserBusinessProfileManagerDTO userManager = new UserBusinessProfileManagerDTO();
 		userManager.setId(1L);
 		userManager.setFullname("Amit");
+		userManager.setUserProfilePicture(ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/api/product/images/userdata/").path("logo.png").toUriString());
 		userManager.setContactInfo("123456");
-		userManager.setEmail("amit.danasys@gmail.com");
-
-		UserProfileDTO userManager2 = new UserProfileDTO();
-		userManager2.setId(2L);
-		userManager2.setFullname("Amit");
-		userManager2.setContactInfo("123456");
-		userManager2.setEmail("amit.danasys@gmail.com");
+		userManager.setStoreName("Amit Store");
+		
+		UserBusinessProfileManagerDTO userManager2 = new UserBusinessProfileManagerDTO();
+		userManager.setId(2L);
+		userManager.setFullname("SP");
+		userManager.setUserProfilePicture(ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/api/product/images/userdata/").path("logo.png").toUriString());
+		userManager.setContactInfo("1234567");
+		userManager.setStoreName("SP Store");
 
 		userManagers.add(userManager);
 		userManagers.add(userManager2);
