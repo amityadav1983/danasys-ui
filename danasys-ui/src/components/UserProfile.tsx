@@ -15,6 +15,12 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { setMode } from "../store/mode";
 
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 
 
 interface UserData {
@@ -36,6 +42,7 @@ const UserProfile = () => {
   const dispatch = useAppDispatch();
   const currentMode = useAppSelector((state) => state.mode.currentMode);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
     const loginStatus = localStorage.getItem("userLoggedIn");
@@ -82,6 +89,70 @@ const UserProfile = () => {
     setUserData(null);
     setShowDropdown(false);
     setShowLogin(true);
+  };
+
+  const handleSwitchToBusiness = async () => {
+    if (isSwitching) return;
+    setIsSwitching(true);
+    try {
+      const response = await fetch("/api/user/getUserDetails");
+      if (!response.ok) throw new Error('Failed to fetch user details');
+      const data = await response.json();
+      const { roles, businessUserOneTimePayment } = data;
+      const hasBusinessRole = roles.includes('ROLE_BUSINESS_USER') || roles.includes('ROLE_BUSINESS_USER_MGR');
+      if (hasBusinessRole) {
+        dispatch(setMode('business'));
+        setShowDropdown(false);
+        navigate('/business');
+      } else if (businessUserOneTimePayment && businessUserOneTimePayment > 0) {
+        await initiatePayment(businessUserOneTimePayment);
+      } else {
+        dispatch(setMode('business'));
+        setShowDropdown(false);
+        navigate('/business');
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSwitching(false);
+    }
+  };
+
+  const initiatePayment = async (amount: number) => {
+    try {
+      const createRes = await fetch(`/api/order/create-order?amount=${amount}`, {
+        method: 'POST',
+        headers: { accept: '*/*' },
+      });
+      if (!createRes.ok) throw new Error('Failed to create order');
+      const orderData = await createRes.json();
+      const options: any = {
+        key: 'rzp_test_9djW8eAXNxoCGF', // Replace with your Razorpay key
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'Your Company',
+        description: 'Payment for business mode',
+        order_id: orderData.id,
+        handler: function (response: any) {
+          console.log('Payment successful:', response);
+          dispatch(setMode('business'));
+          setShowDropdown(false);
+          navigate('/business');
+        },
+        prefill: {
+          name: userData?.fullname || 'User',
+          email: userData?.email || '',
+        },
+        theme: { color: '#0c30fe' },
+      };
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+      rzp1.on('payment.failed', (response: any) => {
+        console.error('Payment Failed:', response.error);
+      });
+    } catch (error) {
+      console.error('Error initiating payment:', error);
+    }
   };
 
   if (loading) {
@@ -164,15 +235,18 @@ const UserProfile = () => {
               {/* Mode Switch Button */}
               {currentMode === 'user' ? (
                 <button
-                  onClick={() => {
-                    dispatch(setMode('business'));
-                    setShowDropdown(false);
-                    navigate('/business');
-                  }}
-                  className="flex items-center gap-3 w-full px-3 py-2 text-left rounded-xl hover:bg-blue-50 transition-colors text-blue-600"
+                  onClick={handleSwitchToBusiness}
+                  disabled={isSwitching}
+                  className={`flex items-center gap-3 w-full px-3 py-2 text-left rounded-xl transition-colors ${
+                    isSwitching
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                      : 'hover:bg-blue-50 text-blue-600'
+                  }`}
                 >
                   <FaBuilding size={18} />
-                  <span className="font-medium text-sm">Switch to Business</span>
+                  <span className="font-medium text-sm">
+                    {isSwitching ? 'Switching...' : 'Switch to Business'}
+                  </span>
                 </button>
               ) : (
                 <button
