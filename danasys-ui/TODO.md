@@ -1,3 +1,5 @@
-- [x] Update src/components/MyRef/MyConnections.tsx to use the same UI and API as BusinessConnections.tsx
-- [x] Change title to "My Connections"
-- [ ] Test the modal functionality
+- [x] Add state for payment loading in UserProfile.tsx
+- [x] Add handleSwitchToBusiness function to fetch user details and check roles
+- [x] Add initiatePayment function to handle Razorpay payment
+- [x] Update the "Switch to Business" button onClick to call handleSwitchToBusiness
+- [ ] Test the implementation

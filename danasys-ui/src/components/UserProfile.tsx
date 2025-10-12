@@ -43,6 +43,8 @@ const UserProfile = () => {
   const currentMode = useAppSelector((state) => state.mode.currentMode);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isSwitching, setIsSwitching] = useState(false);
+  const [showBusinessPopup, setShowBusinessPopup] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState<number | null>(null);
 
   useEffect(() => {
     const loginStatus = localStorage.getItem("userLoggedIn");
@@ -53,9 +55,21 @@ const UserProfile = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (showBusinessPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showBusinessPopup]);
+
   // outside click handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (showBusinessPopup) return;
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
@@ -66,7 +80,7 @@ const UserProfile = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showDropdown]);
+  }, [showDropdown, showBusinessPopup]);
 
   const fetchUserDetails = async () => {
     try {
@@ -104,8 +118,9 @@ const UserProfile = () => {
         dispatch(setMode('business'));
         setShowDropdown(false);
         navigate('/business');
-      } else if (businessUserOneTimePayment && businessUserOneTimePayment > 0) {
-        await initiatePayment(businessUserOneTimePayment);
+      } else if (roles.length === 1 && roles[0] === 'ROLE_USER' && businessUserOneTimePayment && businessUserOneTimePayment > 0) {
+        setPaymentAmount(businessUserOneTimePayment);
+        setShowBusinessPopup(true);
       } else {
         dispatch(setMode('business'));
         setShowDropdown(false);
@@ -274,6 +289,47 @@ const UserProfile = () => {
           </div>
         )}
       </div>
+
+      {/* Business Popup */}
+      {showBusinessPopup && (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-white/90 dark:bg-gray-900/90 border border-gray-200 dark:border-gray-700 shadow-2xl rounded-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-300 scale-100 hover:scale-[1.02]">
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-3 text-center">
+        👋 Hello {userData?.fullname},
+      </h2>
+      <p className="text-gray-600 dark:text-gray-300 text-center mb-4">
+        We’re excited to help you create your business profile.
+      </p>
+      <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-5 border border-gray-100 dark:border-gray-700">
+        <p className="text-gray-700 dark:text-gray-200 text-center">
+          A one-time fee of <span className="font-semibold text-green-600">₹{paymentAmount}</span> (non-refundable)
+          will be charged to complete all required background activities.
+        </p>
+      </div>
+      <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
+        Would you like to proceed with the setup?
+      </p>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => {
+            setShowBusinessPopup(false);
+            initiatePayment(paymentAmount!);
+          }}
+          className="bg-gradient-to-r from-green-500 to-green-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.03] focus:ring-2 focus:ring-green-400"
+        >
+          ✅ Yes, Proceed
+        </button>
+        <button
+          onClick={() => setShowBusinessPopup(false)}
+          className="bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.03] focus:ring-2 focus:ring-red-400"
+        >
+          ❌ Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       <LoginModal
         isOpen={showLogin}
