@@ -731,9 +731,9 @@ public class MyController {
 
 	}
 
-	@GetMapping("/api/user/getUserBusinessProfileMangers")
+	@GetMapping("/api/user/getUserBusinessProfileMangers/{userProfileId}")
 	@Operation(summary = "load user manager", description = "load user manager.")
-	public ResponseEntity<?> getUserMangers() {
+	public ResponseEntity<?> getUserMangers(@RequestParam("userProfileId") Long userProfileIdl) {
 		List<UserBusinessProfileManagerDTO> userManagers = new ArrayList();
 		UserBusinessProfileManagerDTO userManager = new UserBusinessProfileManagerDTO();
 		userManager.setId(1L);
