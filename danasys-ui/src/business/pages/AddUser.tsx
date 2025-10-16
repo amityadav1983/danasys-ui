@@ -125,7 +125,7 @@ const AddUser = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 md:p-6 p-2">
       <h1 className="text-2xl font-bold mb-6 mt-20">User</h1>
 
       {/* Tabs */}
@@ -197,16 +197,16 @@ const AddUser = () => {
           {/* Results Table */}
           {!loading && user && searchTerm && (
             <div className="w-full">
-              {/* Table Header */}
-              <div className="grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
+              {/* Desktop Table Header */}
+              <div className="hidden md:grid md:grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
                 <div className="text-left">User</div>
                 <div className="text-left">Email / Contact</div>
                 <div className="text-left">Status</div>
                 <div className="text-right">Actions</div>
               </div>
 
-              {/* Table Body */}
-              <div className="space-y-3 group">
+              {/* Desktop Table Body */}
+              <div className="hidden md:block space-y-3 group">
                 <div
                   className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
                   group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
@@ -247,6 +247,79 @@ const AddUser = () => {
                     {/* Toggle Status - Only for SuperAdmin roles */}
                     {currentUserRoles.some((role: string) => ["ROLE_SUPERADMIN", "ROLE_SUPERADMIN_MGR"].includes(role)) && (
                       <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={user.status?.toLowerCase() === 'active'}
+                          onChange={async (e) => {
+                            const isChecked = e.target.checked;
+                            try {
+                              const res = await fetch(
+                                `/api/admin/user/${user.id}/${isChecked ? 'activateUser' : 'deActivateUser'}`,
+                                {
+                                  method: "PUT",
+                                  headers: { accept: "*/*" },
+                                }
+                              );
+                              if (!res.ok) throw new Error(`Failed to ${isChecked ? 'activate' : 'deactivate'} user`);
+                              const result = await res.text();
+                              alert(result);
+                              // Update status
+                              setUser({ ...user, status: isChecked ? 'active' : 'inactive' });
+                            } catch (err: any) {
+                              alert(err.message || `Error ${isChecked ? 'activating' : 'deactivating'} user`);
+                            }
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile Card Layout */}
+              <div className="md:hidden space-y-3">
+                <div
+                  className="bg-blue-50 rounded-xl border border-gray-200 shadow-sm p-4 transition-all duration-300 hover:bg-blue-100 hover:scale-[1.02] hover:shadow-md w-full min-h-40"
+                >
+                  {/* Top Row: User Avatar + Name | Status */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-sm text-blue-600 font-semibold">
+                          {user.fullname?.charAt(0)?.toUpperCase() || "U"}
+                        </span>
+                      </div>
+                      <span className="font-medium text-gray-800">
+                        {user.fullname || "Unknown User"}
+                      </span>
+                    </div>
+                    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
+                      {user.status || "Unknown"}
+                    </span>
+                  </div>
+
+                  {/* Email / Contact (bold) */}
+                  <div className="font-bold text-gray-700 mb-3">
+                    <div>Email: {user.email || "No email"}</div>
+                    <div>Contact: {user.contactInfo || "No contact"}</div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col gap-2">
+                    {/* Assign Role */}
+                    <button
+                      onClick={handleRoleAssign}
+                      className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-green-700 bg-green-100 hover:bg-green-200 rounded-lg transition"
+                    >
+                      <FaUserShield /> Assign Role
+                    </button>
+
+                    {/* Toggle Status - Only for SuperAdmin roles */}
+                    {currentUserRoles.some((role: string) => ["ROLE_SUPERADMIN", "ROLE_SUPERADMIN_MGR"].includes(role)) && (
+                      <label className="relative inline-flex items-center cursor-pointer justify-center">
+                        <span className="mr-2 text-sm font-medium">Active</span>
                         <input
                           type="checkbox"
                           checked={user.status?.toLowerCase() === 'active'}

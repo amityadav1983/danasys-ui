@@ -70,14 +70,14 @@ const ManageProfile = () => {
   };
 
 return (
-    <div className="pt-0 px-6 pb-6">
+    <div className="pt-0 px-6 md:px-6 px-2 pb-6">
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && profiles.length > 0 && (
         <div className="w-full">
-          {/* Table Header */}
-          <div className="grid grid-cols-5 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
+          {/* Desktop Table Header */}
+          <div className="hidden md:grid md:grid-cols-5 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
             <div className="text-left">Logo</div>
             <div className="text-left">Owner Name</div>
             <div className="text-left">Store Name</div>
@@ -85,8 +85,8 @@ return (
             <div className="text-center">Action</div>
           </div>
 
-          {/* Table Body */}
-          <div className="space-y-3 group">
+          {/* Desktop Table Body */}
+          <div className="hidden md:block space-y-3 group">
             {profiles.map((profile) => (
               <div
                 key={profile.id}
@@ -113,7 +113,7 @@ return (
                 {/* Category */}
                 <div className="text-center">
                   <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
-                    {profile.category?.categoryName || "—"}
+                    {profile.category?.categoryName || "—" }
                   </span>
                 </div>
 
@@ -125,6 +125,49 @@ return (
                   >
                     <FaTrash size={14} />
                     <span className="text-xs font-medium">No More Manager</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile Card Layout */}
+          <div className="md:hidden space-y-3">
+            {profiles.map((profile) => (
+              <div
+                key={profile.id}
+                className="bg-blue-50 rounded-xl border border-gray-200 shadow-sm p-4 transition-all duration-300 hover:bg-blue-100 hover:scale-[1.02] hover:shadow-md w-full min-h-40"
+              >
+                {/* Top Row: Logo + Owner Name | Category */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={profile.businessLogoPath}
+                      alt="Logo"
+                      className="h-12 w-12 rounded-full border object-cover"
+                    />
+                    <span className="font-medium text-gray-800">
+                      {profile.ownerName}
+                    </span>
+                  </div>
+                  <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
+                    {profile.category?.categoryName || "—"}
+                  </span>
+                </div>
+
+                {/* Store Name (bold) */}
+                <div className="font-bold text-gray-700 mb-3">
+                  {profile.storeName || "—"}
+                </div>
+
+                {/* Action Button */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => handleRemoveManager(profile.id)}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+                  >
+                    <FaTrash size={16} />
+                    <span className="text-sm font-medium">No More Manager</span>
                   </button>
                 </div>
               </div>

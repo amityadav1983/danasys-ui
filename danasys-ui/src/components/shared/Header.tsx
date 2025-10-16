@@ -31,16 +31,17 @@ const Header = () => {
     useSearch();
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeroPast, setIsHeroPast] = useState(false);
 
-  // Rotating placeholder
+  // Rotating placeholder words
   const placeholders = ["Egg", "Milk", "Bread", "Apple", "Orange", "Juice"];
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % placeholders.length);
     }, 2000);
     return () => clearInterval(interval);
   }, []);
-  const [isHeroPast, setIsHeroPast] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,6 +74,7 @@ const Header = () => {
     }
   }, [location.search]);
 
+  // Fetch user & product data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -104,7 +106,7 @@ const Header = () => {
     fetchData();
   }, []);
 
-  // Update header gradient based on selected category
+  // Update header gradient based on category
   useEffect(() => {
     if (categories.length > 0) {
       const currentCat = categories.find(c => c.categoryName === selectedCategory) || categories[0];
@@ -140,7 +142,7 @@ const Header = () => {
 
   return (
     <>
-      {/* Gradient background behind header */}
+      {/* ✅ Gradient background visible for both mobile & desktop */}
       <div
         className="absolute top-0 left-0 right-0 h-[450px] sm:h-[650px] pointer-events-none"
         style={{ background: headerGradient }}
@@ -154,30 +156,48 @@ const Header = () => {
           boxShadow: "none",
         }}
       >
-        <div className="min-h-[80px] sm:min-h-[100px] flex flex-col justify-center">
-          {/* ✅ Mobile Header - Single Row */}
-          <div className="sm:hidden w-full text-black px-4">
-            <div className="flex justify-between items-center">
-              <LocationPicker />
-              <div className="flex items-center gap-2">
-                <div className="flex flex-col items-center">
-                  {userDetails?.userWalletImage && (
-                    <img
-                      src={userDetails.userWalletImage}
-                      alt="Wallet"
-                      className="w-8 h-8 object-contain cursor-pointer"
-                    />
-                  )}
-                  {userDetails?.userWalletBalance && (
-                    <span className="text-xs text-gray-600">₹{userDetails.userWalletBalance}</span>
-                  )}
-                </div>
+        <div className={`min-h-[100px] sm:min-h-[100px] flex flex-col ${isScrolled ? 'justify-start' : 'justify-center'}`}>
+
+          {/* ✅ Mobile Header - Simplified */}
+          <div
+            className={`sm:hidden w-full px-4 ${isScrolled ? 'py-4' : 'py-4'} flex flex-col`}
+            style={{
+              background: isScrolled ? 'white' : headerGradient,
+            }}
+          >
+            {!isScrolled && (
+              <div className="flex justify-between items-center mb-2">
+                <LocationPicker />
                 <UserProfile />
               </div>
+            )}
+            <div className="flex items-center">
+              <div className="relative max-w-xs flex-1 bg-white rounded-full border border-gray-300 focus-within:border-blue-500">
+                <FiSearch
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10"
+                  size={18}
+                />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  className="w-full px-4 py-2 pl-10 rounded-full border-0 focus:outline-none bg-transparent z-10 relative"
+                />
+              </div>
+              <button
+                className="ml-2 bg-blue-500 text-white rounded-full px-3 py-2 hover:bg-blue-600"
+                onClick={() => {}}
+              >
+                Search
+              </button>
             </div>
+            <SearchSuggestions
+              isOpen={searchQuery.trim() !== '' && suggestions.length > 0}
+              onSelect={handleSelectProduct}
+            />
           </div>
 
-          {/* ✅ Desktop Header (flexible layout with wider search) */}
+          {/* ✅ Desktop Header */}
           {!isScrolled ? (
             <div className="hidden sm:flex w-full h-full items-center px-8">
               {/* Left Section - Logo */}
@@ -202,11 +222,18 @@ const Header = () => {
                     />
                     {!searchQuery && (
                       <>
-                        <span className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-0">Search product</span>
+                        <span className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-0">
+                          Search product
+                        </span>
                         <div className="absolute left-[120px] top-1/2 -translate-y-1/2 overflow-hidden h-6 w-full pointer-events-none z-0">
-                          <div className="transition-transform duration-800 ease-in-out" style={{ transform: `translateY(-${currentIndex * 20}px)` }}>
+                          <div
+                            className="transition-transform duration-800 ease-in-out"
+                            style={{ transform: `translateY(-${currentIndex * 20}px)` }}
+                          >
                             {placeholders.map((item, index) => (
-                              <div key={index} className="h-5 font-bold ml-8 text-gray-500">{item}</div>
+                              <div key={index} className="h-5 font-bold ml-8 text-gray-500">
+                                {item}
+                              </div>
                             ))}
                           </div>
                         </div>
@@ -214,7 +241,6 @@ const Header = () => {
                     )}
                     <input
                       type="text"
-                      placeholder=""
                       value={searchQuery}
                       onChange={handleSearch}
                       className="w-full h-10 px-4 py-2 pl-10 rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent z-10 relative"
@@ -228,23 +254,22 @@ const Header = () => {
                 </div>
               </div>
 
-              {/* Right Section - Wallet and User Profile */}
-              {/* Wallet + Profile */}
-                <div className="flex items-center gap-5 ml-8">
-                  {userDetails?.userWalletImage && (
-                    <div className="flex flex-col items-center">
-                      <img
-                        src={userDetails.userWalletImage}
-                        alt="Wallet"
-                        className="w-9 h-9 object-contain cursor-pointer drop-shadow hover:scale-110 transition"
-                      />
-                      <span className="text-xs text-gray-700 font-medium">
-                        ₹{userDetails?.userWalletBalance}
-                      </span>
-                    </div>
-                  )}
-                  <UserProfile />
-                </div>
+              {/* Right Section - Wallet + Profile */}
+              <div className="flex items-center gap-5 ml-8">
+                {userDetails?.userWalletImage && (
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={userDetails.userWalletImage}
+                      alt="Wallet"
+                      className="w-9 h-9 object-contain cursor-pointer drop-shadow hover:scale-110 transition"
+                    />
+                    <span className="text-xs text-gray-700 font-medium">
+                      ₹{userDetails?.userWalletBalance}
+                    </span>
+                  </div>
+                )}
+                <UserProfile />
+              </div>
             </div>
           ) : (
             <div className="hidden sm:flex w-full h-full items-center px-8 justify-center">
@@ -254,21 +279,8 @@ const Header = () => {
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10"
                     size={20}
                   />
-                  {!searchQuery && (
-                    <>
-                      <span className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-0">Search product</span>
-                      <div className="absolute left-[120px] top-1/2 -translate-y-1/2 overflow-hidden h-5 w-full pointer-events-none z-0">
-                        <div className="transition-transform duration-500 ease-in-out" style={{ transform: `translateY(-${currentIndex * 20}px)` }}>
-                          {placeholders.map((item, index) => (
-                            <div key={index} className="h-5 font-bold ml-8 text-gray-500">{item}</div>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  )}
                   <input
                     type="text"
-                    placeholder=""
                     value={searchQuery}
                     onChange={handleSearch}
                     className="w-full h-16 px-4 py-2 pl-10 rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent z-10 relative"
@@ -290,27 +302,14 @@ const Header = () => {
 
       {/* ✅ Mobile Sticky Search */}
       {isHeroPast && (
-        <div className="sm:hidden fixed top-[100px] left-0 right-0 z-40 bg-white px-2 py-2 shadow">
+        <div className="sm:hidden fixed top-[150px] left-0 right-0 z-40 bg-white px-2 py-2 shadow">
           <div className="relative flex items-center bg-white rounded-full border border-gray-300">
             <FiSearch
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10"
               size={18}
             />
-            {!searchQuery && (
-              <>
-                <span className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-0">Search product</span>
-                <div className="absolute left-[200px] top-1/2 -translate-y-1/2 overflow-hidden h-10 w-full pointer-events-none z-0">
-                  <div className="transition-transform duration-500 ease-in-out" style={{ transform: `translateY(-${currentIndex * 20}px)` }}>
-                    {placeholders.map((item, index) => (
-                      <div key={index} className="h-5 font-bold  text-gray-500">{item}</div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
             <input
               type="text"
-              placeholder=""
               value={searchQuery}
               onChange={handleSearch}
               className="w-full px-4 py-2 pl-10 rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-transparent z-10 relative"

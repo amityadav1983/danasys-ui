@@ -95,13 +95,13 @@ const ActiveOrderTab: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-2 md:p-6">
       {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Active Orders</h2> */}
 
       {/* 🔹 Search for ROLE_SUPERADMIN and ROLE_SUPERADMIN_MGR */}
       {(roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR")) && (
         <div className="mb-6">
-          <div className="flex flex-col md:flex-row items-center gap-4 p-4 rounded-xl ">
+          <div className="flex flex-col md:flex-row items-center gap-4 p-4 rounded-xl">
             {/* Search Input + Button */}
             <div className="flex w-full md:w-2/3 gap-2">
               <input
@@ -146,11 +146,11 @@ const ActiveOrderTab: React.FC = () => {
 
       {/* Orders List */}
       {!loading && orders.length > 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-6 max-h-[calc(100vh-300px)] overflow-y-auto md:scrollbar-hide max-w-4xl mx-auto">
           {orders.map((order) => (
             <div
               key={order.id}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition"
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 md:p-6 hover:shadow-xl transition max-w-full"
             >
               {/* Header */}
               <div className="flex justify-between items-center mb-4">
@@ -206,7 +206,7 @@ const ActiveOrderTab: React.FC = () => {
               </div>
 
               {/* Actions */}
-              <div className="mt-6 flex justify-end gap-3">
+              <div className="mt-6 flex flex-col md:flex-row justify-end gap-3">
                 <button className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 text-sm font-medium">
                   Track Order
                 </button>
@@ -220,7 +220,7 @@ const ActiveOrderTab: React.FC = () => {
       ) : (
         !loading &&
         selectedProfileId && (
-          <div className="bg-white p-6 rounded-xl shadow text-center text-gray-600">
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow text-center text-gray-600">
             No active orders for this profile.
           </div>
         )

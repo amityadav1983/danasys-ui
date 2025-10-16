@@ -1,9 +1,7 @@
-# TODO: Implement "No More Manager" Action in Profile Manager Tab
+# TODO: Make Business Header Responsive with Mobile Menu
 
-## Steps to Complete
-
-- [x] Update handleRemoveManager function in ManageProfile.tsx to call PUT API /api/user/noMoreManagerOfBusiness/{userProfileId}
-- [x] Ensure userProfileId is fetched from getUserDetails and used in the API call
-- [x] On successful API response, refetch the managed profiles to update the UI
-- [x] Add proper error handling and user feedback for API failures
-- [ ] Test the button click to verify the API call and UI update
+- [x] Modify BusinessLayout.tsx: Add state for sidebar open/close (default false). Pass isOpen to BusinessSideMenu and toggle function to BusinessHeader. Adjust main content margin to md:ml-64.
+- [x] Modify BusinessHeader.tsx: Add toggleSidebar prop. Restructure header: Hide left logo div on mobile, add menu icon (FaBars) and logo in main header on mobile.
+- [x] Modify BusinessSideMenu.tsx: Add isOpen prop. Add transform classes for sliding sidebar on mobile with transition.
+- [x] Test responsiveness on mobile and desktop.
+- [x] Ensure sidebar overlays on mobile without shifting main content.

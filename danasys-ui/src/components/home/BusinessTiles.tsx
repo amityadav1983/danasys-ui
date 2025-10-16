@@ -100,9 +100,7 @@ const BusinessTiles = () => {
   }
 
   if (error) {
-    return (
-      <div className="py-8 text-center text-red-500">Error: {error}</div>
-    );
+    return <div className="py-8 text-center text-red-500">Error: {error}</div>;
   }
 
   const selectedCategoryData = categories.find(
@@ -117,14 +115,16 @@ const BusinessTiles = () => {
   return (
     <section className="py-8">
       <div className="_container">
+        {/* Desktop View (Grid) */}
         <div
-          className={`grid gap-8`}
+          className={`hidden sm:grid gap-8`}
           style={{
             gridTemplateColumns: `repeat(${businessCount}, minmax(0, 1fr))`,
           }}
         >
           {selectedCategoryData.linkedBusinessProfile.map((businessProfile) => {
-            const isSelected = selectedBusinessProfile?.id === businessProfile.id;
+            const isSelected =
+              selectedBusinessProfile?.id === businessProfile.id;
 
             return (
               <div
@@ -160,6 +160,42 @@ const BusinessTiles = () => {
             );
           })}
         </div>
+
+       {/* ✅ Mobile View (Scrollable Tiles) */}
+<div className="sm:hidden flex overflow-x-auto no-scrollbar gap-4 px-3 py-2 snap-x snap-mandatory">
+  {selectedCategoryData.linkedBusinessProfile.map((businessProfile) => {
+    const isSelected = selectedBusinessProfile?.id === businessProfile.id;
+
+    return (
+      <div
+        key={businessProfile.id}
+        className={`flex-none w-[48%] snap-center relative cursor-pointer rounded-2xl overflow-hidden shadow-lg group transition-all duration-200 ${
+          isSelected
+            ? "ring-4 ring-blue-800 scale-[1.02] shadow-2xl"
+            : "hover:scale-[1] hover:shadow-xl"
+        }`}
+        onClick={() =>
+          handleBusinessProfileClick(businessProfile, selectedCategory)
+        }
+      >
+        <img
+          src={businessProfile.businessLogoPath}
+          alt={businessProfile.storeName}
+          className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-100 sm:h-40"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.style.display = "none";
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+        <div className="absolute bottom-3 w-full text-center text-white font-semibold text-sm drop-shadow">
+          {businessProfile.storeName}
+        </div>
+      </div>
+    );
+  })}
+</div>
+
       </div>
     </section>
   );

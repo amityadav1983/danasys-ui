@@ -27,7 +27,12 @@ interface MenuItem {
   buIconPath?: string;
 }
 
-const BusinessSideMenu: React.FC = () => {
+type Props = {
+  isOpen: boolean;
+  closeSidebar: () => void;
+};
+
+const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -165,7 +170,9 @@ const BusinessSideMenu: React.FC = () => {
 
   return (
     <aside
-      className="text-white fixed top-20 left-0 h-[calc(100vh-5rem)] w-64 flex flex-col justify-between"
+      className={`text-white fixed top-20 left-0 h-[calc(100vh-5rem)] w-64 flex flex-col justify-between transition-transform duration-300 z-40 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      } md:translate-x-0`}
       style={{ backgroundColor: color }}
     >
       {/* ✅ Menu Items */}
@@ -189,9 +196,10 @@ const BusinessSideMenu: React.FC = () => {
                 {item.label === "Dashboard" ? (
                   <Link
                     to={item.to}
-                    onClick={
-                      item.label === "Dashboard" ? handleOverviewClick : undefined
-                    }
+                    onClick={() => {
+                      if (item.label === "Dashboard") handleOverviewClick();
+                      if (window.innerWidth < 768) closeSidebar();
+                    }}
                     className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 ${
                       isActive
                         ? "bg-white font-semibold ml-3 shadow rounded-tl-full rounded-bl-full"
@@ -209,6 +217,9 @@ const BusinessSideMenu: React.FC = () => {
                 ) : (
                   <Link
                     to={item.to}
+                    onClick={() => {
+                      if (window.innerWidth < 768) closeSidebar();
+                    }}
                     className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 ${
                       isActive
                         ? "bg-white font-semibold ml-3 shadow rounded-tl-full rounded-bl-full"

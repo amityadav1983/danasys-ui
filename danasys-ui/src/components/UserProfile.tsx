@@ -29,6 +29,7 @@ interface UserData {
   userProfilePicture: string;
   contactInfo: string;
   userWalletImage?: string;
+  userWalletBalance?: number;
 }
 
 const UserProfile = () => {
@@ -241,6 +242,18 @@ const UserProfile = () => {
             {/* Menu Options */}
             <div className="p-2 space-y-1">
               {currentMode === 'user' && <UserProfileUser setShowDropdown={setShowDropdown} userData={userData} />}
+
+              {/* Wallet for business mode on mobile */}
+              {currentMode === 'business' && userData?.userWalletImage && window.innerWidth < 768 && (
+                <div className="flex items-center gap-3 w-full px-3 py-2 rounded-xl bg-gray-50">
+                  <img
+                    src={userData.userWalletImage}
+                    alt="Wallet"
+                    className="w-6 h-6 object-contain"
+                  />
+                  <span className="font-medium text-sm text-gray-700">₹{userData?.userWalletBalance}</span>
+                </div>
+              )}
 
               {/* ✅ Language Selector */}
               <div className="relative">

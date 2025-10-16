@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FaBars } from "react-icons/fa";
 import DeliveryToggle from "../../components/DeliveryToggle";
 import UserProfile from "../../components/UserProfile";
 import newLogo from "../../assets/images/white-logo (2).png";
 import { authService } from "../../services/auth";
 import { useAppSelector } from "../../hooks/useAppSelector";
 
-const BusinessHeader = () => {
+type Props = {
+  toggleSidebar: () => void;
+};
+
+const BusinessHeader = ({ toggleSidebar }: Props) => {
   const [userDetails, setUserDetails] = useState<any>(null);
   const [color, setColor] = useState("#2596be");
   const currentMode = useAppSelector((state) => state.mode.currentMode);
@@ -29,9 +34,9 @@ const BusinessHeader = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex h-20">
-      {/* 🔹 Sidebar Background Extension */}
+      {/* 🔹 Sidebar Background Extension - Hidden on mobile */}
       <div
-        className="w-64 flex items-center justify-center"
+        className="hidden md:flex w-64 items-center justify-center"
         style={{ backgroundColor: color }}
       >
         <Link to="/">
@@ -45,15 +50,28 @@ const BusinessHeader = () => {
 
       {/* 🔹 Rest of Header (only this part has border bottom) */}
       <div className="flex-1 bg-white flex items-center justify-between px-6 border-b border-gray-200 shadow-md">
-        {/* Center: Toggle Button (hidden in business mode) */}
-        <div>
+        {/* Left: Logo on mobile, Toggle Button on desktop */}
+        <div className="flex items-center gap-4">
+          <Link to="/" className="md:hidden">
+            <img
+              src={newLogo}
+              alt="Cost2Cost Logo"
+              className="h-8 object-contain"
+            />
+          </Link>
           {currentMode !== "business" && <DeliveryToggle />}
         </div>
 
-        {/* Right: Wallet and UserProfile */}
+        {/* Right: Menu Icon, UserProfile on mobile; Wallet and UserProfile on desktop */}
         <div className="flex items-center gap-4">
+          <button
+            onClick={toggleSidebar}
+            className="md:hidden text-gray-600 hover:text-gray-800"
+          >
+            <FaBars size={20} />
+          </button>
           {userDetails?.userWalletImage && (
-            <div className="flex flex-col items-center">
+            <div className="hidden md:flex flex-col items-center">
               <img
                 src={userDetails.userWalletImage}
                 alt="Wallet"

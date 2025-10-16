@@ -86,17 +86,30 @@ const CategoriesIcons = () => {
     <section className="pt-8 pb-0 relative">
       <div className="_container">
         {/* Category Icons (Horizontal scrollable) */}
-        <div className="flex overflow-x-auto gap-6 no-scrollbar px-4 items-center h-28">
+        <div
+          className="
+            flex overflow-x-auto gap-6 no-scrollbar px-4 items-center h-28
+            sm:justify-start
+            [@media(max-width:640px)]:gap-2
+            [@media(max-width:640px)]:pl-3
+            [@media(max-width:640px)]:mt-2
+          "
+        >
           {categories.map((category) => (
             <div
               key={category.id}
-              className="flex-none cursor-pointer flex flex-col items-center w-20 group"
+              className="
+                flex-none cursor-pointer flex flex-col items-center w-20 group
+                [@media(max-width:640px)]:w-1/4
+              "
               onClick={() => handleCategoryClick(category.categoryName)}
             >
               {/* Circle */}
               <div
                 className={`w-16 h-16 flex items-center justify-center rounded-full transition-all duration-300 ${
-                  selectedCategory === category.categoryName ? "scale-110" : "hover:scale-110"
+                  selectedCategory === category.categoryName
+                    ? 'scale-110'
+                    : 'hover:scale-110'
                 }`}
               >
                 <img

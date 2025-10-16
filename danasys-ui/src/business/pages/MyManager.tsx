@@ -70,14 +70,14 @@ const MyManager = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 md:p-6 p-2">
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && profiles.length > 0 && (
         <div className="w-full">
-          {/* Table Header */}
-          <div className="grid grid-cols-5 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
+          {/* Desktop Table Header */}
+          <div className="hidden md:grid md:grid-cols-5 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
             <div className="text-left">Profile</div>
             <div className="text-left">Manager Name</div>
             <div className="text-left">Store Name</div>
@@ -85,8 +85,8 @@ const MyManager = () => {
             <div className="text-center">Action</div>
           </div>
 
-          {/* Table Body */}
-          <div className="space-y-3 group">
+          {/* Desktop Table Body */}
+          <div className="hidden md:block space-y-3 group">
             {profiles.map((profile) => (
               <div
                 key={profile.id}
@@ -125,6 +125,49 @@ const MyManager = () => {
                   >
                     <FaTrash size={14} />
                     <span className="text-xs font-medium">No More Manager</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile Card Layout */}
+          <div className="md:hidden space-y-3">
+            {profiles.map((profile) => (
+              <div
+                key={profile.id}
+                className="bg-blue-50 rounded-xl border border-gray-200 shadow-sm p-4 transition-all duration-300 hover:bg-blue-100 hover:scale-[1.02] hover:shadow-md w-11/12 min-h-32"
+              >
+                {/* Top Row: Profile Pic + Manager Name | Contact */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={profile.userProfilePicture}
+                      alt="Profile"
+                      className="h-12 w-12 rounded-full border object-cover"
+                    />
+                    <span className="font-medium text-gray-800">
+                      {profile.fullname}
+                    </span>
+                  </div>
+                  <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
+                    {profile.contactInfo || "—"}
+                  </span>
+                </div>
+
+                {/* Store Name (bold) */}
+                <div className="font-bold text-gray-700 mb-3">
+                  {profile.storeName || "—"}
+                </div>
+
+                {/* Action Button */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => handleRemoveManager()}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+                  >
+                    <FaTrash size={16} />
+                    <span className="text-sm font-medium">No More Manager</span>
                   </button>
                 </div>
               </div>

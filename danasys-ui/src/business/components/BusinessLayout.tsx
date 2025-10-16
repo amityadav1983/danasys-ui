@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import BusinessHeader from "./BusinessHeader";
@@ -11,6 +11,7 @@ type Props = {
 const BusinessLayout = ({ component }: Props) => {
   const navigate = useNavigate();
   const currentMode = useAppSelector((state) => state.mode.currentMode);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   console.log('BusinessLayout rendered with currentMode:', currentMode);
 
@@ -26,11 +27,19 @@ const BusinessLayout = ({ component }: Props) => {
     return null; // or render a loading state
   }
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
   return (
 <div className="flex min-h-screen bg-white overflow-hidden ">
-      <BusinessSideMenu />
-      <div className="flex-1 flex flex-col ml-64">
-        <BusinessHeader />
+      <BusinessSideMenu isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
+      <div className="flex-1 flex flex-col md:ml-64">
+        <BusinessHeader toggleSidebar={toggleSidebar} />
         <main className="flex-1 p-6">{component}</main>
       </div>
     </div>

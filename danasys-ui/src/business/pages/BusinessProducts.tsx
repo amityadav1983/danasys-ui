@@ -358,7 +358,7 @@ const BusinessProducts: React.FC = () => {
                   handleUpdateProduct={handleUpdateProduct}
                   handleDeleteProduct={handleDeleteProduct}
                   loadingProducts={loadingProducts}
-                  showSearch={userRoles.includes("ROLE_SUPERADMIN") || userRoles.includes("ROLE_SUPERADMIN_MGR")}
+                  showSearch={true}
                 />
               )}
             </div>
