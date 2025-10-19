@@ -237,6 +237,7 @@ export type CartProduct = {
   image?: string;
   price: number;
   mrp: number;
+  userBusinessProfileId: number;
 };
 
 export type CartItem = {

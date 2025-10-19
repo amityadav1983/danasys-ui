@@ -169,12 +169,22 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
   }
 
   return (
+  <>
+    {/* ✅ Dim background when sidebar is open (mobile only) */}
+    {isOpen && (
+      <div
+        className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden transition-opacity duration-300"
+        onClick={closeSidebar} // Clicking outside will close sidebar
+      ></div>
+    )}
+
     <aside
-      className={`text-white fixed top-20 left-0 h-[calc(100vh-5rem)] w-64 flex flex-col justify-between transition-transform duration-300 z-40 ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0`}
-      style={{ backgroundColor: color }}
-    >
+  className={`text-white fixed top-20 left-0 h-[calc(100vh-5rem)] 
+  w-48 sm:w-56 md:w-64 flex flex-col justify-between transition-transform duration-300 z-40 
+  ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+  style={{ backgroundColor: color }}
+>
+
       {/* ✅ Menu Items */}
       <nav className="flex-1 px-0 mt-6 overflow-y-auto scrollbar-hide mb-10">
         <ul className="space-y-1">
@@ -208,7 +218,11 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
                     style={isActive ? { color } : {}}
                   >
                     {item.buIconPath ? (
-                      <img src={item.buIconPath} alt={item.label} className="w-8 h-8" />
+                      <img
+                        src={item.buIconPath}
+                        alt={item.label}
+                        className="w-8 h-8"
+                      />
                     ) : (
                       <item.icon className="text-xl text-black" />
                     )}
@@ -228,7 +242,11 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
                     style={isActive ? { color } : {}}
                   >
                     {item.buIconPath ? (
-                      <img src={item.buIconPath} alt={item.label} className="w-6 h-6" />
+                      <img
+                        src={item.buIconPath}
+                        alt={item.label}
+                        className="w-6 h-6"
+                      />
                     ) : (
                       <item.icon className="text-xl text-black" />
                     )}
@@ -241,7 +259,9 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
         </ul>
       </nav>
     </aside>
-  );
+  </>
+);
+
 };
 
 export default BusinessSideMenu;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../services/api";
-import { FaUndoAlt } from "react-icons/fa";
 
 interface Product {
   purchasedProductId: number;
@@ -22,22 +21,47 @@ interface OrderHistory {
   deliveryAddress: string;
 }
 
+interface BusinessProfile {
+  id: number;
+  ownerName: string;
+  userName: string;
+}
+
 const OrderHistoryTab: React.FC = () => {
   const [orders, setOrders] = useState<OrderHistory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedProducts, setSelectedProducts] = useState<Record<number, boolean>>({});
-  const [reasons, setReasons] = useState<Record<number, string>>({});
-  const [images, setImages] = useState<Record<number, File | null>>({});
+
+
+  const [roles, setRoles] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [businessProfiles, setBusinessProfiles] = useState<BusinessProfile[]>([]);
+  const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await api.get("/api/user/getUserDetails");
+        const userRoles = res.data.roles || [];
+        setRoles(userRoles);
+        if (!userRoles.includes("ROLE_SUPERADMIN") && !userRoles.includes("ROLE_SUPERADMIN_MGR")) {
+          setSelectedProfileId(res.data.userProfileId);
+        }
+      } catch (err) {
+        console.error("Error fetching user details:", err);
+      }
+    };
+    fetchUserDetails();
+  }, []);
 
   useEffect(() => {
     const fetchOrders = async () => {
+      if (!selectedProfileId) return;
       setLoading(true);
       setError(null);
       try {
-        // Get userProfileId from localStorage, fallback to '1' if not found
-        const userProfileId = localStorage.getItem('userProfileId') || '1';
+        const userProfileId = localStorage.getItem('userProfileId') || selectedProfileId.toString();
 
         const res = await api.get(`/api/order/orderHistory/${userProfileId}`);
         setOrders(res.data);
@@ -49,224 +73,130 @@ const OrderHistoryTab: React.FC = () => {
     };
 
     fetchOrders();
-  }, []);
-
-  const handleCheckboxChange = (productId: number) => {
-    setSelectedProducts((prev) => ({
-      ...prev,
-      [productId]: !prev[productId],
-    }));
-  };
-
-  const handleReasonChange = (productId: number, value: string) => {
-    setReasons((prev) => ({
-      ...prev,
-      [productId]: value,
-    }));
-  };
-
-  const handleFileChange = (productId: number, file: File | null) => {
-    setImages((prev) => ({
-      ...prev,
-      [productId]: file,
-    }));
-  };
-
-  const handleReturn = async (orderId: number) => {
-    const selectedIds = Object.keys(selectedProducts).filter((id) => selectedProducts[+id]);
-    if (selectedIds.length === 0) return;
-
-    const items = selectedIds.map((id) => ({
-      purchasedProductId: +id,
-      status: "IN_PROGRESS",
-      comments: reasons[+id] || "",
-      starRating: 0,
-    }));
-
-    let file = "";
-    // Assuming only one file for simplicity, or handle multiple
-    const firstSelected = selectedIds.find((id) => images[+id]);
-    if (firstSelected && images[+firstSelected]) {
-      file = await toBase64(images[+firstSelected]!);
-    }
-
-    const payload = {
-      returnOrderRequest: {
-        orderId,
-        items,
-        platformFees: 0,
-      },
-      file,
-    };
-
-    try {
-      await api.post("/api/order/returnOrder", payload);
-      alert("Return request submitted successfully");
-      // Reset selections
-      setSelectedProducts({});
-      setReasons({});
-      setImages({});
-    } catch (err: any) {
-      alert("Failed to submit return request: " + (err.message || "Something went wrong"));
-    }
-  };
-
-  const toBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  };
+  }, [selectedProfileId]);
 
   const handleDownload = (orderId: number) => {
     window.open(`/api/order/invoice/${orderId}/download?type=pdf`, '_blank');
   };
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      const res = await api.get(
+        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(searchQuery)}`
+      );
+      setBusinessProfiles(res.data);
+    } catch (err) {
+      console.error("Error fetching profiles:", err);
+    }
+  };
+
   return (
-    <div className="p-6">
-      {/* <h2 className="text-2xl font-bold mb-6 text-gray-800">Order History</h2> */}
+    <div className="p-2 md:p-6">
+      {(roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR")) && (
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row items-center gap-4 p-4 rounded-xl">
+            <div className="flex w-full md:w-2/3 gap-2">
+              <input
+                type="text"
+                placeholder="Enter Email / Username"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              />
+              <button
+                onClick={handleSearch}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                Search
+              </button>
+            </div>
+
+            {businessProfiles.length > 0 && (
+              <div className="w-full md:w-1/3">
+                <select
+                  value={selectedProfileId ?? ""}
+                  onChange={(e) => setSelectedProfileId(Number(e.target.value))}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                >
+                  <option value="">-- Select Profile --</option>
+                  {businessProfiles.map((profile) => (
+                    <option key={profile.id} value={profile.ownerName}>
+                      {profile.ownerName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {loading && <p className="text-gray-600">Loading order history...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && orders.length > 0 ? (
-        <div className="space-y-6">
-          {orders.map((order) => (
+  <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto md:scrollbar-hide w-[110%] sm:w-[90%] md:max-w-4xl mx-auto ml-[-10px] sm:ml-0">
+   {orders.map((order) => (
             <div
               key={order.id}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition"
+              className="bg-white rounded-xl shadow-md border border-gray-200 p-3 md:p-6 hover:shadow-lg transition"
             >
               {/* Header */}
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3">
+                <h3 className="text-base md:text-lg font-semibold text-gray-800 mb-1 sm:mb-0">
                   Order #{order.id}
                 </h3>
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
+                <span className="px-2 py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-blue-100 text-blue-600 w-fit">
                   {order.orderStatus}
                 </span>
               </div>
 
               {/* Products */}
-              <div className="space-y-3">
-                {order.products.map((p) => {
-                  const isSelected = selectedProducts[p.purchasedProductId] || false;
-                  return (
-                    <div
-                      key={p.purchasedProductId}
-                      className="flex flex-col md:flex-row md:justify-between md:items-start bg-gray-50 px-4 py-3 rounded-lg border gap-3"
-                    >
-                      {/* Checkbox + Info */}
-                      <div className="flex items-start gap-3">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => handleCheckboxChange(p.purchasedProductId)}
-                          className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                        />
-                        <div>
-                          <p className="font-medium text-gray-800">
-                            Product #{p.purchasedProductId}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Qty: {p.quantity} | MRP: ₹{p.mrp} | Offer: ₹{p.offerPrice}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Hidden/Shown Fields */}
-                      {isSelected && (
-                        <div className="flex flex-wrap items-center gap-3">
-                          {/* Upload Image */}
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            id={`upload-${p.purchasedProductId}`}
-                            onChange={(e) =>
-                              handleFileChange(
-                                p.purchasedProductId,
-                                e.target.files ? e.target.files[0] : null
-                              )
-                            }
-                          />
-                          <label
-                            htmlFor={`upload-${p.purchasedProductId}`}
-                            className="px-3 py-1 border rounded-lg text-sm text-gray-600 cursor-pointer hover:bg-gray-100"
-                          >
-                            Upload Image
-                          </label>
-
-                          {/* Reason */}
-                          <input
-                            type="text"
-                            placeholder="Reason to return"
-                            value={reasons[p.purchasedProductId] || ""}
-                            onChange={(e) =>
-                              handleReasonChange(p.purchasedProductId, e.target.value)
-                            }
-                            className="border rounded-lg px-3 py-1 text-sm text-gray-700 focus:outline-none focus:ring focus:ring-blue-200"
-                          />
-
-                          {/* Status */}
-                          <select
-                            className="border rounded-lg px-3 py-1 text-sm text-gray-700 focus:outline-none"
-                            defaultValue={p.status}
-                          >
-                            <option value="ORDER_PLACED">ORDER_PLACED</option>
-                            <option value="DELIVERED">DELIVERED</option>
-                            <option value="RETURN_REQUESTED">RETURN_REQUESTED</option>
-                            <option value="CANCELLED">CANCELLED</option>
-                          </select>
-                        </div>
-                      )}
+              <div className="space-y-2">
+                {order.products.map((p) => (
+                  <div
+                    key={p.purchasedProductId}
+                    className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-50 px-3 py-2 rounded-lg border"
+                  >
+                    <div className="text-sm">
+                      <p className="font-medium text-gray-800">
+                        Product #{p.purchasedProductId}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-[1px]">
+                        Qty: {p.quantity} | MRP: ₹{p.mrp} | Offer: ₹{p.offerPrice}
+                      </p>
                     </div>
-                  );
-                })}
+                    <span className="text-[10px] sm:text-xs mt-1 sm:mt-0 px-2 py-1 rounded-full bg-green-100 text-green-700 self-start sm:self-center">
+                      {p.status}
+                    </span>
+                  </div>
+                ))}
               </div>
 
               {/* Order Details */}
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-700">
                 <p>
                   <span className="font-semibold">Delivery Slot: </span>
                   {new Date(order.orderDeliverTimeSlot).toLocaleString()}
                 </p>
                 <p>
-                  <span className="font-semibold">Delivery Address: </span>
+                  <span className="font-semibold">Address: </span>
                   {order.deliveryAddress}
                 </p>
                 <p>
-                  <span className="font-semibold">Total Price: </span>₹
-                  {order.totalPrice.toFixed(2)}
+                  <span className="font-semibold">Total: </span>₹{order.totalPrice.toFixed(2)}
                 </p>
                 <p>
-                  <span className="font-semibold">Discount: </span>₹
-                  {order.totalDiscount.toFixed(2)}
+                  <span className="font-semibold">Discount: </span>₹{order.totalDiscount.toFixed(2)}
                 </p>
               </div>
 
-              {/* Footer Actions */}
-              <div className="mt-6 flex flex-wrap justify-end gap-3">
-                <button
-                  onClick={() => handleReturn(order.id)}
-                  disabled={
-                    !Object.keys(selectedProducts).some((id) => selectedProducts[+id])
-                  }
-                  className={`px-4 py-2 flex items-center gap-2 rounded-lg text-sm font-medium ${
-                    Object.keys(selectedProducts).some((id) => selectedProducts[+id])
-                      ? "bg-red-100 text-red-700 hover:bg-red-200"
-                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  }`}
-                >
-                  <FaUndoAlt /> Return Order
-                </button>
-                <button className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-sm font-medium">
-                  View Details
-                </button>
+              {/* Actions */}
+              <div className="mt-4 flex flex-col sm:flex-row justify-end gap-2">
                 <button
                   onClick={() => handleDownload(order.id)}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium"
+                  className="w-full sm:w-auto px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-xs sm:text-sm font-medium"
                 >
                   Download Invoice
                 </button>
@@ -275,9 +205,10 @@ const OrderHistoryTab: React.FC = () => {
           ))}
         </div>
       ) : (
-        !loading && (
-          <div className="bg-white p-6 rounded-xl shadow text-center text-gray-600">
-            No order history available.
+        !loading &&
+        selectedProfileId && (
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow text-center text-gray-600">
+            No order history for this profile.
           </div>
         )
       )}

@@ -64,12 +64,7 @@ const BusinessHeader = ({ toggleSidebar }: Props) => {
 
         {/* Right: Menu Icon, UserProfile on mobile; Wallet and UserProfile on desktop */}
         <div className="flex items-center gap-4">
-          <button
-            onClick={toggleSidebar}
-            className="md:hidden text-gray-600 hover:text-gray-800"
-          >
-            <FaBars size={20} />
-          </button>
+          
           {userDetails?.userWalletImage && (
             <div className="hidden md:flex flex-col items-center">
               <img
@@ -80,7 +75,14 @@ const BusinessHeader = ({ toggleSidebar }: Props) => {
               <span className="text-xs text-gray-600">₹{userDetails?.userWalletBalance}</span>
             </div>
           )}
+          
           <UserProfile />
+          <button
+            onClick={toggleSidebar}
+            className="md:hidden text-gray-600 hover:text-gray-800"
+          >
+            <FaBars size={20} />
+          </button>
         </div>
       </div>
     </header>

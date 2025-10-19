@@ -1,7 +1,6 @@
-# TODO: Make Business Header Responsive with Mobile Menu
+# TODO for Making Orders Tabs Responsive in Business Mode
 
-- [x] Modify BusinessLayout.tsx: Add state for sidebar open/close (default false). Pass isOpen to BusinessSideMenu and toggle function to BusinessHeader. Adjust main content margin to md:ml-64.
-- [x] Modify BusinessHeader.tsx: Add toggleSidebar prop. Restructure header: Hide left logo div on mobile, add menu icon (FaBars) and logo in main header on mobile.
-- [x] Modify BusinessSideMenu.tsx: Add isOpen prop. Add transform classes for sliding sidebar on mobile with transition.
-- [x] Test responsiveness on mobile and desktop.
-- [x] Ensure sidebar overlays on mobile without shifting main content.
+- [ ] Revise BusinessOrders.tsx to show only 2 tabs at a time in the top bar, add a "More" button, and implement a bottom animated container for the rest of the tabs.
+- [ ] Add state management for tab order and bottom container visibility.
+- [ ] Implement click handler for bottom tabs to reorder: move selected to first, shift first to second, move second to bottom.
+- [ ] Add animation for the bottom container (e.g., slide up/down).
