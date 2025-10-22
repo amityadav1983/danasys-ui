@@ -1164,6 +1164,8 @@ public class MyController {
 		connection.setDisplayName(name);
 		connection.setTotalConnection(2);
 		connection.setCompanyLogo(logo);
+		connection.setParentId(3l);
+		
 		List<UserConnection> connections = new ArrayList<>();
 
 		UserConnection connectionChild = new UserConnection();
@@ -1225,6 +1227,7 @@ public class MyController {
 			connection.setDisplayName(name);
 			connection.setTotalConnection(2);
 			connection.setCompanyLogo(logo);
+			connection.setParentId(3l);
 			List<UserConnection> connections = new ArrayList<>();
 
 			UserConnection connectionChild = new UserConnection();
