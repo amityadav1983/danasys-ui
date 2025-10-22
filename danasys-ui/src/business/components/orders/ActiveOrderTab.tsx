@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../services/api";
-import { FaUndoAlt } from "react-icons/fa";
 
 interface Product {
   purchasedProductId: number;
@@ -33,7 +32,7 @@ const ActiveOrderTab: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedOrders, setSelectedOrders] = useState<Record<number, boolean>>({});
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [reasons, setReasons] = useState<Record<number, string>>({});
   const [images, setImages] = useState<Record<number, File | null>>({});
 
@@ -80,10 +79,7 @@ const ActiveOrderTab: React.FC = () => {
   }, [selectedProfileId]);
 
   const handleCheckboxChange = (orderId: number) => {
-    setSelectedOrders((prev) => ({
-      ...prev,
-      [orderId]: !prev[orderId],
-    }));
+    setSelectedOrderId(selectedOrderId === orderId ? null : orderId);
   };
 
   const handleReasonChange = (orderId: number, value: string) => {
@@ -114,26 +110,25 @@ const ActiveOrderTab: React.FC = () => {
     }));
   };
 
-  const handleUpdateStatus = async (orderId: number, productId: number) => {
-    const status = productStatuses[productId];
-    const comments = productComments[productId] || "";
+  const handleUpdateStatus = async (orderId: number) => {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return;
 
-    if (!status) {
-      alert("Please select a status");
-      return;
-    }
+    const items = order.products.map(p => {
+      const status = productStatuses[p.purchasedProductId] || "DELIVERED";
+      const comments = productComments[p.purchasedProductId] || "";
+      return {
+        purchasedProductId: p.purchasedProductId,
+        status,
+        comments,
+        starRating: 0,
+      };
+    });
 
     const payload = {
       updateOrderStatusRequest: {
         orderId,
-        items: [
-          {
-            purchasedProductId: productId,
-            status,
-            comments,
-            starRating: 0,
-          },
-        ],
+        items,
         platformFees: 0,
       },
     };
@@ -141,52 +136,21 @@ const ActiveOrderTab: React.FC = () => {
     try {
       await api.post("/api/order/updateOrderStatusByBU", payload);
       alert("Status updated successfully");
-      // Reset for this product
-      setProductStatuses((prev) => ({ ...prev, [productId]: "" }));
-      setProductComments((prev) => ({ ...prev, [productId]: "" }));
+      // Reset for all products in this order
+      const resetStatuses = { ...productStatuses };
+      const resetComments = { ...productComments };
+      order.products.forEach(p => {
+        resetStatuses[p.purchasedProductId] = "";
+        resetComments[p.purchasedProductId] = "";
+      });
+      setProductStatuses(resetStatuses);
+      setProductComments(resetComments);
     } catch (err: any) {
       alert("Failed to update status: " + (err.message || "Something went wrong"));
     }
   };
 
-  const handleReturn = async (orderId: number) => {
-    const selectedIds = Object.keys(selectedOrders).filter((id) => selectedOrders[+id]);
-    if (selectedIds.length === 0) return;
 
-    const items = selectedIds.map((id) => ({
-      purchasedProductId: +id,
-      status: "IN_PROGRESS",
-      comments: reasons[+id] || "",
-      starRating: 0,
-    }));
-
-    let file = "";
-    // Assuming only one file for simplicity, or handle multiple
-    const firstSelected = selectedIds.find((id) => images[+id]);
-    if (firstSelected && images[+firstSelected]) {
-      file = await toBase64(images[+firstSelected]!);
-    }
-
-    const payload = {
-      returnOrderRequest: {
-        orderId,
-        items,
-        platformFees: 0,
-      },
-      file,
-    };
-
-    try {
-      await api.post("/api/order/returnOrder", payload);
-      alert("Return request submitted successfully");
-      // Reset selections
-      setSelectedOrders({});
-      setReasons({});
-      setImages({});
-    } catch (err: any) {
-      alert("Failed to submit return request: " + (err.message || "Something went wrong"));
-    }
-  };
 
   const toBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -269,7 +233,7 @@ const ActiveOrderTab: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
-                    checked={selectedOrders[order.id] || false}
+                    checked={selectedOrderId === order.id}
                     onChange={() => handleCheckboxChange(order.id)}
                     className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                   />
@@ -297,12 +261,12 @@ const ActiveOrderTab: React.FC = () => {
                         <p className="text-xs text-gray-500 mt-[1px]">
                           Qty: {p.quantity} | MRP: ₹{p.mrp} | Offer: ₹{p.offerPrice}
                         </p>
-                       {selectedOrders[order.id] && (
+                       {selectedOrderId === order.id && (
   <div className="mt-3 p-3 bg-blue-50/50 rounded-xl border border-blue-100 shadow-sm transition-all">
     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
       {/* Dropdown */}
       <select
-        value={productStatuses[p.purchasedProductId] || ""}
+        value={productStatuses[p.purchasedProductId] || "DELIVERED"}
         onChange={(e) =>
           handleProductStatusChange(p.purchasedProductId, e.target.value)
         }
@@ -325,16 +289,6 @@ const ActiveOrderTab: React.FC = () => {
         }
         className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none bg-white shadow-sm"
       />
-
-      {/* Update Button */}
-      <button
-        onClick={() =>
-          handleUpdateStatus(order.id, p.purchasedProductId)
-        }
-        className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg text-sm font-medium hover:opacity-90 shadow-md transition"
-      >
-        <span>Update</span>
-      </button>
     </div>
   </div>
 )}
@@ -365,6 +319,18 @@ const ActiveOrderTab: React.FC = () => {
                   <span className="font-semibold">Discount: </span>₹{order.totalDiscount.toFixed(2)}
                 </p>
               </div>
+
+              {/* Update Button */}
+              {selectedOrderId === order.id && (
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => handleUpdateStatus(order.id)}
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg text-sm font-medium hover:opacity-90 shadow-md transition"
+                  >
+                    <span>Update</span>
+                  </button>
+                </div>
+              )}
 
               {/* Footer Actions */}
               {/* <div className="mt-6 flex flex-wrap justify-end gap-3">
