@@ -100,11 +100,11 @@ const CartPanel = () => {
       const holdOrderPayload = {
         orderId: 0,
         customerUserProfileId: userDetails?.userProfileId || 1,
-        businessUserProfileId: (cartItems[0]?.product as any)?.userBusinessProfileId || 101,
         items: cartItems.map((item) => ({
           productId: item.product.id,
           quantity: item.quantity,
           available: true,
+          businessUserProfileId: (item.product as any).userBusinessProfileId,
         })),
         platformFees: 0,
         paymentSource: 'USER_ACCOUNT',
