@@ -11,7 +11,7 @@ interface TransactionDTO {
 
 interface PendingWalletData {
   currentBalance: number;
-  transferReqDTO: any[]; // empty in example
+  transferReqDTO: any[];
   transactionDTO: TransactionDTO[];
 }
 
@@ -37,8 +37,8 @@ const PendingWalletTab: React.FC = () => {
   useEffect(() => {
     const fetchWalletData = async () => {
       try {
-        // Get userProfileId from searched or localStorage, fallback to '1' if not found
-        const userProfileId = searchedUserId || localStorage.getItem('userProfileId') || '1';
+        const userProfileId =
+          searchedUserId || localStorage.getItem("userProfileId") || "1";
 
         const response = await fetch(
           `/api/payment/getUnclearedWalletBalance/${userProfileId}`,
@@ -63,7 +63,11 @@ const PendingWalletTab: React.FC = () => {
   const handleSearch = async () => {
     if (!userName.trim()) return;
     try {
-      const res = await api.get(`/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(userName)}`);
+      const res = await api.get(
+        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(
+          userName
+        )}`
+      );
       if (res.data && res.data.length > 0) {
         setSearchedUserId(res.data[0].userProfileId.toString());
       } else {
@@ -75,14 +79,11 @@ const PendingWalletTab: React.FC = () => {
     }
   };
 
-  const isSuper = roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
+  const isSuper =
+    roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
 
   return (
-    <div className="p-6">
-      {/* <h2 className="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-        <FaWallet className="text-blue-600" /> Pending Wallet
-      </h2> */}
-
+    <div className="p-1 md:p-6">
       {isSuper && (
         <div className="mb-6 flex w-full md:w-2/3 gap-2">
           <input
@@ -103,10 +104,12 @@ const PendingWalletTab: React.FC = () => {
 
       <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
         {loading ? (
-          <p className="text-gray-500 animate-pulse">Loading pending wallet balance...</p>
+          <p className="text-gray-500 animate-pulse">
+            Loading pending wallet balance...
+          </p>
         ) : (
           <>
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
               <div>
                 <p className="text-gray-500 text-sm">Pending Balance</p>
                 <p className="text-3xl font-bold text-green-600">
@@ -124,42 +127,52 @@ const PendingWalletTab: React.FC = () => {
               <p className="flex items-center gap-2 text-gray-700 font-semibold mb-4">
                 <FaHistory className="text-gray-500" /> Recent Transactions
               </p>
+
               {walletData?.transactionDTO?.length ? (
                 <div className="w-full">
-                  {/* Table Header */}
-                  <div className="grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
+                  {/* ✅ Desktop Table */}
+                  <div className="hidden md:grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
                     <div className="text-left">Amount</div>
                     <div className="text-left">Type</div>
                     <div className="text-left">Order ID</div>
                     <div className="text-center">Date</div>
                   </div>
 
-                  {/* Table Body */}
+                  {/* ✅ Responsive Table / Cards for Mobile */}
                   <div className="space-y-3 group">
                     {walletData.transactionDTO.map((transaction, index) => (
                       <div
                         key={index}
-                        className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                          group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
+                        className="grid grid-cols-1 md:grid-cols-4 items-start md:items-center gap-1 sm:gap-2 
+                                   px-4 py-3 md:px-5 md:py-4 bg-blue-50 mt-2 md:mt-4 rounded-lg md:rounded-xl 
+                                   border border-gray-200 shadow-sm transition-all duration-300 
+                                   group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 
+                                   hover:scale-[1.02] hover:shadow-md"
                       >
-                        {/* Amount */}
-                        <div className="text-gray-800 font-medium">
+                        {/* ✅ Amount */}
+                        <div className="text-gray-800 font-medium text-sm sm:text-base flex justify-between md:block">
+                          <span className="font-semibold md:hidden">Amount:</span>{" "}
                           {transaction.amount}
                         </div>
 
-                        {/* Type */}
-<div className="text-gray-800 break-words pr-4">
-  {transaction.type}
+                        {/* ✅ Type */}
+<div className="text-gray-800 text-sm sm:text-base flex justify-between md:block break-words whitespace-pre-wrap max-w-full">
+  <span className="font-semibold md:hidden shrink-0">Type:</span>
+  <span className="break-all text-right md:text-left w-full ml-2">
+    {transaction.type}
+  </span>
 </div>
 
-{/* Order ID */}
-<div className="text-gray-600 text-sm pl-4">
-  {transaction.orderId}
-</div>
 
+                        {/* ✅ Order ID */}
+                        <div className="text-gray-600 text-xs sm:text-sm flex justify-between md:block">
+                          <span className="font-semibold md:hidden">Order ID:</span>{" "}
+                          {transaction.orderId}
+                        </div>
 
-                        {/* Date */}
-                        <div className="text-center">
+                        {/* ✅ Date */}
+                        <div className="text-gray-600 text-xs sm:text-sm flex justify-between md:block text-center md:text-center">
+                          <span className="font-semibold md:hidden">Date:</span>{" "}
                           {new Date(transaction.transactionDatel).toLocaleDateString()}
                         </div>
                       </div>

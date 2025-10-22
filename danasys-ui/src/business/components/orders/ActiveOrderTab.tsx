@@ -367,7 +367,7 @@ const ActiveOrderTab: React.FC = () => {
               </div>
 
               {/* Footer Actions */}
-              <div className="mt-6 flex flex-wrap justify-end gap-3">
+              {/* <div className="mt-6 flex flex-wrap justify-end gap-3">
                 <button
                   onClick={() => handleReturn(order.id)}
                   disabled={
@@ -390,7 +390,7 @@ const ActiveOrderTab: React.FC = () => {
                 >
                   Download Invoice
                 </button>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

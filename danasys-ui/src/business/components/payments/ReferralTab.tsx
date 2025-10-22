@@ -11,7 +11,7 @@ interface TransactionDTO {
 
 interface ReferralData {
   currentBalance: number;
-  transferReqDTO: any[]; // empty in example
+  transferReqDTO: any[];
   transactionDTO: TransactionDTO[];
 }
 
@@ -37,8 +37,8 @@ const ReferralTab: React.FC = () => {
   useEffect(() => {
     const fetchReferralData = async () => {
       try {
-        // Get userProfileId from searched or localStorage, fallback to '1' if not found
-        const userProfileId = searchedUserId || localStorage.getItem('userProfileId') || '1';
+        const userProfileId =
+          searchedUserId || localStorage.getItem("userProfileId") || "1";
 
         const response = await fetch(
           `/api/payment/getClearedReferalPoint/${userProfileId}`,
@@ -63,7 +63,11 @@ const ReferralTab: React.FC = () => {
   const handleSearch = async () => {
     if (!userName.trim()) return;
     try {
-      const res = await api.get(`/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(userName)}`);
+      const res = await api.get(
+        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(
+          userName
+        )}`
+      );
       if (res.data && res.data.length > 0) {
         setSearchedUserId(res.data[0].userProfileId.toString());
       } else {
@@ -75,14 +79,11 @@ const ReferralTab: React.FC = () => {
     }
   };
 
-  const isSuper = roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
+  const isSuper =
+    roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
 
   return (
-    <div className="p-6">
-      {/* <h2 className="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-        <FaWallet className="text-blue-600" /> Referral
-      </h2> */}
-
+    <div className="p-1 md:p-6">
       {isSuper && (
         <div className="mb-6 flex w-full md:w-2/3 gap-2">
           <input
@@ -124,43 +125,50 @@ const ReferralTab: React.FC = () => {
               <p className="flex items-center gap-2 text-gray-700 font-semibold mb-4">
                 <FaHistory className="text-gray-500" /> Recent Referrals
               </p>
+
               {referralData?.transactionDTO?.length ? (
                 <div className="w-full">
-                  {/* Table Header */}
-                  <div className="grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
+                  {/* Desktop Table */}
+                  <div className="hidden md:grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
                     <div className="text-left">Amount</div>
                     <div className="text-left">Type</div>
                     <div className="text-left">Order ID</div>
                     <div className="text-center">Date</div>
                   </div>
 
-                  {/* Table Body */}
-                  <div className="space-y-3 group">
+                  {/* Responsive Cards (Mobile) */}
+                  <div className="space-y-4 md:space-y-3 group">
                     {referralData.transactionDTO.map((transaction, index) => (
                       <div
                         key={index}
-                        className="grid grid-cols-4 items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                          group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.06] hover:shadow-md"
+                        className="md:grid md:grid-cols-4 md:items-center px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300 group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.05] hover:shadow-md flex flex-col md:flex-none gap-1"
                       >
                         {/* Amount */}
-                        <div className="text-gray-800 font-medium">
-                          {transaction.amount}
+                        <div className="text-gray-800 font-medium flex justify-between w-full md:block">
+                          <span className="font-semibold md:hidden">Amount:</span>
+                          <span>{transaction.amount}</span>
                         </div>
 
                         {/* Type */}
-<div className="text-gray-800 break-words pr-4">
-  {transaction.type}
-</div>
+                        <div className="text-gray-800 text-sm sm:text-base flex justify-between md:block break-words whitespace-pre-wrap max-w-full w-full">
+                          <span className="font-semibold md:hidden shrink-0">Type:</span>
+                          <span className="break-all text-right md:text-left w-full ml-2">
+                            {transaction.type}
+                          </span>
+                        </div>
 
-{/* Order ID */}
-<div className="text-gray-600 text-sm pl-4">
-  {transaction.orderId}
-</div>
-
+                        {/* Order ID */}
+                        <div className="text-gray-600 text-sm flex justify-between w-full md:block">
+                          <span className="font-semibold md:hidden">Order ID:</span>
+                          <span>{transaction.orderId}</span>
+                        </div>
 
                         {/* Date */}
-                        <div className="text-center">
-                          {new Date(transaction.transactionDatel).toLocaleDateString()}
+                        <div className="text-gray-600 text-sm flex justify-between w-full md:block">
+                          <span className="font-semibold md:hidden">Date:</span>
+                          <span>
+                            {new Date(transaction.transactionDatel).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
                     ))}

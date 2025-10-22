@@ -82,16 +82,14 @@ const PendingTransferRequest: React.FC = () => {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error(`Transfer failed: ${res.statusText}`);
-      }
+      if (!res.ok) throw new Error(`Transfer failed: ${res.statusText}`);
 
       const result = await res.json();
       console.log("Transfer success:", result);
 
       alert(`✅ Transfer successful for ${selected.toUser}`);
 
-      // Optional: refresh list after successful transfer
+      // Refresh list after successful transfer
       const updatedList = data?.transferReqDTO.filter((_, i) => i !== index) || [];
       setData((prev) => (prev ? { ...prev, transferReqDTO: updatedList } : prev));
     } catch (error) {
@@ -104,18 +102,19 @@ const PendingTransferRequest: React.FC = () => {
 
   return (
     <div className="p-6">
-      <div className=" ">
-        {loading ? (
-          <p className="text-gray-500 animate-pulse">Loading pending requests...</p>
-        ) : data ? (
-          <div className="w-full">
-            {/* Balance Section */}
-            <div className="mb-6 text-lg font-semibold text-gray-800 flex justify-between">
-              <span>💰 Current Balance:</span>
-              <span className="text-green-600">₹{data.currentBalance}</span>
-            </div>
+      {loading ? (
+        <p className="text-gray-500 animate-pulse">Loading pending requests...</p>
+      ) : data ? (
+        <div className="w-full">
+          {/* 💰 Balance Section */}
+          <div className="mb-6 text-lg font-semibold text-gray-800 flex justify-between">
+            <span>💰 Current Balance:</span>
+            <span className="text-green-600">₹{data.currentBalance}</span>
+          </div>
 
-            {/* Table Header */}
+          {/* 🖥️ Desktop Table */}
+          <div className="hidden md:block">
+            {/* Header */}
             <div className="grid grid-cols-5 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
               <div></div>
               <div className="text-left">Amount</div>
@@ -124,7 +123,7 @@ const PendingTransferRequest: React.FC = () => {
               <div className="text-center">Status / Action</div>
             </div>
 
-            {/* Table Body */}
+            {/* Body */}
             <div className="space-y-3 group">
               {data.transferReqDTO.map((request, index) => {
                 const isChecked = checkedRows.includes(index);
@@ -133,8 +132,7 @@ const PendingTransferRequest: React.FC = () => {
                 return (
                   <div
                     key={index}
-                    className={`grid grid-cols-5 items-center px-5 py-4 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300
-                      bg-blue-50 hover:bg-blue-100 hover:scale-[1.02]`}
+                    className="grid grid-cols-5 items-center px-5 py-4 mt-4 rounded-xl border border-gray-200 shadow-sm bg-blue-50 hover:bg-blue-100 hover:scale-[1.02] transition-all duration-300"
                   >
                     {/* Checkbox */}
                     <div>
@@ -146,18 +144,11 @@ const PendingTransferRequest: React.FC = () => {
                       />
                     </div>
 
-                    {/* Amount */}
                     <div className="text-gray-800 font-medium">{request.amount}</div>
-
-                    {/* To User */}
                     <div className="text-gray-800">{request.toUser}</div>
-
-                    {/* Bank */}
                     <div className="text-gray-600 text-sm">{request.bankName}</div>
 
-                    {/* Status / Action */}
                     <div className="text-center space-y-2">
-                      {/* Dropdown */}
                       <select
                         className="px-2 py-1 border rounded-md text-sm focus:ring focus:ring-blue-200"
                         disabled={!isChecked}
@@ -177,25 +168,20 @@ const PendingTransferRequest: React.FC = () => {
                         ))}
                       </select>
 
-                      {/* Inputs & Button */}
                       {isChecked && (
                         <div className="flex flex-col gap-2 mt-2">
                           <input
                             type="text"
                             placeholder="Transaction ID"
                             value={inputValues[index]?.txnId || ""}
-                            onChange={(e) =>
-                              handleInputChange(index, "txnId", e.target.value)
-                            }
+                            onChange={(e) => handleInputChange(index, "txnId", e.target.value)}
                             className="border px-2 py-1 rounded-md text-sm focus:ring focus:ring-blue-200"
                           />
                           <input
                             type="text"
                             placeholder="Remarks"
                             value={inputValues[index]?.remarks || ""}
-                            onChange={(e) =>
-                              handleInputChange(index, "remarks", e.target.value)
-                            }
+                            onChange={(e) => handleInputChange(index, "remarks", e.target.value)}
                             className="border px-2 py-1 rounded-md text-sm focus:ring focus:ring-blue-200"
                           />
                           <button
@@ -217,10 +203,92 @@ const PendingTransferRequest: React.FC = () => {
               })}
             </div>
           </div>
-        ) : (
-          <p className="text-gray-500">No pending transfer requests.</p>
-        )}
-      </div>
+
+          {/* 📱 Mobile Cards */}
+          <div className="block md:hidden space-y-4">
+            {data.transferReqDTO.map((request, index) => {
+              const isChecked = checkedRows.includes(index);
+              const isLoading = actionLoading === index;
+
+              return (
+                <div
+                  key={index}
+                  className="p-4 border border-gray-200 rounded-2xl shadow-md bg-blue-50 hover:bg-blue-100 transition-all duration-200"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-semibold text-gray-800">₹{request.amount}</div>
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => handleCheck(index)}
+                      className="w-5 h-5 text-blue-600 accent-blue-500 cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="text-sm text-gray-700">
+                    <p><span className="font-medium">To User:</span> {request.toUser}</p>
+                    <p><span className="font-medium">Bank:</span> {request.bankName}</p>
+                    <p><span className="font-medium">Status:</span> {request.status}</p>
+                  </div>
+
+                  <div className="mt-3">
+                    <select
+                      className="w-full px-2 py-1 border rounded-md text-sm focus:ring focus:ring-blue-200"
+                      disabled={!isChecked}
+                      value={request.status}
+                      onChange={(e) => {
+                        if (data) {
+                          const updated = [...data.transferReqDTO];
+                          updated[index].status = e.target.value;
+                          setData({ ...data, transferReqDTO: updated });
+                        }
+                      }}
+                    >
+                      {data.transactionStatus.map((status, idx) => (
+                        <option key={idx} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {isChecked && (
+                    <div className="flex flex-col gap-2 mt-3">
+                      <input
+                        type="text"
+                        placeholder="Transaction ID"
+                        value={inputValues[index]?.txnId || ""}
+                        onChange={(e) => handleInputChange(index, "txnId", e.target.value)}
+                        className="border px-2 py-1 rounded-md text-sm focus:ring focus:ring-blue-200"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Remarks"
+                        value={inputValues[index]?.remarks || ""}
+                        onChange={(e) => handleInputChange(index, "remarks", e.target.value)}
+                        className="border px-2 py-1 rounded-md text-sm focus:ring focus:ring-blue-200"
+                      />
+                      <button
+                        onClick={() => handleTransferAction(index)}
+                        disabled={isLoading}
+                        className={`${
+                          isLoading
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        } text-white text-sm font-medium rounded-md py-1 transition`}
+                      >
+                        {isLoading ? "Processing..." : "Transfer"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <p className="text-gray-500">No pending transfer requests.</p>
+      )}
     </div>
   );
 };

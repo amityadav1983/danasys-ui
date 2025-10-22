@@ -179,8 +179,8 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
     )}
 
     <aside
-  className={`text-white fixed top-20 left-0 h-[calc(100vh-5rem)] 
-  w-48 sm:w-56 md:w-64 flex flex-col justify-between transition-transform duration-300 z-40 
+  className={`text-white fixed top-20 left-0 h-[calc(100vh-5rem)]
+  w-20 md:w-64 flex flex-col justify-between transition-transform duration-300 z-40
   ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
   style={{ backgroundColor: color }}
 >
@@ -226,7 +226,7 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
                     ) : (
                       <item.icon className="text-xl text-black" />
                     )}
-                    <span className="text-base">{item.label}</span>
+                    <span className="hidden md:inline text-base">{item.label}</span>
                   </Link>
                 ) : (
                   <Link
@@ -250,7 +250,7 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
                     ) : (
                       <item.icon className="text-xl text-black" />
                     )}
-                    <span className="text-base">{item.label}</span>
+                    <span className="hidden md:inline text-base">{item.label}</span>
                   </Link>
                 )}
               </li>
