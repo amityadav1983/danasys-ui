@@ -23,5 +23,6 @@ public class UserConnection implements Serializable {
 	private String companyLogo;
 	private int totalConnection;
 	private Long userProfileId;
+	private Long parentId;
 	List<UserConnection> child = new ArrayList<>();
 }
