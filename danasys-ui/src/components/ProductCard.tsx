@@ -23,7 +23,7 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
     image: image,
     price: offerPrice,
     mrp: price,
-    userBusinessProfileId: data.userBusinessProfileId ?? 0,
+    userBusinessProfileId: data.userBusinessProfileId || 1,
   };
 
   const isOutOfStock = quantity === 0;

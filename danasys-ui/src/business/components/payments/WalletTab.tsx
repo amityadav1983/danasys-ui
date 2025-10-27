@@ -28,12 +28,14 @@ const WalletTab: React.FC = () => {
   const [roles, setRoles] = useState<string[]>([]);
   const [userName, setUserName] = useState("");
   const [searchedUserId, setSearchedUserId] = useState<string | null>(null);
+  const [userProfileId, setUserProfileId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
         const res = await api.get("/api/user/getUserDetails");
         setRoles(res.data.roles || []);
+        setUserProfileId(res.data.userProfileId?.toString() || null);
       } catch (err) {
         console.error("Error fetching roles:", err);
       }
@@ -44,16 +46,17 @@ const WalletTab: React.FC = () => {
   useEffect(() => {
     const fetchWalletData = async () => {
       try {
-        const userProfileId =
-          searchedUserId || localStorage.getItem("userProfileId") || "1";
+        const profileId =
+          searchedUserId || localStorage.getItem("userProfileId") || userProfileId || "101";
 
         const response = await fetch(
-          `/api/payment/getWalletBalance/${userProfileId}`,
+          `/api/payment/getWalletBalance/${profileId}`,
           {
             method: "GET",
             headers: { accept: "*/*" },
           }
         );
+        console.log("USer Profile ID:" , profileId)
 
         const data: WalletData = await response.json();
         setWalletData(data);
@@ -64,8 +67,10 @@ const WalletTab: React.FC = () => {
       }
     };
 
-    fetchWalletData();
-  }, [searchedUserId]);
+    if (userProfileId !== null || searchedUserId !== null) {
+      fetchWalletData();
+    }
+  }, [searchedUserId, userProfileId]);
 
   const handleSearch = async () => {
     if (!userName.trim()) return;

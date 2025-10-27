@@ -61,7 +61,7 @@ const CartPanel = () => {
   const navigate = useNavigate();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
-  const { totalAmount, totalQuantity, cartItems, billAmount, discount } =
+  const { totalAmount, totalQuantity, cartItems, billAmount, discount, businessProfileId } =
     useAppSelector((state) => state.cart);
 
   useEffect(() => {
@@ -99,16 +99,18 @@ const CartPanel = () => {
       // 1. Prepare request body for holdOrder API
       const holdOrderPayload = {
         orderId: 0,
-        customerUserProfileId: userDetails?.userProfileId || 1,
+        customerUserProfileId: userDetails?.userProfileId || 1001,
+        businessUserProfileId: businessProfileId,
         items: cartItems.map((item) => ({
           productId: item.product.id,
           quantity: item.quantity,
           available: true,
-          businessUserProfileId: (item.product as any).userBusinessProfileId,
         })),
         platformFees: 0,
         paymentSource: 'USER_ACCOUNT',
       };
+      console.log("user profile id " + userDetails?.userProfileId)
+      console.log(" business profile id " + businessProfileId)
 
       // 2. Call holdOrder API
       const holdRes = await fetch('/api/order/holdOrder', {

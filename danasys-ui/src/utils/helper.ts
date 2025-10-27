@@ -34,7 +34,7 @@ const getProductForCart = (product: ProductItem | ProductItemDetailed): CartProd
     image: image_url || '',
     price,
     mrp: mrp ?? price,
-    userBusinessProfileId: (product as any).userBusinessProfileId ?? 0,
+    userBusinessProfileId: (product as any).userBusinessProfileId || 1,
   }
 }
 
