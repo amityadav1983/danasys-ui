@@ -108,12 +108,14 @@ public class MyController {
 			userDetailsDTO.setEmail("admin@dana.com");
 			userDetailsDTO.setFullname("Sri Admin");
 			roles.add(UserRoleEnum.ROLE_SUPERADMIN);
+			
 			userDetailsDTO.setUserProfileId(1l);
 			
 		} else if (userName.equals("gupta@dana.com")) {
 			userDetailsDTO.setEmail("gupta@dana.com");
 			userDetailsDTO.setFullname("Ramesh Gupta shopkeeper");
 			roles.add(UserRoleEnum.ROLE_BUSINESS_USER);
+			roles.add(UserRoleEnum.ROLE_USER);
 			userDetailsDTO.setUserProfileId(2l);
 		} else if (userName.equals("banasal@dana.com")) {
 			userDetailsDTO.setEmail("banasal@dana.com");
@@ -133,7 +135,7 @@ public class MyController {
 			userDetailsDTO.setStatus(StatusEnum.UNDER_REVIEW);
 		}
 
-		userDetailsDTO.setContactInfo("+91-91111111111");
+		userDetailsDTO.setContactInfo("+91-91111111122");
 		userDetailsDTO.setUserWalletBalance(480d);
 		userDetailsDTO.setServiceAreaId(1l);
 		userDetailsDTO.setHouseNo("House no-102");
@@ -598,11 +600,11 @@ public class MyController {
 			UserBusinessProfileDTO userBusinessProfile = new UserBusinessProfileDTO();
 
 			if (userName.equals("gupta@dana.com")) {
-				userBusinessProfile.setId(1l);
+				userBusinessProfile.setId(10l);
 				userBusinessProfile.setOwnerName("Sri Ramesh Gupta");
 				userBusinessProfile.setStoreName("Sri Ram Store");
 			} else {
-				userBusinessProfile.setId(2l);
+				userBusinessProfile.setId(20l);
 				userBusinessProfile.setOwnerName("Sri Vikas Bansal");
 				userBusinessProfile.setStoreName("Sri Vikas Store");
 			}
@@ -641,7 +643,7 @@ public class MyController {
 			
 			// BP2
 			UserBusinessProfileDTO userBusinessProfile2 = new UserBusinessProfileDTO();
-			userBusinessProfile2.setId(2l);
+			userBusinessProfile2.setId(30l);
 			userBusinessProfile2.setOwnerName("Sri Gupta");
 			userBusinessProfile2.setStoreName("Sri Gupta Store");
 			userBusinessProfile2.setBusinessLogoPath(ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -1400,7 +1402,7 @@ public class MyController {
 		if (loginUser.get(loginUserName).getUserProfileId().longValue() == userProfileId) {
 		List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
 		UserBusinessProfileDTO userBusinessProfile = new UserBusinessProfileDTO();
-		userBusinessProfile.setId(1l);
+		userBusinessProfile.setId(11l);
 		userBusinessProfile.setOwnerName("Sri Ram");
 		userBusinessProfile.setStoreName("Sri Ram Store");
 		userBusinessProfile.setBusinessLogoPath(ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -1437,7 +1439,7 @@ public class MyController {
 		
 		// BP2
 		UserBusinessProfileDTO userBusinessProfile2 = new UserBusinessProfileDTO();
-		userBusinessProfile2.setId(2l);
+		userBusinessProfile2.setId(22l);
 		userBusinessProfile2.setOwnerName("Sri Gupta");
 		userBusinessProfile2.setStoreName("Sri Gupta Store");
 		userBusinessProfile2.setBusinessLogoPath(ServletUriComponentsBuilder.fromCurrentContextPath()
