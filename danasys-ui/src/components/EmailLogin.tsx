@@ -28,20 +28,8 @@ const EmailLogin: React.FC<EmailLoginProps> = ({ onRegisterClick, onLogin }) => 
   };
 
   // ✅ Google login handler
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await api.get("/oauth2/authorization/google");
-
-      if (response.status === 200) {
-        // Success → redirect to home/dashboard
-        window.location.href = "/home"; // apna actual route lagao
-      } else {
-        alert("Google login failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Google login error:", error);
-      alert("Something went wrong. Please try again.");
-    }
+  const handleGoogleLogin = () => {
+    window.location.href = "/oauth2/authorization/google";
   };
 
   return (
