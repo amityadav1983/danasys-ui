@@ -19,16 +19,18 @@ const LoginGuard: React.FC<LoginGuardProps> = ({ children }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-    // console.log('🔍 LoginGuard: Checking authentication status...');
+    console.log('🔍 LoginGuard: Checking authentication status...');
     const checkAuthStatus = () => {
       const loginStatus = localStorage.getItem('userLoggedIn');
-      // console.log('🔍 LoginGuard: localStorage loginStatus =', loginStatus);
-      
-      if (loginStatus === 'true') {
-        // console.log('🔍 LoginGuard: User is logged in, fetching details...');
+      const authToken = localStorage.getItem('authToken');
+      console.log('🔍 LoginGuard: localStorage loginStatus =', loginStatus);
+      console.log('🔍 LoginGuard: localStorage authToken exists =', !!authToken);
+
+      if (loginStatus === 'true' && authToken) {
+        console.log('🔍 LoginGuard: User is logged in, fetching details...');
         fetchUserDetails();
       } else {
-        // console.log('🔍 LoginGuard: User is not logged in, showing login form');
+        console.log('🔍 LoginGuard: User is not logged in, showing login form');
         setIsLoggedIn(false);
         setLoading(false);
         setShowLogin(true);
