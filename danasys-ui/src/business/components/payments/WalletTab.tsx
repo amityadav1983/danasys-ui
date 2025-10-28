@@ -13,7 +13,12 @@ interface TransferReqDTO {
   requestType: string;
 }
 
-interface TransactionDTO {}
+interface TransactionDTO {
+  amount: string;
+  type: string;
+  orderId: string;
+  date: string;
+}
 
 interface WalletData {
   currentBalance: number;
@@ -29,6 +34,11 @@ const WalletTab: React.FC = () => {
   const [userName, setUserName] = useState("");
   const [searchedUserId, setSearchedUserId] = useState<string | null>(null);
   const [userProfileId, setUserProfileId] = useState<string | null>(null);
+
+  // Helper function to format status
+  const formatStatus = (status: string) => {
+    return status.replace(/_/g, ' ');
+  };
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -189,7 +199,7 @@ const WalletTab: React.FC = () => {
                                     : "bg-yellow-100 text-yellow-600"
                                 }`}
                               >
-                                {transfer.status}
+                                {formatStatus(transfer.status)}
                               </span>
                             </p>
                           </div>
@@ -214,7 +224,7 @@ const WalletTab: React.FC = () => {
                                   : "bg-yellow-100 text-yellow-600"
                               }`}
                             >
-                              {transfer.status}
+                              {formatStatus(transfer.status)}
                             </span>
                           </div>
                         </div>
@@ -235,6 +245,7 @@ const WalletTab: React.FC = () => {
                 <p className="text-gray-500">No transactions yet.</p>
               )}
             </div>
+
           </>
         )}
       </div>

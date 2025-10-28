@@ -163,7 +163,7 @@ const PendingTransferRequest: React.FC = () => {
                       >
                         {data.transactionStatus.map((status, idx) => (
                           <option key={idx} value={status}>
-                            {status}
+                            {status.replace(/_/g, ' ')}
                           </option>
                         ))}
                       </select>
@@ -246,7 +246,7 @@ const PendingTransferRequest: React.FC = () => {
                     >
                       {data.transactionStatus.map((status, idx) => (
                         <option key={idx} value={status}>
-                          {status}
+                          {status.replace(/_/g, ' ')}
                         </option>
                       ))}
                     </select>

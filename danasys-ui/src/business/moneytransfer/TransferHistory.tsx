@@ -63,7 +63,7 @@ const TransferHistory: React.FC = () => {
                     <div className="flex justify-between">
                       <span className="font-medium text-gray-600">Status:</span>
                       <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-600">
-                        {transfer.status}
+                        {transfer.status.replace(/_/g, ' ')}
                       </span>
                     </div>
                   </div>
@@ -80,7 +80,7 @@ const TransferHistory: React.FC = () => {
                   </div>
                   <div className="hidden sm:block text-center">
                     <span className="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-600">
-                      {transfer.status}
+                      {transfer.status.replace(/_/g, ' ')}
                     </span>
                   </div>
                 </div>

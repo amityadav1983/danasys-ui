@@ -146,7 +146,7 @@ const PendingReferralTab: React.FC = () => {
                         <div className="text-gray-800 text-sm sm:text-base flex justify-between md:block break-words whitespace-pre-wrap max-w-full w-full">
                           <span className="font-semibold md:hidden shrink-0">Type:</span>
                           <span className="break-all text-right md:text-left w-full ml-2">
-                            {transaction.type}
+                            {transaction.type.replace(/_/g, ' ')}
                           </span>
                         </div>
 
