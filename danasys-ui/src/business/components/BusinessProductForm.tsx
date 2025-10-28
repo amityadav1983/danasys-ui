@@ -45,6 +45,11 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
 
   const [categories, setCategories] = useState<{id: number; categoryName: string}[]>([]);
 
+  // Helper function to format product name
+  const formatProductName = (name: string) => {
+    return name.replace(/-/g, ' ').replace(/\.jpg$/i, '');
+  };
+
   useEffect(() => {
     // Fetch categories on mount
     const fetchCategories = async () => {
@@ -63,7 +68,7 @@ const BusinessProductForm: React.FC<BusinessProductFormProps> = ({
   useEffect(() => {
     if (product) {
       setFormData({
-        name: product.name || "",
+        name: formatProductName(product.name) || "",
         price: product.price?.toString() || "",
         offerPrice: product.offerPrice?.toString() || "",
         quantity: product.quantity?.toString() || "",

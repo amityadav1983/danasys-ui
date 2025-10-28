@@ -378,7 +378,7 @@ const AddUser = () => {
               <option value="">Select Role</option>
               {assignableRoles.map((role) => (
                 <option key={role} value={role}>
-                  {role}
+                  {role.replace(/_/g, ' ')}
                 </option>
               ))}
             </select>

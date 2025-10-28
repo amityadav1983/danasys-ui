@@ -65,6 +65,11 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
     }
   };
 
+  // Helper function to format product name
+  const formatProductName = (name: string) => {
+    return name.replace(/-/g, ' ').replace(/\.jpg$/i, '');
+  };
+
   return (
     <div>
       {/* ✅ Top bar search + Add Product */}
@@ -155,7 +160,7 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
                       className="h-10 w-10 rounded-full border object-cover"
                     />
                     <span className="font-medium text-gray-800">
-                      {product.name}
+                      {formatProductName(product.name)}
                     </span>
                   </div>
 
@@ -267,7 +272,7 @@ const BusinessProductList: React.FC<BusinessProductListProps> = ({
                       className="h-12 w-12 rounded-full border object-cover"
                     />
                     <span className="font-medium text-gray-800 flex-1">
-                      {product.name}
+                      {formatProductName(product.name)}
                     </span>
                   </div>
 

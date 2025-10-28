@@ -1,8 +1,9 @@
-# TODO: Fix businessUserProfileId in holdOrderPayload
+# TODO: Format Product Names in Business Mode Product List
 
-## Tasks:
-- [x] Add businessProfileId to cart state to track current business
-- [x] Modify addItem reducer to clear cart if adding product from different business
-- [x] Update holdOrderPayload to use state.businessProfileId instead of fallback
-- [x] Fix fallback values from 0 to 1 for userBusinessProfileId
-- [ ] Test the changes to ensure orders are placed correctly only for same business products
+## Steps to Complete:
+- [x] Add a helper function in BusinessProductList.tsx to format product names (replace '-' with ' ' and remove '.jpg' extension).
+- [x] Update the product name display in the desktop view to use the formatted name.
+- [x] Update the product name display in the mobile view to use the formatted name.
+- [x] Add the same helper function in BusinessProductForm.tsx for the update product form.
+- [x] Update the form initialization to use the formatted name when editing a product.
+- [x] Test the changes to ensure product names appear correctly formatted in both list and form.

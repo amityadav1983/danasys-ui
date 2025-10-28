@@ -10,6 +10,9 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
   const navigate = useNavigate();
   const { id, name, description, offerPrice, price, image, starRating, quantity } = data;
 
+  // Clean the product name by removing file extension and replacing dashes with spaces
+  const cleanedName = name.replace(/\.jpg$/i, '').replace(/-/g, ' ');
+
   // Calculate discount percentage
   const calculatedDiscount =
     price && offerPrice && offerPrice < price
@@ -101,10 +104,10 @@ const ProductCard = ({ data }: { data: ProductItem }) => {
       {/* 🧾 Content Area */}
       <div className="flex flex-col flex-1 p-3 z-10">
         <h3
-          className={`text-[13px] sm:text-sm font-medium leading-snug line-clamp-2 mb-1 transition-colors 
+          className={`text-[13px] sm:text-sm font-medium leading-snug line-clamp-2 mb-1 transition-colors
             ${isOutOfStock ? "text-gray-500" : "text-gray-800 group-hover:text-red-600"}`}
         >
-          {name}
+          {cleanedName}
         </h3>
         <p className="text-[11px] sm:text-xs text-gray-500 truncate mb-1">{description}</p>
 
