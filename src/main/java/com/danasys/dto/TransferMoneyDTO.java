@@ -15,6 +15,8 @@ public class TransferMoneyDTO implements Serializable{
 	
 	private Long bankTransferRequestId;
 	
+	private Double amount;
+	
 	private String bankTransactionID;
 	
 	private String comments;
