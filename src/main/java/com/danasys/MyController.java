@@ -691,9 +691,31 @@ public class MyController {
 	public ResponseEntity<?> searchUser(@RequestParam(name = "userEmail", required = false) String userEmail,
 			@RequestParam(name = "contactNumber", required = false) String contactNumber) {
 		UserProfileDTO userProfile = new UserProfileDTO();
-		userProfile.setId(1l);
-		userProfile.setFullname("Sri Ram");
-		userProfile.setEmail("ram@gmail.com");
+		if (userEmail.equals("admin@dana.com")) {
+			userProfile.setEmail("admin@dana.com");
+			userProfile.setFullname("Sri Admin");
+			
+			userProfile.setId(1l);
+			
+		} else if (userEmail.equals("gupta@dana.com")) {
+			userProfile.setEmail("gupta@dana.com");
+			userProfile.setFullname("Ramesh Gupta shopkeeper");
+			userProfile.setId(2l);
+		} else if (userEmail.equals("banasal@dana.com")) {
+			userProfile.setEmail("banasal@dana.com");
+			userProfile.setFullname("Vikas Bansal shopkeeper");
+			userProfile.setId(3l);
+		} else if (userEmail.equals("user@dana.com")) {
+			userProfile.setEmail("user@dana.com");
+			userProfile.setFullname("Shopping user");
+			userProfile.setId(4l);
+		}else if (userEmail.equals("new@dana.com")) {
+			userProfile.setEmail("new@dana.com");
+			userProfile.setFullname("Shopping user");
+			userProfile.setId(5l);
+
+		}
+
 		userProfile.setStatus(StatusEnum.ACTIVE);
 		return ResponseEntity.ok(userProfile);
 	}
