@@ -42,8 +42,6 @@ const PendingWalletTab: React.FC = () => {
 
   useEffect(() => {
     const fetchWalletData = async () => {
-      if (!userProfileId && !searchedUserId) return;
-
       try {
         const id = searchedUserId || userProfileId;
         console.log("Fetching pending wallet data for userProfileId:", id);
@@ -65,19 +63,29 @@ const PendingWalletTab: React.FC = () => {
       }
     };
 
-    fetchWalletData();
-  }, [searchedUserId, userProfileId]);
+    const isSuper = roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
+
+    if (isSuper) {
+      // For superadmin roles, only fetch after search
+      if (searchedUserId !== null) {
+        fetchWalletData();
+      }
+    } else {
+      // For other roles, fetch normally
+      if (userProfileId !== null || searchedUserId !== null) {
+        fetchWalletData();
+      }
+    }
+  }, [searchedUserId, userProfileId, roles]);
 
   const handleSearch = async () => {
     if (!userName.trim()) return;
     try {
       const res = await api.get(
-        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(
-          userName
-        )}`
+        `/api/user/searchUser?userEmail=${encodeURIComponent(userName)}`
       );
-      if (res.data && res.data.length > 0) {
-        setSearchedUserId(res.data[0].userProfileId.toString());
+      if (res.data && res.data.id) {
+        setSearchedUserId(res.data.id.toString());
       } else {
         alert("User not found");
       }

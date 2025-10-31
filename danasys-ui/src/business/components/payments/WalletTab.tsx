@@ -105,20 +105,31 @@ const WalletTab: React.FC = () => {
       }
     };
 
-    if (userProfileId !== null || searchedUserId !== null) {
-      fetchWalletData();
-      fetchBanks();
+    const isSuper = roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
+
+    if (isSuper) {
+      // For superadmin roles, only fetch after search
+      if (searchedUserId !== null) {
+        fetchWalletData();
+        fetchBanks();
+      }
+    } else {
+      // For other roles, fetch normally
+      if (userProfileId !== null || searchedUserId !== null) {
+        fetchWalletData();
+        fetchBanks();
+      }
     }
-  }, [searchedUserId, userProfileId, userName, currentUserName]);
+  }, [searchedUserId, userProfileId, userName, currentUserName, roles]);
 
   const handleSearch = async () => {
     if (!userName.trim()) return;
     try {
       const res = await api.get(
-        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(userName)}`
+        `/api/user/searchUser?userEmail=${encodeURIComponent(userName)}`
       );
-      if (res.data && res.data.length > 0) {
-        setSearchedUserId(res.data[0].userProfileId.toString());
+      if (res.data && res.data.id) {
+        setSearchedUserId(res.data.id.toString());
       } else {
         alert("User not found");
       }

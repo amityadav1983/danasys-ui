@@ -1,8 +1,7 @@
-# TODO: Update BusinessSideMenu to show only API-fetched menu items
-
-- [x] Remove the hardcodedItems array from BusinessSideMenu.tsx
-- [x] Update combinedItems logic to only include dynamicItems from API
-- [x] Ensure Dashboard is included if not present in dynamic items
-- [x] Remove hardcoded items from fallbackItems arrays in error handling
-- [x] Remove hardcoded labels ("Money Transfer", "My Connections") from the order array
-- [x] Test the changes to verify only API menu items are displayed
+- [x] Modify WalletTab.tsx useEffect to conditionally fetch wallet data only after search for superadmin roles
+- [x] Update handleSearch to use the correct API endpoint for searching users by email
+- [x] Apply same changes to PendingWalletTab.tsx
+- [x] Apply same changes to ReferralTab.tsx
+- [x] Apply same changes to PendingReferralTab.tsx
+- [x] Set initial loading to false in all tabs to prevent loading box from showing initially
+- [x] Add 2-second loading delay after search in all tabs
