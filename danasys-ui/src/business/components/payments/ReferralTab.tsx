@@ -38,8 +38,6 @@ const ReferralTab: React.FC = () => {
 
   useEffect(() => {
     const fetchReferralData = async () => {
-      if (!userProfileId && !searchedUserId) return;
-
       try {
         const id = searchedUserId || userProfileId;
         console.log("Fetching referral data for userProfileId:", id);
@@ -61,19 +59,29 @@ const ReferralTab: React.FC = () => {
       }
     };
 
-    fetchReferralData();
-  }, [searchedUserId, userProfileId]);
+    const isSuper = roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
+
+    if (isSuper) {
+      // For superadmin roles, only fetch after search
+      if (searchedUserId !== null) {
+        fetchReferralData();
+      }
+    } else {
+      // For other roles, fetch normally
+      if (userProfileId !== null || searchedUserId !== null) {
+        fetchReferralData();
+      }
+    }
+  }, [searchedUserId, userProfileId, roles]);
 
   const handleSearch = async () => {
     if (!userName.trim()) return;
     try {
       const res = await api.get(
-        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(
-          userName
-        )}`
+        `/api/user/searchUser?userEmail=${encodeURIComponent(userName)}`
       );
-      if (res.data && res.data.length > 0) {
-        setSearchedUserId(res.data[0].userProfileId.toString());
+      if (res.data && res.data.id) {
+        setSearchedUserId(res.data.id.toString());
       } else {
         alert("User not found");
       }
