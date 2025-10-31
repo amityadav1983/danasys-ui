@@ -21,27 +21,31 @@ const ReferralTab: React.FC = () => {
   const [roles, setRoles] = useState<string[]>([]);
   const [userName, setUserName] = useState("");
   const [searchedUserId, setSearchedUserId] = useState<string | null>(null);
+  const [userProfileId, setUserProfileId] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchRoles = async () => {
+    const fetchUserDetails = async () => {
       try {
         const res = await api.get("/api/user/getUserDetails");
         setRoles(res.data.roles || []);
+        setUserProfileId(res.data.userProfileId.toString());
       } catch (err) {
-        console.error("Error fetching roles:", err);
+        console.error("Error fetching user details:", err);
       }
     };
-    fetchRoles();
+    fetchUserDetails();
   }, []);
 
   useEffect(() => {
     const fetchReferralData = async () => {
+      if (!userProfileId && !searchedUserId) return;
+
       try {
-        const userProfileId =
-          searchedUserId || localStorage.getItem("userProfileId") || "1";
+        const id = searchedUserId || userProfileId;
+        console.log("Fetching referral data for userProfileId:", id);
 
         const response = await fetch(
-          `/api/payment/getClearedReferalPoint/${userProfileId}`,
+          `/api/payment/getClearedReferalPoint/${id}`,
           {
             method: "GET",
             headers: { accept: "*/*" },
@@ -58,7 +62,7 @@ const ReferralTab: React.FC = () => {
     };
 
     fetchReferralData();
-  }, [searchedUserId]);
+  }, [searchedUserId, userProfileId]);
 
   const handleSearch = async () => {
     if (!userName.trim()) return;
