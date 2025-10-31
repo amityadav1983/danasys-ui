@@ -56,10 +56,7 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
     "Communication": { icon: FaComments, label: "Communication", to: "/business/communication" },
   };
 
-  const hardcodedItems: MenuItem[] = [
-    { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
-    { icon: FaNetworkWired, label: "My Connections", to: "/business/connections" },
-  ];
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,15 +84,13 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
           "Products",
           "Orders",
           "Payments",
-          "Money Transfer",
-          "My Connections",
           "Reports",
           "Company Profile",
           "Trends",
           "Annual Report",
           "Communication",
         ];
-        let combinedItems = [...dynamicItems, ...hardcodedItems];
+        let combinedItems = [...dynamicItems];
         // Ensure Dashboard is included
         if (!combinedItems.find(item => item.label === "Dashboard")) {
           combinedItems = [{ icon: FaHome, label: "Dashboard", to: "/business" }, ...combinedItems];
@@ -121,8 +116,6 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
             { icon: FaBoxOpen, label: "Products", to: "/business/products" },
             { icon: FaShoppingCart, label: "Orders", to: "/business/orders" },
             { icon: FaMoneyBillWave, label: "Payments", to: "/business/payments" },
-            { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
-            { icon: FaNetworkWired, label: "My Connections", to: "/business/connections" },
             { icon: FaChartBar, label: "Reports", to: "/business/reports" },
             { icon: FaBuilding, label: "Company Profile", to: "/business/company-profile" },
             { icon: FaChartLine, label: "Trends", to: "/business/trends" },
@@ -140,8 +133,6 @@ const BusinessSideMenu: React.FC<Props> = ({ isOpen, closeSidebar }) => {
             { icon: FaBoxOpen, label: "Products", to: "/business/products" },
             { icon: FaShoppingCart, label: "Orders", to: "/business/orders" },
             { icon: FaMoneyBillWave, label: "Payments", to: "/business/payments" },
-            { icon: FaExchangeAlt, label: "Money Transfer", to: "/business/money-transfer" },
-            { icon: FaNetworkWired, label: "My Connections", to: "/business/connections" },
             { icon: FaChartBar, label: "Reports", to: "/business/reports" },
             { icon: FaBuilding, label: "Company Profile", to: "/business/company-profile" },
             { icon: FaChartLine, label: "Trends", to: "/business/trends" },

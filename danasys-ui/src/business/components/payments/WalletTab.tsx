@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FaWallet, FaHistory } from "react-icons/fa";
 import api from "../../../services/api";
+import AddMoneyModal from "./AddMoneyModal";
+import WithdrawModal from "./WithdrawModal";
 
 interface TransferReqDTO {
   id: number | null;
@@ -26,6 +28,12 @@ interface WalletData {
   transactionDTO: TransactionDTO[];
 }
 
+interface BankAccount {
+  id: number;
+  bankName: string;
+  accountNumber: number;
+}
+
 const WalletTab: React.FC = () => {
   const [walletData, setWalletData] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,11 +42,16 @@ const WalletTab: React.FC = () => {
   const [userName, setUserName] = useState("");
   const [searchedUserId, setSearchedUserId] = useState<string | null>(null);
   const [userProfileId, setUserProfileId] = useState<string | null>(null);
+  const [currentUserName, setCurrentUserName] = useState("");
+
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+
+  const [showAddMoneyModal, setShowAddMoneyModal] = useState(false);
+
+  const [banks, setBanks] = useState<BankAccount[]>([]);
 
   // Helper function to format status
-  const formatStatus = (status: string) => {
-    return status.replace(/_/g, ' ');
-  };
+  const formatStatus = (status: string) => status.replace(/_/g, " ");
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -46,6 +59,7 @@ const WalletTab: React.FC = () => {
         const res = await api.get("/api/user/getUserDetails");
         setRoles(res.data.roles || []);
         setUserProfileId(res.data.userProfileId?.toString() || null);
+        setCurrentUserName(res.data.email || "");
       } catch (err) {
         console.error("Error fetching roles:", err);
       }
@@ -59,14 +73,10 @@ const WalletTab: React.FC = () => {
         const profileId =
           searchedUserId || localStorage.getItem("userProfileId") || userProfileId || "101";
 
-        const response = await fetch(
-          `/api/payment/getWalletBalance/${profileId}`,
-          {
-            method: "GET",
-            headers: { accept: "*/*" },
-          }
-        );
-        console.log("USer Profile ID:" , profileId)
+        const response = await fetch(`/api/payment/getWalletBalance/${profileId}`, {
+          method: "GET",
+          headers: { accept: "*/*" },
+        });
 
         const data: WalletData = await response.json();
         setWalletData(data);
@@ -77,18 +87,35 @@ const WalletTab: React.FC = () => {
       }
     };
 
+    const fetchBanks = async () => {
+      try {
+        const res = await api.get(
+          `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(currentUserName || "test")}`
+        );
+        if (res.data && res.data.length > 0) {
+          const bankAccounts = res.data.map((profile: any) => ({
+            id: profile.bankAccount.id,
+            bankName: profile.bankAccount.bankName,
+            accountNumber: profile.bankAccount.accountNumber,
+          }));
+          setBanks(bankAccounts);
+        }
+      } catch (err) {
+        console.error("Error fetching banks:", err);
+      }
+    };
+
     if (userProfileId !== null || searchedUserId !== null) {
       fetchWalletData();
+      fetchBanks();
     }
-  }, [searchedUserId, userProfileId]);
+  }, [searchedUserId, userProfileId, userName, currentUserName]);
 
   const handleSearch = async () => {
     if (!userName.trim()) return;
     try {
       const res = await api.get(
-        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(
-          userName
-        )}`
+        `/api/user/loadUserBusinessProfile?userName=${encodeURIComponent(userName)}`
       );
       if (res.data && res.data.length > 0) {
         setSearchedUserId(res.data[0].userProfileId.toString());
@@ -101,8 +128,28 @@ const WalletTab: React.FC = () => {
     }
   };
 
-  const isSuper =
-    roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
+  const isSuper = roles.includes("ROLE_SUPERADMIN") || roles.includes("ROLE_SUPERADMIN_MGR");
+
+  const handleWithdraw = async (amount: string, bankId: number, comment: string) => {
+    try {
+      const payload = {
+        requestdUserProfileId: parseInt(userProfileId || "0"),
+        bankId: bankId,
+        amount: parseFloat(amount),
+        transactionID: "string", // Placeholder, generate if needed
+        comments: comment,
+      };
+
+      const response = await api.post("/api/order/transferWalletToBankAccount", payload);
+      console.log("Withdrawal successful:", response.data);
+      alert("Withdrawal request submitted successfully!");
+      // Optionally refresh wallet data
+      // fetchWalletData();
+    } catch (error) {
+      console.error("Error during withdrawal:", error);
+      alert("Failed to process withdrawal. Please try again.");
+    }
+  };
 
   return (
     <div className="p-1 md:p-6">
@@ -138,18 +185,39 @@ const WalletTab: React.FC = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition w-full sm:w-auto">
+                <button
+                  onClick={() => setShowAddMoneyModal(true)}
+                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition w-full sm:w-auto"
+                >
                   Add Money
                 </button>
-                <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition w-full sm:w-auto">
+                <button
+                  onClick={() => setShowWithdrawModal(true)}
+                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition w-full sm:w-auto"
+                >
                   Withdraw
                 </button>
               </div>
             </div>
 
-            <hr className="my-4" />
+            {/* ✅ Add Money Modal */}
+            <AddMoneyModal
+              isOpen={showAddMoneyModal}
+              onClose={() => setShowAddMoneyModal(false)}
+              userProfileId={userProfileId}
+            />
 
-            {/* ✅ Transaction List */}
+            {/* ✅ Withdraw Modal */}
+            <WithdrawModal
+              isOpen={showWithdrawModal}
+              onClose={() => setShowWithdrawModal(false)}
+              onWithdraw={handleWithdraw}
+              banks={banks}
+            />
+
+
+            {/* ✅ Transaction List (same as before) */}
+            <hr className="my-4" />
             <div>
               <p className="flex items-center gap-2 text-gray-700 font-semibold mb-4">
                 <FaHistory className="text-gray-500" /> Recent Transactions
@@ -157,7 +225,6 @@ const WalletTab: React.FC = () => {
 
               {walletData?.transferReqDTO?.length ? (
                 <div className="w-full">
-                  {/* ✅ Table Header (Desktop only) */}
                   <div className="hidden md:grid grid-cols-4 font-semibold text-gray-700 px-5 py-3 bg-gray-100 rounded-t-xl border border-gray-200">
                     <div className="text-left">Amount</div>
                     <div className="text-left">To User</div>
@@ -165,7 +232,6 @@ const WalletTab: React.FC = () => {
                     <div className="text-center">Status</div>
                   </div>
 
-                  {/* ✅ Table Body */}
                   <div className="space-y-3 group">
                     {walletData.transferReqDTO
                       .slice(0, visibleCount)
@@ -174,37 +240,6 @@ const WalletTab: React.FC = () => {
                           key={index}
                           className="grid md:grid-cols-4 grid-cols-1 md:items-center px-1 md:px-5 py-4 bg-blue-50 mt-4 rounded-xl border border-gray-200 shadow-sm transition-all duration-300 group-hover:opacity-40 hover:!opacity-100 hover:bg-blue-100 hover:scale-[1.03] hover:shadow-md"
                         >
-                          {/* ✅ Mobile Card View */}
-                          <div className="md:hidden space-y-2 text-sm">
-                            <p>
-                              <span className="font-semibold">Amount:</span>{" "}
-                              {transfer.amount}
-                            </p>
-                            <p>
-                              <span className="font-semibold">To User:</span>{" "}
-                              {transfer.toUser}
-                            </p>
-                            <p>
-                              <span className="font-semibold">Bank:</span>{" "}
-                              {transfer.bankName}
-                            </p>
-                            <p>
-                              <span className="font-semibold">Status:</span>{" "}
-                              <span
-                                className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                                  transfer.status === "TRANSFER_DONE"
-                                    ? "bg-green-100 text-green-600"
-                                    : transfer.status === "TRANSFER_DECLIENED"
-                                    ? "bg-red-100 text-red-600"
-                                    : "bg-yellow-100 text-yellow-600"
-                                }`}
-                              >
-                                {formatStatus(transfer.status)}
-                              </span>
-                            </p>
-                          </div>
-
-                          {/* ✅ Desktop Columns */}
                           <div className="hidden md:block text-gray-800 font-medium">
                             {transfer.amount}
                           </div>
@@ -231,7 +266,6 @@ const WalletTab: React.FC = () => {
                       ))}
                   </div>
 
-                  {/* ✅ Load More */}
                   {walletData.transferReqDTO.length > visibleCount && (
                     <button
                       onClick={() => setVisibleCount((prev) => prev + 10)}
@@ -245,7 +279,6 @@ const WalletTab: React.FC = () => {
                 <p className="text-gray-500">No transactions yet.</p>
               )}
             </div>
-
           </>
         )}
       </div>
