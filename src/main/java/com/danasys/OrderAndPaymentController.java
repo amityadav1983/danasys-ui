@@ -606,7 +606,7 @@ public class OrderAndPaymentController {
 
 	}
 	
-	@PostMapping("/api/payment/addMoneyToWallet")
+	@PostMapping("/api/order/addMoneyToWallet")
 	public ResponseEntity<String> addMoneyToWallet(@RequestBody TransferMoneyDTO transferMoneyDTO) {
 
 		return ResponseEntity.ok("Amount Transfered ! ");
