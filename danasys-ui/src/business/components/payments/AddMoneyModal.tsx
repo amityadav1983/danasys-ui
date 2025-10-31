@@ -70,7 +70,7 @@ const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
               comments: comment,
             };
 
-            const addMoneyRes = await api.post("/api/payment/addMoneyToWallet", payload);
+            const addMoneyRes = await api.post("/api/order/addMoneyToWallet", payload);
             console.log("Add Money Response:", addMoneyRes.data);
 
             // Reset fields
