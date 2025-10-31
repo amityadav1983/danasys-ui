@@ -109,7 +109,7 @@ public class MyController {
 			userDetailsDTO.setFullname("Sri Admin");
 			roles.add(UserRoleEnum.ROLE_SUPERADMIN);
 			
-			userDetailsDTO.setUserProfileId(1l);
+			userDetailsDTO.setUserProfileId(101l);
 			
 		} else if (userName.equals("gupta@dana.com")) {
 			userDetailsDTO.setEmail("gupta@dana.com");
@@ -1068,9 +1068,12 @@ public class MyController {
 			
 			
 			String ic12 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("bu_payments.png").toUriString();
+					.path("bu_payment.png").toUriString();
 
-
+			
+			String ic13 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+			.path("bu_myconnections.png").toUriString();
+			
 			BusinessDashboaardFunctionalityDTO icone0 = new BusinessDashboaardFunctionalityDTO();
 			icone0.setBuIconPath(ic0);
 			icone0.setName("Dashboard");
@@ -1089,7 +1092,7 @@ public class MyController {
 
 			BusinessDashboaardFunctionalityDTO icone4 = new BusinessDashboaardFunctionalityDTO();
 			icone4.setBuIconPath(ic4);
-			icone4.setName("Payments");
+			icone4.setName("Money Transfer");
 
 			BusinessDashboaardFunctionalityDTO icone5 = new BusinessDashboaardFunctionalityDTO();
 			icone5.setBuIconPath(ic5);
@@ -1121,7 +1124,11 @@ public class MyController {
 			
 			BusinessDashboaardFunctionalityDTO icone12 = new BusinessDashboaardFunctionalityDTO();
 			icone12.setBuIconPath(ic12);
-			icone12.setName("Transfer");
+			icone12.setName("Payments");
+			
+			BusinessDashboaardFunctionalityDTO icone13 = new BusinessDashboaardFunctionalityDTO();
+			icone13.setBuIconPath(ic13);
+			icone13.setName("My Connections");
 
 			buIconDetails.add(icone0);
 			buIconDetails.add(icone2);
@@ -1136,6 +1143,7 @@ public class MyController {
 			buIconDetails.add(icone10);
 			buIconDetails.add(icone11);
 			buIconDetails.add(icone12);
+			buIconDetails.add(icone13);
 			
 
 			buDashboard.setBuIconDetails(buIconDetails);
