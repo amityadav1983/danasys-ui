@@ -601,7 +601,14 @@ public class OrderAndPaymentController {
 	@PostMapping("/api/order/transferWalletToBankAccount")
 	public ResponseEntity<String> transferWalletToBankAccount(@RequestBody TransferMoneyDTO transferMoneyDTO) {
 
-		return ResponseEntity.ok("Point Redeemed ! ");
+		return ResponseEntity.ok("Amount Transfered ! ");
+
+	}
+	
+	@PostMapping("/api/payment/addMoneyToWallet")
+	public ResponseEntity<String> addMoneyToWallet(@RequestBody TransferMoneyDTO transferMoneyDTO) {
+
+		return ResponseEntity.ok("Amount Transfered ! ");
 
 	}
 
