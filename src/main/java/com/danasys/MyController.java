@@ -1028,7 +1028,7 @@ public class MyController {
 			String ic3 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("bu_orders.png").toUriString();
 			String ic4 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
-					.path("bu_moneytransfer.png").toUriString();
+					.path("admin_transfer.png").toUriString();
 			String ic5 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("bu_reports.png").toUriString();
 			String ic6 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
@@ -1041,9 +1041,13 @@ public class MyController {
 					.path("bu_activation.png").toUriString();
 			String ic10 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("bu_communication.png").toUriString();
-
 			String ic11 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
 					.path("bu_users.png").toUriString();
+			
+			
+			String ic12 = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/product/images/userdata/")
+					.path("bu_payments.png").toUriString();
+
 
 			BusinessDashboaardFunctionalityDTO icone0 = new BusinessDashboaardFunctionalityDTO();
 			icone0.setBuIconPath(ic0);
@@ -1092,6 +1096,10 @@ public class MyController {
 			BusinessDashboaardFunctionalityDTO icone11 = new BusinessDashboaardFunctionalityDTO();
 			icone11.setBuIconPath(ic11);
 			icone11.setName("Users");
+			
+			BusinessDashboaardFunctionalityDTO icone12 = new BusinessDashboaardFunctionalityDTO();
+			icone12.setBuIconPath(ic12);
+			icone12.setName("Transfer");
 
 			buIconDetails.add(icone0);
 			buIconDetails.add(icone2);
@@ -1105,6 +1113,8 @@ public class MyController {
 			buIconDetails.add(icone9);
 			buIconDetails.add(icone10);
 			buIconDetails.add(icone11);
+			buIconDetails.add(icone12);
+			
 
 			buDashboard.setBuIconDetails(buIconDetails);
 			buDashboard.setUserBusinessProfileDTOList(userBusinessProfileDTOList);
