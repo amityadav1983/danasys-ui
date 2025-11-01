@@ -594,8 +594,7 @@ public class MyController {
 	@Operation(summary = "load all user addresses", description = "load all user addresses.")
 	public ResponseEntity<?> loadUserBusinessProfile(@RequestParam("userName") String userName) throws IOException {
 
-		if (userName.equals(loginUserName) && loginUser.get(userName) != null
-				&& loginUser.get(userName).getRoles().contains(UserRoleEnum.ROLE_BUSINESS_USER)) {
+		if (userName.equals(loginUserName) || loginUser!=null) {
 			List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
 			UserBusinessProfileDTO userBusinessProfile = new UserBusinessProfileDTO();
 
@@ -1439,7 +1438,8 @@ public class MyController {
 	public ResponseEntity<?> loadUserBusinessProfileById(@RequestParam("userProfileId") Long userProfileId)
 			throws IOException {
 
-		if (loginUser.get(loginUserName).getUserProfileId().longValue() == userProfileId) {
+		//if (loginUser.get(loginUserName).getUserProfileId().longValue() == userProfileId) 
+		{
 		List<UserBusinessProfileDTO> userBusinessProfiles = new ArrayList();
 		UserBusinessProfileDTO userBusinessProfile = new UserBusinessProfileDTO();
 		userBusinessProfile.setId(11l);
@@ -1519,7 +1519,7 @@ public class MyController {
 		return ResponseEntity.ok(userBusinessProfiles);
 		}
 		
-		return ResponseEntity.badRequest().body("Wrong user profile id");
+		//return ResponseEntity.badRequest().body("Wrong user profile id");
 
 	}
 	
